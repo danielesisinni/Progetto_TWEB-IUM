@@ -29,7 +29,7 @@ public class HelloServlet extends HttpServlet {
         String cognomeDocente = request.getParameter("cognome");
 
         if(idDocente != null && nomeDocente != null && cognomeDocente != null){
-            DAO.insertTeacher(nomeDocente, cognomeDocente, idDocente);
+           DAO.insertTeacher(nomeDocente, cognomeDocente, idDocente);
         }
         // Hello
         PrintWriter out = response.getWriter();
@@ -46,6 +46,7 @@ public class HelloServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html");
         String action = request.getParameter("action");
+        System.out.println(action);
         HttpSession session = request.getSession();
         if(action != null){
             if(action.equals("Autentica")){
@@ -117,7 +118,7 @@ public class HelloServlet extends HttpServlet {
                 out.println("<p>ID di sessione: "+s.getId() + "</p>");
                 out.println("<p>Data di creazione: " + new Date(s.getCreationTime()) + "</p>");
                 //out.println("<p>Max inactive time interval (in secondi): "
-                // + s.getMaxInactiveInterval() + "</p>");
+                       // + s.getMaxInactiveInterval() + "</p>");
                 //out.println("<p>Invalida <a href=\"" + url + "?action=invalida\"> la sessione</a></p>");
                 //out.println("<p>Ricarica <a href=\"" + url + "\"> la pagina</a></p>");
             }
@@ -129,7 +130,7 @@ public class HelloServlet extends HttpServlet {
     }
 
 
-    public static String verificaUtenti(String account, String password, String ruolo){
+   public static String verificaUtenti(String account, String password, String ruolo){
         ArrayList<Utenti> Utenti = DAO.Users();
         int i = 0;
         for(Utenti p: Utenti){
