@@ -115,7 +115,6 @@ public class DAO {
     public static ArrayList<Utenti> Users(){
         Connection conn1 = null;
         ArrayList<Utenti> out = new ArrayList<>();
-
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
             if (conn1 != null) {
@@ -123,9 +122,11 @@ public class DAO {
             }
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM Utenti");
+            ResultSet rs = st.executeQuery("SELECT * FROM utenti");
             while (rs.next()) {
                 Utenti p = new Utenti(rs.getInt("MATRICOLA"), rs.getString("ACCOUNT"), rs.getString("PASSWORD"), rs.getString("RUOLO"));
+                System.out.println(p);
+                System.out.println(rs.getInt("MATRICOLA"));
                 out.add(p);
             }
         } catch (SQLException e) {
@@ -140,6 +141,7 @@ public class DAO {
                 }
             }
         }
+        System.out.println(out);
         return out;
     }
 
@@ -311,16 +313,14 @@ public class DAO {
 
     public static void insertTeacher(String nomeDocente, String cognomeDocente, Integer id) {
         Connection conn1 = null;
-        Docente c = null;
-        Scanner input = new Scanner(System.in);
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
-            c = new Docente(nomeDocente, cognomeDocente, id);
+            Docente c = new Docente(nomeDocente, cognomeDocente, id);
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("insert into docente (nome, cognome, id) values ('" + nomeDocente + "', '" + cognomeDocente + "', '" + id + "')");
+            st.execute("insert into docente (nome, cognome, idutente) values ('" + nomeDocente + "', '" + cognomeDocente + "', '" + id + "')");
             System.out.println("New teacher added!");
 
         } catch (SQLException e) {
@@ -658,21 +658,15 @@ public class DAO {
         }
     }
 
-    public static String verificaUtenti(String account, String password, String ruolo){
-        ArrayList<Utenti> Utenti = DAO.Users();
-        int i = 0;
-        for(Utenti p: Utenti){
+    public static String verificaUtenti(String account, String password) {
+        DAO.registerDriver();
+        ArrayList<Utenti> utentiCreati = DAO.Users();
+        String ruolo = "";
+        for( Utenti p: utentiCreati){
             if(p.getAccount().equals(account) && p.getPassword().equals(password)){
-                System.out.println(p.getAccount());
-                System.out.println(account);
-                System.out.println(p.getPassword());
-                System.out.println(password);
                 ruolo = p.getRuolo();
-                break;
             }
         }
-        if(ruolo != "cliente" || ruolo != "amministratore")
-            ruolo = "false";
         return ruolo;
     }
 }

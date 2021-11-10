@@ -30,7 +30,7 @@ public class Login extends HttpServlet {
             String ruolo = "";
 
             if (acc != null) {
-                ruolo = DAO.verificaUtenti(acc, pass, ruolo);
+                ruolo = DAO.verificaUtenti(acc, pass);
                 if (ruolo.equals("false")) {
                     PrintWriter out = response.getWriter();
                     out.println("<h3>Errore nell' autentificazione");
@@ -55,6 +55,7 @@ public class Login extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        String docente = "docente.html";
         HttpSession session = request.getSession();
         PrintWriter out = response.getWriter();
         try {
@@ -62,6 +63,7 @@ public class Login extends HttpServlet {
             String ruolo = (String) session.getAttribute("userRole");
             out.println("<p>Autentificazione avvenuta con successo: <p>");
             out.println("</br><p>Benvenuto <p>" + acc + " [" + ruolo + "]");
+            out.println("<p><li>Puoi aggiungere un docente <a href =\"" + docente + "\">AGGIUNGI </a></p>");
             out.flush();
         } finally {
             if (out!=null)

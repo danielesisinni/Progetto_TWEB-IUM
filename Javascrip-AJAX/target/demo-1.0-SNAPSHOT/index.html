@@ -14,7 +14,7 @@
         <h1 class="text-center">Benvenuto</h1>
         <h3>Effettua il login</h3>
         <br>
-        <form action="hello-servlet" method="post">
+        <form action="login" method="post">
             <li>
                 Ospite
             </li>
@@ -22,27 +22,14 @@
             <p><input type="submit" name="action" value="Entra"/></p>
         </form>
         <br>
-        <form method="post">
+        <form action="hello-servlet" method="post">
             <li>
                 Amministratore - Cliente
             </li>
-            <p>Account : <input id="acc" type="text" name="account" placeholder="account"/></p>
-            <p>Password : <input id="pass" type="password" name="password" placeholder="password"/></p>
-            <p><input id="action" name="action" type="button" value="Autentica"/></p>
+            <p>Account : <input type="text" name="account" placeholder="account"/></p>
+            <p>Password : <input type="password" name="password" placeholder="password"/></p>
+            <p><input type="submit" name="action" value="Autentica"/></p>
         </form>
-        <div id = "autenticazione" class = "outputTextArea"></div>
-        <script type="text/javascript">
-            $(document).ready(function (){
-                $("#action").click(function (){
-                    var acc = document.getElementById("acc").value;
-                    var pass = document.getElementById("pass").value;
-                    $.post("Login", {account: acc, password: pass},
-                        function (data) {
-                            $("#autenticazione").html(data);
-                        });
-                });
-            });
-        </script>
     </div>
 </body>
 

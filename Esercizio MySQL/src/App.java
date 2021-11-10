@@ -57,7 +57,9 @@ public class App{
                     printRepetition();
                     break;
                 case 8:
-                    DAO.insertBooking();
+                    //DAO.insertBooking();
+                    DAO.Users();
+                    printUsers();
                     break;
                 case 9:
                     DAO.removeBooking();

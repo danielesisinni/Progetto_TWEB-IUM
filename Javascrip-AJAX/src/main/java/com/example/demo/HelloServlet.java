@@ -45,11 +45,10 @@ public class HelloServlet extends HttpServlet {
             if (action.equals("Autentica")) {
                 String account = request.getParameter("account");
                 String password = request.getParameter("password");
-                String ruolo = "";
+                String ruolo = DAO.verificaUtenti(account,password);
 
-                if (account != null || account.equals(" ")) {
-                    ruolo = DAO.verificaUtenti(account, password, ruolo);
-                    if (ruolo.equals("false")) {
+                if (account != null) {
+                    if (ruolo.equals("")) {
                         PrintWriter out = response.getWriter();
                         out.println("<h3>Errore nell' autentificazione");
                         out.println("<p>Utente non trovato, controllare i dati inseriti</p>");
