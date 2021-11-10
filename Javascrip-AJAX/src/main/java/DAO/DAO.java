@@ -657,6 +657,24 @@ public class DAO {
             }
         }
     }
+
+    public static String verificaUtenti(String account, String password, String ruolo){
+        ArrayList<Utenti> Utenti = DAO.Users();
+        int i = 0;
+        for(Utenti p: Utenti){
+            if(p.getAccount().equals(account) && p.getPassword().equals(password)){
+                System.out.println(p.getAccount());
+                System.out.println(account);
+                System.out.println(p.getPassword());
+                System.out.println(password);
+                ruolo = p.getRuolo();
+                break;
+            }
+        }
+        if(ruolo != "cliente" || ruolo != "amministratore")
+            ruolo = "false";
+        return ruolo;
+    }
 }
 
 

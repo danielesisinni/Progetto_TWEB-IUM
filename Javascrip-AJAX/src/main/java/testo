@@ -23,7 +23,7 @@ public class HelloServlet extends HttpServlet {
         String cognomeDocente = request.getParameter("cognome");
 
         if(idDocente != null && nomeDocente != null && cognomeDocente != null){
-            DAO.insertTeacher(nomeDocente, cognomeDocente, idDocente);
+           DAO.insertTeacher(nomeDocente, cognomeDocente, idDocente);
         }
 
         PrintWriter out = response.getWriter();
@@ -53,8 +53,6 @@ public class HelloServlet extends HttpServlet {
                         PrintWriter out = response.getWriter();
                         out.println("<h3>Errore nell' autentificazione");
                         out.println("<p>Utente non trovato, controllare i dati inseriti</p>");
-                        String index = "index.html";
-                        out.println("<p><a href=\"" + index + "\"> Tornare al login</a></p>");
                         out.flush();
                         out.close();
                     } else{
@@ -96,7 +94,6 @@ public class HelloServlet extends HttpServlet {
         if (ruolo!=null)
             s.setAttribute("userRole", ruolo);
         String url = response.encodeURL("hello-servlet");
-        String index = response.encodeURL("index.html");
         PrintWriter out = response.getWriter();
         try {
             out.println("<html>");
@@ -119,9 +116,8 @@ public class HelloServlet extends HttpServlet {
                 else out.println(" vecchia sessione</p>");
                 out.println("<p>ID di sessione: "+s.getId() + "</p>");
                 out.println("<p>Data di creazione: " + new Date(s.getCreationTime()) + "</p>");
-                out.println("<p><a href=\"" + index + "\"> Tornare al login</a></p>");
                 //out.println("<p>Max inactive time interval (in secondi): "
-                // + s.getMaxInactiveInterval() + "</p>");
+                       // + s.getMaxInactiveInterval() + "</p>");
                 //out.println("<p>Invalida <a href=\"" + url + "?action=invalida\"> la sessione</a></p>");
                 //out.println("<p>Ricarica <a href=\"" + url + "\"> la pagina</a></p>");
             }

@@ -36,7 +36,7 @@
                 $("#action").click(function (){
                     var acc = document.getElementById("acc").value;
                     var pass = document.getElementById("pass").value;
-                    $.post("HelloServlet", {account: acc, password: pass},
+                    $.post("Login", {account: acc, password: pass},
                         function (data) {
                             $("#autenticazione").html(data);
                         });
