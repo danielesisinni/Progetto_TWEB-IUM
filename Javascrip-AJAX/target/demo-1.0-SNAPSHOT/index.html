@@ -34,3 +34,54 @@
 </body>
 
 </html>
+
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Home</title>
+
+    <link href="bootstrap-4.5.2-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="bootstrap-4.5.2-dist/js/jquery-slim.min.js"></script>
+    <script src="bootstrap-4.5.2-dist/js/bootstrap.min.js"></script>
+</head>
+<body class="d-flex justify-content-center">
+    <div class="col-8 col-lg-3">
+        <h1 class="text-center">Benvenuto</h1>
+        <h3>Effettua il login</h3>
+        <br>
+        <form action="hello-servlet" method="post">
+            <li>
+                Ospite
+            </li>
+            <p>Login: <input type="text" name="login" value="ospite"/></p>
+            <p><input type="submit" name="action" value="Entra"/></p>
+        </form>
+        <br>
+        <form method="post">
+            <li>
+                Amministratore - Cliente
+            </li>
+            <p>Account : <input id="acc" type="text" name="account" placeholder="account"/></p>
+            <p>Password : <input id="pass" type="password" name="password" placeholder="password"/></p>
+            <p><input id="action" name="action" type="button" value="Autentica"/></p>
+        </form>
+        <div id = "autenticazione" class = "outputTextArea"></div>
+        <script type="text/javascript">
+            $(document).ready(function (){
+                $("#action").click(function (){
+                    var acc = document.getElementById("acc").value;
+                    var pass = document.getElementById("pass").value;
+                    $.post("Login", {account: acc, password: pass},
+                        function (data) {
+                            $("#autenticazione").html(data);
+                        });
+                });
+            });
+        </script>
+    </div>
+</body>
+
+</html>-->
+

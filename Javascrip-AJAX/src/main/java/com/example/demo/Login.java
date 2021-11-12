@@ -25,27 +25,39 @@ public class Login extends HttpServlet {
         String action = request.getParameter("action");
         HttpSession session = request.getSession();
         if (action != null) {
-            String acc = request.getParameter("account");
-            String pass = request.getParameter("password");
-            String ruolo = "";
+            if(action == "Entra") {
+                PrintWriter out = response.getWriter();
+                out.println("<h3>Benvenuto nel server delle prenotazioni<h3>");
+                out.println("<p>Sei un nuovo ospite</p>");
+                out.flush();
+                out.close();
+            }else{
+                String acc = request.getParameter("account");
+                String pass = request.getParameter("password");
+                String ruolo = "";
 
-            if (acc != null) {
-                ruolo = DAO.verificaUtenti(acc, pass);
-                if (ruolo.equals("false")) {
-                    PrintWriter out = response.getWriter();
-                    out.println("<h3>Errore nell' autentificazione");
-                    out.println("<p>Utente non trovato, controllare i dati inseriti</p>");
-                    String index = "index.html";
-                    out.println("<p><a href=\"" + index + "\"> Tornare al login</a></p>");
-                    out.flush();
-                    out.close();
-                } else {
-                    session.setAttribute("userName", acc);
-                    session.setAttribute("userRole", ruolo);
-                    if (ruolo.equals("Amministratore")) {
-                        processRequest(request, response);
+                if (acc != null) {
+                    ruolo = DAO.verificaUtenti(acc, pass);
+                    if (ruolo.equals("")) {
+                        PrintWriter out = response.getWriter();
+                        out.println("<h3>Errore nell' autentificazione");
+                        out.println("<p>Utente non trovato, controllare i dati inseriti</p>");
+                        String index = "index.html";
+                        out.println("<p><a href=\"" + index + "\"> Tornare al login</a></p>");
+                        out.flush();
+                        out.close();
                     } else {
-                        processRequest(request, response);
+                        session.setAttribute("userName", acc);
+                        session.setAttribute("userRole", ruolo);
+                        if (ruolo.equals("Amministratore")) {
+                            processRequest(request, response);
+                        } else {
+                            PrintWriter out = response.getWriter();
+                            out.println("<p>Autentificazione avvenuta con successo: <p>");
+                            out.println("</br><p>Benvenuto <p>" + acc + " [" + ruolo + "]");
+                            out.flush();
+                            out.close();
+                        }
                     }
                 }
             }
