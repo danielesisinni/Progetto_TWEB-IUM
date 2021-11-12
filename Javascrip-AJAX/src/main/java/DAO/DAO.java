@@ -125,8 +125,6 @@ public class DAO {
             ResultSet rs = st.executeQuery("SELECT * FROM utenti");
             while (rs.next()) {
                 Utenti p = new Utenti(rs.getInt("MATRICOLA"), rs.getString("ACCOUNT"), rs.getString("PASSWORD"), rs.getString("RUOLO"));
-                System.out.println(p);
-                System.out.println(rs.getInt("MATRICOLA"));
                 out.add(p);
             }
         } catch (SQLException e) {

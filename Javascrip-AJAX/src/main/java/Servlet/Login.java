@@ -1,4 +1,4 @@
-package com.example.demo;
+package Servlet;
 
 import java.io.*;
 import java.sql.Connection;
@@ -12,9 +12,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import DAO.*;
+import com.google.gson.Gson;
 
 @WebServlet(name = "login", value = "/login")
 public class Login extends HttpServlet {
+    //private Gson gson = new Gson();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         processRequest(request, response);
@@ -25,7 +27,7 @@ public class Login extends HttpServlet {
         String action = request.getParameter("action");
         HttpSession session = request.getSession();
         if (action != null) {
-            if(action == "Entra") {
+            if(action.equals("Entra")) {
                 PrintWriter out = response.getWriter();
                 out.println("<h3>Benvenuto nel server delle prenotazioni<h3>");
                 out.println("<p>Sei un nuovo ospite</p>");
@@ -71,10 +73,10 @@ public class Login extends HttpServlet {
         HttpSession session = request.getSession();
         PrintWriter out = response.getWriter();
         try {
-            String acc = (String) session.getAttribute("account");
+            String acc = (String) session.getAttribute("userName");
             String ruolo = (String) session.getAttribute("userRole");
             out.println("<p>Autentificazione avvenuta con successo: <p>");
-            out.println("</br><p>Benvenuto <p>" + acc + " [" + ruolo + "]");
+            out.println("<p>Benvenuto <p>" + acc + " [" + ruolo + "]<p>");
             out.println("<p><li>Puoi aggiungere un docente <a href =\"" + docente + "\">AGGIUNGI </a></p>");
             out.flush();
         } finally {

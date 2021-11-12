@@ -1,4 +1,4 @@
-package com.example.demo;
+/*package Servlet;
 
 import java.io.*;
 import java.sql.Connection;
@@ -130,4 +130,4 @@ public class HelloServlet extends HttpServlet {
             out.close();
         }
     }
-}
+}*/
