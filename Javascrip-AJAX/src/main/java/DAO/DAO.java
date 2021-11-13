@@ -139,7 +139,6 @@ public class DAO {
                 }
             }
         }
-        System.out.println(out);
         return out;
     }
 
