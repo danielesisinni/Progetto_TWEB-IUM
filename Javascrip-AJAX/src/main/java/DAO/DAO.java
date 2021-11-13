@@ -656,16 +656,17 @@ public class DAO {
         }
     }
 
-    public static String verificaUtenti(String account, String password) {
+    public static String[] verificaUtenti(String account, String password) {
         DAO.registerDriver();
         ArrayList<Utenti> utentiCreati = DAO.Users();
-        String ruolo = "";
+        String[] esiste_ruolo = {"false", ""};
         for( Utenti p: utentiCreati){
             if(p.getAccount().equals(account) && p.getPassword().equals(password)){
-                ruolo = p.getRuolo();
+                esiste_ruolo[0] = "true";
+                esiste_ruolo[1] = p.getRuolo();
             }
         }
-        return ruolo;
+        return esiste_ruolo;
     }
 }
 
