@@ -1,13 +1,6 @@
 package Servlet;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Scanner;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
@@ -48,6 +41,7 @@ public class Login extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         PrintWriter out = response.getWriter();
+        String amministratore = response.encodeURL("HomeAmministratore.html");
         try {
             String action = (String) session.getAttribute("userName");
             if(action.equals("ospite")) {
@@ -58,6 +52,7 @@ public class Login extends HttpServlet {
                 String ruolo = (String) session.getAttribute("userRole");
                 out.print("<span class=\"badge badge-success\">Success</span>");
                 out.print(" Benvenuto " + acc + " [" + ruolo + "]");
+                out.println("<p><a href=\"" + amministratore + "\"> Accedi al menù amministratore</a></p>");
                 out.flush();
             }
         } finally {

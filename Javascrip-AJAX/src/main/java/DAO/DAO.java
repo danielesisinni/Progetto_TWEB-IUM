@@ -186,7 +186,7 @@ public class DAO {
             Statement st = conn1.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM Ripetizione");
             while (rs.next()) {
-                Ripetizione p = new Ripetizione(rs.getString("DOCENTE"), rs.getInt("ID_DOCENTE"), rs.getString("CORSO"), rs.getString("DATA"), rs.getString("ORA"));
+                Ripetizione p = new Ripetizione(rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("DATA"), rs.getString("ORA"));
                 out.add(p);
             }
         } catch (SQLException e) {
@@ -202,6 +202,32 @@ public class DAO {
             }
         }
         return out;
+    }
+
+    public static void insertRepetition(String docente, String corso, String data, String ora) {
+        Connection conn1 = null;
+
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database test");
+            }
+            Ripetizione r = new Ripetizione(docente, corso, data, ora);
+
+            Statement st = conn1.createStatement();
+            st.execute("insert into ripetizione (docente, corso, data, ora) values ('" + docente + "', '" + corso + "', '" + data + "', '" + ora + "')");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
     }
 
     public static void insertCourse() {
