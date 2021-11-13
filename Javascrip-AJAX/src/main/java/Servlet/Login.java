@@ -68,7 +68,6 @@ public class Login extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
         String docente = "docente.html";
         HttpSession session = request.getSession();
         PrintWriter out = response.getWriter();
