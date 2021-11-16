@@ -50,6 +50,7 @@
                 $("#butt").click(function (){
                     var a = document.getElementById("acc").value;
                     var p = document.getElementById("pass").value;
+                    //var JSON = {"account": "a", "password": "p"};
                     $.post("login", {account: a, password: p} ,
                         function (data){
                             $("#scrivi").html(data);

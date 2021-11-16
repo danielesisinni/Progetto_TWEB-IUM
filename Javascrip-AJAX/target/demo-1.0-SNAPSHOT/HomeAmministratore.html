@@ -13,12 +13,17 @@
 </head>
 <body>
     <h3>Scegliere l'azione da eseguire</h3>
+    <form action="ServletController" method="get">
     <li>
-        Aggiungere nuovi docenti <a href="docente.html">Clicca</a>
+        Aggiungere nuovi docenti
+        <input type="submit" name="action" value="Docente">
+
     </li>
     <li>
-        Aggiungere nuove prenotazioni <a href="ripetizione.html">Clicca</a>
+        Aggiungere nuove prenotazioni
+        <input type="submit" name="action" value="Ripetizioni">
     </li>
+    </form>
 </body>
 
 </html>

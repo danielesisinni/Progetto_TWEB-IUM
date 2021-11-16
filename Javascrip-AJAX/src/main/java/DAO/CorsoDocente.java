@@ -2,11 +2,11 @@ package DAO;
 
 public class CorsoDocente{
     private String corso;
-    private int id;
+    private String docente;
 
-    public CorsoDocente(String corso, int id) {
+    public CorsoDocente(String corso, String docente) {
         this.corso = corso;
-        this.id = id;
+        this.docente = docente;
     }
 
     public String getCorso() {
@@ -17,19 +17,16 @@ public class CorsoDocente{
         this.corso = corso;
     }
 
-    public int getId() {
-        return id;
+    public String getDocente() {
+        return docente;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setDocente(String docente) {
+        this.docente = docente;
     }
 
     @Override
     public String toString() {
-        return "CorsoDocente{" +
-                "corso='" + corso + '\'' +
-                ", docente='" + id + '\'' +
-                '}';
+        return "[" + corso + "--" + docente + "]\b";
     }
 }

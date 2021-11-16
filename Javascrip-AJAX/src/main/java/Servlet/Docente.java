@@ -39,7 +39,6 @@ public class Docente extends HttpServlet {
         PrintWriter out = response.getWriter();
         try {
             out.println("<p><span class=\"badge badge-success\">Success</span> Docente aggiunto nel Database!<p>");
-            out.println("<p><a href=\"" + home + "\"> Torna al men&ugrave; amministratore</a></p>");
             out.flush();
         } finally {
             out.close();

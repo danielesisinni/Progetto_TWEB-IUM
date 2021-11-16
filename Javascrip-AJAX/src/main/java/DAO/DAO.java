@@ -92,9 +92,9 @@ public class DAO {
             }
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM CorsoDocente");
+            ResultSet rs = st.executeQuery("SELECT * FROM corsodocente");
             while (rs.next()) {
-                CorsoDocente p = new CorsoDocente(rs.getString("CORSO"), rs.getInt("DOCENTE"));
+                CorsoDocente p = new CorsoDocente(rs.getString("CORSO"), rs.getString("DOCENTE"));
                 out.add(p);
             }
         } catch (SQLException e) {
@@ -109,6 +109,7 @@ public class DAO {
                 }
             }
         }
+
         return out;
     }
 
@@ -393,7 +394,7 @@ public class DAO {
     public static void insertCourseTeacher() {
         Connection conn1 = null;
         String course;
-        int id;
+        String docente;
         CorsoDocente c = null;
         Scanner input = new Scanner(System.in);
 
@@ -403,12 +404,12 @@ public class DAO {
             System.out.println("Insert a course: ");
             course = input.nextLine();
             System.out.println("Insert a id of teacher: ");
-            id = input.nextInt();
-            c = new CorsoDocente(course, id);
+            docente = input.nextLine();
+            c = new CorsoDocente(course, docente);
 
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("insert into corsodocente (corso, docente) values ('" + course + "', '" + id + "')");
+            st.execute("insert into corsodocente (corso, docente) values ('" + course + "', '" + docente + "')");
             System.out.println("New courseteacher added!");
 
         } catch (SQLException e) {
