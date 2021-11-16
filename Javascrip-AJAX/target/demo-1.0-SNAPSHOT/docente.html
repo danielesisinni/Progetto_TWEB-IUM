@@ -14,7 +14,7 @@
         <h1 class="text-center">DB del docente</h1>
             <h2 class="d-flex justify-content-center">Inserire i dati</h2>
             <br>
-            <form action="Docente" method="get">
+            <form method="get">
                 <label for="id_docente" class="sr-only">Id</label>
                 <input name="id" type="text" class="form-control" id="id_docente" placeholder="Id"/>
 
@@ -27,9 +27,23 @@
                 <br>
                 <br>
                 <div>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Confermare dati</button>
+                    <button id="butt" class="btn btn-lg btn-primary btn-block" type="button">Confermare dati</button>
                 </div>
             </form>
+        <div id="scrivi" class="outputTextArea"></div>
+        <script type="text/javascript">
+            $(document).ready(function (){
+                $("#butt").click(function (){
+                    var id_id = document.getElementById("id_docente").value;
+                    var id_nome = document.getElementById("nome_docente").value;
+                    var id_cognome = document.getElementById("cognome_docente").value;
+                    $.get("Docente", {id: id_id, nome: id_nome, cognome: id_cognome} ,
+                        function (data){
+                            $("#scrivi").html(data);
+                        })
+                })
+            })
+        </script>
         <br>
     </div>
 </body>
