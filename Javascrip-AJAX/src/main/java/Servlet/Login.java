@@ -18,7 +18,12 @@ public class Login extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
-        session.setAttribute("userName", "ospite");
+        System.out.println(request.getParameter("action"));
+        if(request.getParameter("action") != null){
+            session.setAttribute("userName", "ospite");
+            System.out.println(session.getAttribute("userName"));
+            processRequest(request, response);
+        }
 
         String acc = request.getParameter("account");
         String pass = request.getParameter("password");
@@ -33,8 +38,6 @@ public class Login extends HttpServlet {
             out.flush();
             out.close();
         }
-        if(session.getAttribute("userName").equals("ospite"))
-            processRequest(request, response);
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -42,18 +45,26 @@ public class Login extends HttpServlet {
         HttpSession session = request.getSession();
         PrintWriter out = response.getWriter();
         String amministratore = response.encodeURL("HomeAmministratore.html");
+        String cliente = response.encodeURL("Home.html");
         try {
             String action = (String) session.getAttribute("userName");
+            System.out.println(action);
             if(action.equals("ospite")) {
-                out.println("<span class=\"badge badge-success\">Success</span> Loggato come ospite");
+                out.print("Benvenuto! ");
+                out.print("<span class=\"badge badge-success\">Success</span> Loggato come ospite");
                 out.flush();
             }else {
                 String acc = (String) session.getAttribute("userName");
                 String ruolo = (String) session.getAttribute("userRole");
                 out.print("<span class=\"badge badge-success\">Success</span>");
                 out.print(" Benvenuto " + acc + " [" + ruolo + "]");
-                out.println("<p><a href=\"" + amministratore + "\"> Accedi al menù amministratore</a></p>");
-                out.flush();
+                if(ruolo.equals("Amministratore")) {
+                    out.println("<p><a href=\"" + amministratore + "\"> Accedi al menù amministratore</a></p>");
+                    out.flush();
+                }else{
+                    out.println("<p><a href=\"" + cliente + "\"> Accedi al menù</a></p>");
+                    out.flush();
+                }
             }
         } finally {
             if (out!=null)

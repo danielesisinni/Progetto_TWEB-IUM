@@ -12,18 +12,24 @@
     <h1 class="text-center">Amministratore</h1>
 </head>
 <body>
-    <h3>Scegliere l'azione da eseguire</h3>
+<div class="container">
+    <h5>Scegliere l'azione da eseguire con la tua app</h5>
     <form action="ServletController" method="get">
-    <li>
-        Aggiungere nuovi docenti
-        <input type="submit" name="action" value="Docente">
-
-    </li>
-    <li>
-        Aggiungere nuove prenotazioni
-        <input type="submit" name="action" value="Ripetizioni">
-    </li>
+        <ul>
+            <li>
+                <button type="submit" class="btn btn-outline-primary" value="Docente">Aggiungere un docente</button>
+            </li>
+            <br>
+            <li>
+                <button type="submit" class="btn btn-outline-primary" value="Ripetizione">Aggiungere una ripetizione</button>
+            </li>
+            <br>
+            <li>
+                <button type="submit" class="btn btn-outline-danger" value="logout">Logout</button>
+            </li>
+        </ul>
     </form>
+</div>
 </body>
 
 </html>

@@ -22,14 +22,19 @@
             <p>Login: <input id="ospite" type="text" name="login" value="ospite"/></p>
             <p><input id="entra" type="button" name="action" value="Entra"/></p>
         </form>
-        <div id="scriviospite" class="outputTextArea"></div>
+        <div id="logospite" class="outputTextArea"></div>
         <script type="text/javascript">
             $(document).ready(function (){
                 $("#entra").click(function (){
                     var ac = document.getElementById("entra").value;
                     $.post("login", {action: ac} ),
                         function (data){
-                            $("#scriviospite").html(data);
+                            $("#logospite").html(data);
+
+                            setTimeout(() => {
+                                    window.location.replace("/demo_war_exploded/Home.html");},
+                                1000
+                            );
                         }
                 })
             })
@@ -48,12 +53,17 @@
         <script type="text/javascript">
             $(document).ready(function (){
                 $("#butt").click(function (){
-                    var a = document.getElementById("acc").value;
-                    var p = document.getElementById("pass").value;
+                    let a = document.getElementById("acc").value;
+                    let p = document.getElementById("pass").value;
                     //var JSON = {"account": "a", "password": "p"};
                     $.post("login", {account: a, password: p} ,
                         function (data){
                             $("#scrivi").html(data);
+
+                            setTimeout(() => {
+                                window.location.replace("/demo_war_exploded/HomeAmministratore.html");},
+                                1000
+                            );
                         })
                 })
             })

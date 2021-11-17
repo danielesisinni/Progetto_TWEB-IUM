@@ -26,12 +26,29 @@ public class ServletController extends HttpServlet {
             String action = request.getParameter("action");
             RequestDispatcher rd = ctx.getRequestDispatcher("/HomeAmministratore.html");
             if (action != null) {
-                if (action.equals("Docente"))
+                if (action.equals("Docente")) {
                     rd = ctx.getRequestDispatcher("/docente.html");
-                else if (action.equals("Prenotazioni")) {
+                }else if (action.equals("Prenotazioni")) {
                     rd = ctx.getRequestDispatcher("/ripetizione.html");
-                } else if (action.equals("Menù"))
+                }else if (action.equals("Menù")) {
                     rd = ctx.getRequestDispatcher("/HomeAmministratore.html");
+                }else if (action.equals("logout")) {
+                    rd = ctx.getRequestDispatcher("/index.html");
+                    try {
+                        session.removeAttribute("logonSessData");
+                        session.invalidate();
+                        String pageToForward = request.getContextPath();
+                        response.sendRedirect(pageToForward);
+                    } catch (Exception sqle) {
+                        System.out.println("error UserValidateServlet message : " + sqle.getMessage());
+                        System.out.println("error UserValidateServlet exception : " + sqle);
+                    }
+                }else if (action.equals("printdoce")) {
+                    rd = ctx.getRequestDispatcher("/printDocenti.html");
+                }else if (action.equals("printripe")) {
+                rd = ctx.getRequestDispatcher("/printRipetizioni.html");
+            }
+
             }
             rd.forward(request, response);
         }

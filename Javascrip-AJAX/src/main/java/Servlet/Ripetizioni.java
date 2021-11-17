@@ -24,9 +24,10 @@ public class Ripetizioni extends HttpServlet {
         String corso = request.getParameter("corso");
         String data = request.getParameter("data");
         String ora = request.getParameter("ora");
+        String status = request.getParameter("attesa");
 
         if (docente != null && corso != null && data != null && ora != null) {
-            DAO.insertRepetition(docente, corso, data, ora);
+            DAO.insertRepetition(docente, corso, data, ora, status);
         }
         processRequest(request, response);
     }

@@ -17,7 +17,6 @@ public class Docente extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html,charset=UTF-8");
-        HttpSession session = request.getSession();
         Integer idDocente = Integer.parseInt(request.getParameter("id"));
         String nomeDocente = request.getParameter("nome");
         String cognomeDocente = request.getParameter("cognome");
@@ -34,7 +33,7 @@ public class Docente extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession s = request.getSession();
+        HttpSession session = request.getSession();
         String home = response.encodeURL("HomeAmministratore.html");
         PrintWriter out = response.getWriter();
         try {

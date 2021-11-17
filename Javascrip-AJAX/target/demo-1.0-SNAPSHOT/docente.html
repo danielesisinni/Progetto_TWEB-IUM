@@ -40,6 +40,11 @@
                     $.get("Docente", {id: id_id, nome: id_nome, cognome: id_cognome} ,
                         function (data){
                             $("#scrivi").html(data);
+
+                            setTimeout(() => {
+                                    window.location.replace("/demo_war_exploded/HomeAmministratore.html");},
+                                1000
+                            );
                         })
                 })
             })

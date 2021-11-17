@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ripetizioni</title>
+</head>
+<body>
+    <h1 class="text-center">Lista ripetizioni</h1>
+    <table>
+        <button id="butt" type="button">Clicca per vedere Corso-Docente</button>
+        <br><br><br>
+        <div id="scrivi" class="outputTextArea"></div>
+        <script type="text/javascript">
+            $(document).ready(function (){
+                $("#butt").click(function (){
+                    var corso_docente = "corso-docente";
+                    $.post("Ripetizioni" , {type1: corso_docente},
+                        function (data){
+                            $("#scrivi").html(data);
+                        })
+                })
+            })
+        </script>
+        <button id="butt2" type="button">Clicca per vedere le ripetizoni</button>
+        <br>
+        <div id="scrivi2" class="outputTextArea"></div>
+        <script type="text/javascript">
+            $(document).ready(function (){
+                $("#butt2").click(function (){
+                    var ripetizioni = "ripetizioni";
+                    $.post("Ripetizioni" , {type2: ripetizioni},
+                        function (data){
+                            $("#scrivi2").html(data);
+                        })
+                })
+            })
+        </script>
+    </table>
+</body>
+</html>
