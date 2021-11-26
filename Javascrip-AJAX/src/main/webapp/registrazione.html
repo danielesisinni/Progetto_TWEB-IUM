@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="bootstrap-4.5.2-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="bootstrap-4.5.2-dist/js/jquery-slim.min.js"></script>
+    <script src="bootstrap-4.5.2-dist/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <title>Registrazione</title>
+</head>
+<body>
+<div id="crea">
+    <br>
+    <form>
+        <ul>
+            <li>
+                Crea il tuo account. Sarai un nuovo cliente
+            </li>
+        </ul>
+        <p>Account: <input id="newacc" type="text" name="newaccount" required placeholder="account"/></p>
+        <p>Password: <input id="newpass" type="password" name="newpassword" required placeholder="password"/></p>
+        <input id="newbutt" type="button" value="Crea"/>
+    </form>
+    <div id="newscrivi" class="outputTextArea"></div>
+    <script type="text/javascript">
+        $(document).ready(function (){
+            $("#newbutt").click(function (){
+                let na = document.getElementById("newacc").value;
+                let np = document.getElementById("newpass").value;
+                //var JSON = {"account": "a", "password": "p"};
+                $.post("login", {"newaccount": na, "newpassword": np, "action": "Crea"} ,
+                    function (data){
+                        $("#newscrivi").html(data);
+                        setTimeout(() => {
+                            window.location.replace("/demo_war_exploded/index.html");
+                        }, 2000);
+                    })
+            })
+        })
+    </script>
+</div>
+</body>
+</html>

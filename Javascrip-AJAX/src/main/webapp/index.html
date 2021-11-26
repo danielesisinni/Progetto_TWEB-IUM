@@ -50,7 +50,7 @@
                 </ul>
                 <p>Account : <input id="acc" type="text" name="account" required placeholder="account"/></p>
                 <p>Password : <input id="pass" type="password" name="password" required placeholder="password"/></p>
-                <input id="butt" type="button" name="action" value="Autentica"/>
+                <input id="butt" type="button" value="Autentica"/>
             </form>
             <div id="scrivi" class="outputTextArea"></div>
             <script type="text/javascript">
@@ -59,7 +59,7 @@
                         let a = document.getElementById("acc").value;
                         let p = document.getElementById("pass").value;
                         //var JSON = {"account": "a", "password": "p"};
-                        $.post("login", {"account": a, "password": p} ,
+                        $.post("login", {"account": a, "password": p, "action": "Autentica"} ,
                             function (data){
                                 $("#scrivi").html(data);
 

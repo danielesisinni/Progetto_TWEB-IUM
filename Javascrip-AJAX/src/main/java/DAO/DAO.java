@@ -344,7 +344,7 @@ public class DAO {
             Docente c = new Docente(nomeDocente, cognomeDocente, id);
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("insert into docente (nome, cognome, idutente) values ('" + nomeDocente + "', '" + cognomeDocente + "', '" + id + "')");
+            st.execute("insert into docente (nome, cognome, iddocente) values ('" + nomeDocente + "', '" + cognomeDocente + "', '" + id + "')");
             System.out.println("New teacher added!");
 
         } catch (SQLException e) {
@@ -459,21 +459,18 @@ public class DAO {
         }
     }
 
-    public static void insertUsers(String account, String password) {
+    public static void insertUsers(String account, String passwordutente) {
+        DAO.registerDriver();
         Connection conn1 = null;
-        int matricola;
-        String role = "cliente";
-        Utenti c = null;
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
-            matricola = (int) (Math.random() * 500);
-            c = new Utenti(matricola, account, password, role);
+            int matricola = (int) (Math.random() * 500);
 
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("insert into utenti (matricola, account, password, role) values ('" + matricola + "', '" + account + "', '" + password + "', '" + role + "')");
+            st.execute("insert into utenti (matricola, account, password, ruolo) values ('" + matricola + "', '" + account + "', '" + passwordutente + "', '" + "cliente" + "')");
             System.out.println("New users added!");
 
         } catch (SQLException e) {

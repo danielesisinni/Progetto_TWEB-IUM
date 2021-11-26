@@ -1,0 +1,61 @@
+body {
+    padding: 5px 0 0 20px;
+    margin: 0 80px 150px;
+}
+
+img#img_Log {
+    width: 280px;
+    height: 140px;
+}
+
+h1 {
+    background-color: red;
+    padding: 20px 0 25px 15px;
+}
+
+a {
+    color: red;
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 20px;
+}
+
+a:hover {
+    color: blue;
+}
+
+#retn_lk {
+    top: 120px;
+    color: white;
+    text-decoration: none;
+    font-size: larger;
+    position: absolute;
+    right: 200px;
+    font-size: 25px;
+    font-weight: bold;
+    position: absolute;
+    margin: 65px;
+}
+
+retn_lk:hover { color: blue; }
+
+#lesson_list {
+    margin-left: 10px;
+}
+
+input {
+    background-color: white;
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    border-color: black;
+    margin-left: 0px;
+    margin-top: 5px;
+    padding: 5px;
+}
+
+input:hover {
+    background-color: #ff0000;
+    color: white;
+}
