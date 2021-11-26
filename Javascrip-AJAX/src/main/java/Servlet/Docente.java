@@ -33,8 +33,8 @@ public class Docente extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         HttpSession session = request.getSession();
-        String home = response.encodeURL("HomeAmministratore.html");
         PrintWriter out = response.getWriter();
         try {
             out.println("<p><span class=\"badge badge-success\">Success</span> Docente aggiunto nel Database!<p>");

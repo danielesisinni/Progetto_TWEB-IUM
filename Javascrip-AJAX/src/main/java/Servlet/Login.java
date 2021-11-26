@@ -18,10 +18,9 @@ public class Login extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
-        System.out.println(request.getParameter("action"));
-        if(request.getParameter("action") != null){
-            session.setAttribute("userName", "ospite");
-            System.out.println(session.getAttribute("userName"));
+        String action = request.getParameter("action");
+        if( action!= null){
+            session.setAttribute("userName", "nuovo");
             processRequest(request, response);
         }
 
@@ -49,9 +48,10 @@ public class Login extends HttpServlet {
         try {
             String action = (String) session.getAttribute("userName");
             System.out.println(action);
-            if(action.equals("ospite")) {
+            if(action.equals("nuovo")) {
                 out.print("Benvenuto! ");
-                out.print("<span class=\"badge badge-success\">Success</span> Loggato come ospite");
+                out.print("<span class=\"badge badge-success\">Success</span> Account creato");
+                out.print("Effettua il login!");
                 out.flush();
             }else {
                 String acc = (String) session.getAttribute("userName");

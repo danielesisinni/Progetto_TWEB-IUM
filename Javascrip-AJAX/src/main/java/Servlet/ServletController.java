@@ -22,8 +22,8 @@ public class ServletController extends HttpServlet {
         request.setCharacterEncoding("UTF-8"); // per essere robusti rispetto a caratteri speciali (', etc)
         ServletContext ctx = getServletContext();
         HttpSession session = request.getSession();
+        String action = request.getParameter("action");
         if(session.getAttribute("userRole").equals("Amministratore")) {
-            String action = request.getParameter("action");
             RequestDispatcher rd = ctx.getRequestDispatcher("/HomeAmministratore.html");
             if (action != null) {
                 if (action.equals("Docente")) {
@@ -37,8 +37,7 @@ public class ServletController extends HttpServlet {
                     try {
                         session.removeAttribute("logonSessData");
                         session.invalidate();
-                        String pageToForward = request.getContextPath();
-                        response.sendRedirect(pageToForward);
+                        response.sendRedirect("index.html");
                     } catch (Exception sqle) {
                         System.out.println("error UserValidateServlet message : " + sqle.getMessage());
                         System.out.println("error UserValidateServlet exception : " + sqle);
@@ -47,8 +46,7 @@ public class ServletController extends HttpServlet {
                     rd = ctx.getRequestDispatcher("/printDocenti.html");
                 }else if (action.equals("printripe")) {
                 rd = ctx.getRequestDispatcher("/printRipetizioni.html");
-            }
-
+                }
             }
             rd.forward(request, response);
         }

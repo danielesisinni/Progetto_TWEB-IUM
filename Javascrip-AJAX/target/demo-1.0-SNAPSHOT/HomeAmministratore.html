@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Cache-Control" content="no-store" />
     <title>Home Amministratore</title>
 
     <link href="bootstrap-4.5.2-dist/css/bootstrap.min.css" rel="stylesheet">
@@ -17,15 +18,19 @@
     <form action="ServletController" method="get">
         <ul>
             <li>
-                <button type="submit" class="btn btn-outline-primary" value="Docente">Aggiungere un docente</button>
+                <button type="submit" class="btn btn-outline-primary" name="action" value="Docente">Aggiungere un docente</button>
             </li>
             <br>
             <li>
-                <button type="submit" class="btn btn-outline-primary" value="Ripetizione">Aggiungere una ripetizione</button>
+                <button type="submit" class="btn btn-outline-primary" name="action" value="Ripetizione">Aggiungere una ripetizione</button>
             </li>
             <br>
             <li>
-                <button type="submit" class="btn btn-outline-danger" value="logout">Logout</button>
+                <button type="submit" class="btn btn-outline-primary" name="action" value="Corso">Aggiungere un corso</button>
+            </li>
+            <br>
+            <li>
+                <button type="submit" class="btn btn-outline-danger" name="action" value="logout">Logout</button>
             </li>
         </ul>
     </form>

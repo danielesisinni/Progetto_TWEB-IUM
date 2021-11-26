@@ -459,33 +459,21 @@ public class DAO {
         }
     }
 
-    public static void insertUsers() {
+    public static void insertUsers(String account, String password) {
         Connection conn1 = null;
         int matricola;
-        String account;
-        String password_user;
-        String role;
+        String role = "cliente";
         Utenti c = null;
-        Scanner input = new Scanner(System.in);
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
-            System.out.println("Insert serial number: ");
-            matricola = input.nextInt();
-            System.out.println("Insert account: ");
-            account = input.nextLine();
-            System.out.println("Insert a password: ");
-            password_user = input.nextLine();
-            System.out.println("Insert a role: ");
-            role = input.nextLine();
-
-            c = new Utenti(matricola, account, password_user, role);
-
+            matricola = (int) (Math.random() * 500);
+            c = new Utenti(matricola, account, password, role);
 
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("insert into utenti (matricola, account, password, role) values ('" + matricola + "', '" + account + "', '" + password_user + "', '" + role + "')");
+            st.execute("insert into utenti (matricola, account, password, role) values ('" + matricola + "', '" + account + "', '" + password + "', '" + role + "')");
             System.out.println("New users added!");
 
         } catch (SQLException e) {
