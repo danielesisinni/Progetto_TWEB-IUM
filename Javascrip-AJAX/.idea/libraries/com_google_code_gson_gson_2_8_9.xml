@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="gson-2.8.9">
+  <library name="com.google.code.gson:gson:2.8.9">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/../../../../../../../Documenti/Università-Idealproject/JSON/gson-2.8.9.jar!/" />
     </CLASSES>

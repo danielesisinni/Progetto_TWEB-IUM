@@ -16,7 +16,7 @@
     <form>
         <ul>
             <li>
-                Crea il tuo account. Sarai un nuovo cliente
+                Benvenuto nell'area di registrazione. Crea il tuo account
             </li>
         </ul>
         <p>Account: <input id="newacc" type="text" name="newaccount" required placeholder="account"/></p>
@@ -30,12 +30,12 @@
                 let na = document.getElementById("newacc").value;
                 let np = document.getElementById("newpass").value;
                 //var JSON = {"account": "a", "password": "p"};
-                $.post("login", {"newaccount": na, "newpassword": np, "action": "Crea"} ,
+                $.post("nuovoutente", {"newaccount": na, "newpassword": np, "action": 'Crea'} ,
                     function (data){
                         $("#newscrivi").html(data);
                         setTimeout(() => {
                             window.location.replace("/demo_war_exploded/index.html");
-                        }, 2000);
+                        }, 3000);
                     })
             })
         })

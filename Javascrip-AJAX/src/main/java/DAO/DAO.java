@@ -51,6 +51,7 @@ public class DAO {
     }
 
     public static ArrayList<Docente> Teacher() {
+        DAO.registerDriver();
         Connection conn1 = null;
         ArrayList<Docente> out = new ArrayList<>();
 
@@ -63,7 +64,7 @@ public class DAO {
             Statement st = conn1.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM Docente");
             while (rs.next()) {
-                Docente p = new Docente(rs.getString("NOME"), rs.getString("COGNOME"), rs.getInt("ID"));
+                Docente p = new Docente(rs.getString("NOME"), rs.getString("COGNOME"), rs.getInt("IDDOCENTE"));
                 out.add(p);
             }
         } catch (SQLException e) {
@@ -467,10 +468,10 @@ public class DAO {
             conn1 = DriverManager.getConnection(url1, user, password);
 
             int matricola = (int) (Math.random() * 500);
-
+            String ruolo = "cliente";
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("insert into utenti (matricola, account, password, ruolo) values ('" + matricola + "', '" + account + "', '" + passwordutente + "', '" + "cliente" + "')");
+            st.execute("insert into utenti (matricola, account, password, ruolo) values ('" + matricola + "', '" + account + "', '" + passwordutente + "', '" + ruolo + "')");
             System.out.println("New users added!");
 
         } catch (SQLException e) {

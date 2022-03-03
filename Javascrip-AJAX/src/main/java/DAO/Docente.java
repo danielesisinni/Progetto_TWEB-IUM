@@ -3,12 +3,12 @@ package DAO;
 public class Docente {
     private String nome;
     private String cognome;
-    private int id;
+    private int iddocente;
 
     public Docente(String nome, String cognome, int id) {
         this.nome = nome;
         this.cognome = cognome;
-        this.id = id;
+        this.iddocente = id;
     }
 
     public String getNome() {
@@ -27,12 +27,12 @@ public class Docente {
         this.cognome = cognome;
     }
 
-    public int getId() {
-        return id;
+    public int getIdDocente() {
+        return iddocente;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdDocente(int iddocente) {
+        this.iddocente = iddocente;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class Docente {
         return "Docente{" +
                 "nome='" + nome + '\'' +
                 ", cognome='" + cognome + '\'' +
-                ", id=" + id +
+                ", id=" + iddocente +
                 '}';
     }
 }
