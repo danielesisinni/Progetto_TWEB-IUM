@@ -3,6 +3,7 @@ package Servlet;
 import DAO.DAO;
 import DAO.CorsoDocente;
 import DAO.Ripetizione;
+import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,55 +20,62 @@ import java.util.Date;
 public class Ripetizioni extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        response.setContentType("text/html,charset=UTF-8");
-        String docente = request.getParameter("docente");
-        String corso = request.getParameter("corso");
-        String data = request.getParameter("data");
-        String ora = request.getParameter("ora");
-        String status = request.getParameter("attesa");
+        String action = request.getParameter("action");
+        if(action != null) {
+            response.setContentType("text/html,charset=UTF-8");
+            String docente = request.getParameter("docente");
+            String corso = request.getParameter("corso");
+            String data = request.getParameter("data");
+            String ora = request.getParameter("ora");
+            String status = request.getParameter("attesa");
 
-        if (docente != null && corso != null && data != null && ora != null) {
-            DAO.insertRepetition(docente, corso, data, ora, status);
+            if (docente != null && corso != null && data != null && ora != null) {
+                DAO.insertRepetition(docente, corso, data, ora, status);
+            }
+            processRequest(request, response);
+        }else{
+            processRequest(request, response);
         }
-        processRequest(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        response.setContentType("text/html,charset=UTF-8");
+        /*response.setContentType("text/html,charset=UTF-8");
         String type1 = request.getParameter("type1");
 
         if(type1.equals("corso-docente")){
             PrintWriter out = response.getWriter();
-            out.println("<p>Lista delle possibili ripetizioni da inserire: <p>");
+            out.println("Lista delle possibili ripetizioni da inserire: ");
             ArrayList<CorsoDocente> prova = DAO.CourseTeacher();
-            for (CorsoDocente cd : prova) {
-                out.println("[" + cd.getCorso() + "--" + cd.getDocente() + "]<br>");
-            }
             out.flush();
-        }
-        String type2 = request.getParameter("type2");
-        if(type2.equals("ripetizioni")){
-            PrintWriter out = response.getWriter();
-            out.println("<p>Lista delle possibili ripetizioni da inserire: <p>");
-            ArrayList<Ripetizione> prova2 =DAO.Repetition();
-            for(Ripetizione r: prova2){
-                out.println("[" + r.getCorso() +"--"+ r.getDocente()+ "--"+ r.getData()+ "--"+ r.getOra()+"]<br>");
-            }
-            out.flush();
-        }
+        }*/
+        processRequest(request, response);
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession s = request.getSession();
-        String home = response.encodeURL("HomeAmministratore.html");
-        PrintWriter out = response.getWriter();
-        try {
-            out.println("<p><span class=\"badge badge-success\">Success</span> Ripetizione aggiunta nel Database!<p>");
-            out.println("<p><a href=\"" + home + "\"> Torna al men&ugrave; amministratore</a></p>");
-            out.flush();
-        } finally {
-            out.close();
+        String action = request.getParameter("action");
+        if(action != null) {
+            PrintWriter out = response.getWriter();
+            try {
+                out.println("<p><span class=\"badge badge-success\">Success</span> Ripetizione aggiunta nel Database!<p>");
+                out.flush();
+            } finally {
+                out.close();
+            }
+        }else{
+            response.setContentType("application/json,charset=UTF-8");
+            Gson gson = new Gson();
+            PrintWriter out = response.getWriter();
+            try {
+                out.println("Lista delle ripetizioni registrate: ");
+                ArrayList<Ripetizione> ripetizione = DAO.Repetition();
+                String s = gson.toJson(ripetizione);
+                System.out.println("STRINGA JSON " + s);
+                out.print(s);
+                out.flush();
+            }finally {
+                out.close();
+            }
         }
     }
 }

@@ -19,7 +19,7 @@ public class Teacher extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String action = request.getParameter("action");
-        if(action.equals("Docente")) {
+        if(action != null) {
             response.setContentType("text/html,charset=UTF-8");
             Integer idDocente = Integer.parseInt(request.getParameter("id"));
             String nomeDocente = request.getParameter("nome");
@@ -42,7 +42,7 @@ public class Teacher extends HttpServlet {
             throws ServletException, IOException {
 
         String action = request.getParameter("action");
-        if(action.equals("Docente")) {
+        if(action != null) {
             PrintWriter out = response.getWriter();
             try {
                 out.println("<p><span class=\"badge badge-success\">Success</span> Docente aggiunto nel Database!<p>");
@@ -54,13 +54,16 @@ public class Teacher extends HttpServlet {
             response.setContentType("application/json,charset=UTF-8");
             Gson gson = new Gson();
             PrintWriter out = response.getWriter();
-            out.println("<p>Lista delle possibili ripetizioni da inserire: </p>");
-            ArrayList<Docente> prova = DAO.Teacher();
-            String s = gson.toJson(prova);
-            System.out.println("STRINGA JSON " + s);
-            out.print(s);
-            out.flush();
-            out.close();
+            try {
+                out.println("Lista dei docenti registrati: ");
+                ArrayList<Docente> docente = DAO.Teacher();
+                String s = gson.toJson(docente);
+                System.out.println("STRINGA JSON " + s);
+                out.print(s);
+                out.flush();
+            }finally {
+                out.close();
+            }
         }
     }
 }

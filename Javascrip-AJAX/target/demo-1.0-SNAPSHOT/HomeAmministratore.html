@@ -15,15 +15,24 @@
 <body>
 <div class="container">
     <h5>Scegliere l'azione da eseguire con la tua app</h5>
-    <a href="Teacher"> Visualizza docenti</a>
+
+    <ul>
+        <li>
+            <button2><a href="Ripetizioni">Visualizza Ripetizioni</a> </button2>
+        </li>
+    </ul>
+    <ul>
+        <li>
+            <button2><a href="Teacher">Visualizza Docenti</a> </button2>
+        </li>
+    </ul>
+    <br>
+    <br>
     <form action="ServletController" method="get">
+        <h3>Menu' admin</h3>
         <ul>
             <li>
                 <button type="submit" class="btn btn-outline-primary" name="action" value="Docente">Aggiungere un docente</button>
-            </li>
-            <br>
-            <li>
-                <button class="btn btn-outline-primary"><a href="Teacher">Visualizza docenti</a> </button>
             </li>
             <br>
             <li>

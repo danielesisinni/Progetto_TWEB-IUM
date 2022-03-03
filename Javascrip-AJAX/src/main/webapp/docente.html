@@ -12,10 +12,12 @@
 </head>
 <body class="d-flex justify-content-center">
     <div class="col-8 col-lg-3">
+        <br>
+        <br>
             <h2 class="d-flex justify-content-center">Inserire i dati</h2>
             <br>
             <form method="get">
-                <label for="id_docente" class="sr-only">Id</label>
+                <label for="id_docente" class="sr-only">Matricola Docente</label>
                 <input name="id" type="text" class="form-control" id="id_docente" placeholder="Id"/>
 
                 <label for="nome_docente" class="sr-only">Nome</label>
@@ -37,13 +39,13 @@
                     var id_id = document.getElementById("id_docente").value;
                     var id_nome = document.getElementById("nome_docente").value;
                     var id_cognome = document.getElementById("cognome_docente").value;
-                    $.get("Docente", {id: id_id, nome: id_nome, cognome: id_cognome} ,
+                    $.get("Teacher", {id: id_id, nome: id_nome, cognome: id_cognome, action: "docente"} ,
                         function (data){
                             $("#scrivi").html(data);
 
                             setTimeout(() => {
                                     window.location.replace("/demo_war_exploded/HomeAmministratore.html");},
-                                2000
+                                3000
                             );
                         })
                 })
