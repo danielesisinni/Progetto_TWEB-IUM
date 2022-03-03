@@ -1,7 +1,7 @@
 package Servlet;
 
 import DAO.DAO;
-import DAO.Docente;
+import DAO.Corso;
 import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
@@ -14,19 +14,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-@WebServlet(name = "Teacher", value = "/Teacher")
-public class Teacher extends HttpServlet {
+@WebServlet(name = "Corsi", value = "/Corsi")
+public class Corsi extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String action = request.getParameter("action");
         if(action != null) {
             response.setContentType("text/html,charset=UTF-8");
-            Integer idDocente = Integer.parseInt(request.getParameter("id"));
-            String nomeDocente = request.getParameter("nome");
-            String cognomeDocente = request.getParameter("cognome");
+            Integer idcorso = Integer.parseInt(request.getParameter("id"));
+            String nomecorso = request.getParameter("corso");
 
-            if (idDocente != null && nomeDocente != null && cognomeDocente != null) {
-                DAO.insertTeacher(nomeDocente, cognomeDocente, idDocente);
+            if (nomecorso != null) {
+                DAO.insertCourse(idcorso, nomecorso);
             }
             processRequest(request, response);
         }else{
@@ -45,7 +44,7 @@ public class Teacher extends HttpServlet {
         if(action != null) {
             PrintWriter out = response.getWriter();
             try {
-                out.println("<p><span class=\"badge badge-success\">Success</span> Docente aggiunto nel Database!<p>");
+                out.println("<p><span class=\"badge badge-success\">Success</span> Corso aggiunto nel Database!<p>");
                 out.flush();
             } finally {
                 out.close();
@@ -55,9 +54,9 @@ public class Teacher extends HttpServlet {
             Gson gson = new Gson();
             PrintWriter out = response.getWriter();
             try {
-                out.println("Lista dei docenti registrati: ");
-                ArrayList<Docente> docente = DAO.Teacher();
-                String s = gson.toJson(docente);
+                out.println("Lista dei corsi registrati: ");
+                ArrayList<Corso> corso = DAO.Course();
+                String s = gson.toJson(corso);
                 System.out.println("STRINGA JSON " + s);
                 out.print(s);
                 out.flush();

@@ -28,6 +28,8 @@ public class ServletController extends HttpServlet {
             if (action != null) {
                 if (action.equals("Docente")) {
                     rd = ctx.getRequestDispatcher("/docente.html");
+                } else if (action.equals("Corso")) {
+                    rd = ctx.getRequestDispatcher("/corso.html");
                 } else if (action.equals("Ripetizione")) {
                     rd = ctx.getRequestDispatcher("/index.html");
                 } else if (action.equals("logout")) {
@@ -40,10 +42,6 @@ public class ServletController extends HttpServlet {
                         System.out.println("error UserValidateServlet message : " + sqle.getMessage());
                         System.out.println("error UserValidateServlet exception : " + sqle);
                     }
-                } else if (action.equals("printdoce")) {
-                    rd = ctx.getRequestDispatcher("/printDocenti.html");
-                } else if (action.equals("printripe")) {
-                    rd = ctx.getRequestDispatcher("/printRipetizioni.html");
                 }
             }
             rd.forward(request, response);

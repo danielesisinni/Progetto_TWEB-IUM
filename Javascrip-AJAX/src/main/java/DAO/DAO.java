@@ -232,20 +232,13 @@ public class DAO {
         }
     }
 
-    public static void insertCourse() {
+    public static void insertCourse(int id, String title) {
         Connection conn1 = null;
-        String title;
-        int id;
         Corso c = null;
         Scanner input = new Scanner(System.in);
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
-
-            System.out.println("Insert a title: ");
-            title = input.nextLine();
-            System.out.println("Insert a id: ");
-            id = input.nextInt();
             c = new Corso(id, title);
 
             //Execute insert query
