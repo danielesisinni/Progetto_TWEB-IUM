@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <title>Corso</title>
+
+    <link href="bootstrap-4.5.2-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="bootstrap-4.5.2-dist/js/jquery-slim.min.js"></script>
+    <script src="bootstrap-4.5.2-dist/js/bootstrap.min.js"></script>
+</head>
+<body class="d-flex justify-content-center">
+<div class="col-8 col-lg-3">
+    <br>
+    <br>
+    <h2 class="d-flex justify-content-center">Inserire i dati</h2>
+    <br>
+    <form method="get">
+        <label for="id_corso" class="sr-only">Id Corso</label>
+        <input name="id" type="text" class="form-control" id="id_corso" placeholder="Id Corso"/>
+
+        <label for="nome_corso" class="sr-only">Nome Corso</label>
+        <input name="id" type="text" class="form-control" id="nome_corso" placeholder="Nome Corso"/>
+        <br>
+        <br>
+        <div>
+            <button id="butt" class="btn btn-lg btn-primary btn-block" type="button">Confermare dati</button>
+        </div>
+    </form>
+    <div id="scrivi" class="outputTextArea"></div>
+    <script type="text/javascript">
+        $(document).ready(function (){
+            $("#butt").click(function (){
+                var nome_corso = document.getElementById("nome_corso").value;
+                var id_corso = document.getElementById("id_corso").value;
+                $.get("Corsi", {corso: nome_corso, id: id_corso, action: "corso"} ,
+                    function (data){
+                        $("#scrivi").html(data);
+
+                        setTimeout(() => {
+                                window.location.replace("/demo_war_exploded/HomeAmministratore.html");},
+                            3000
+                        );
+                    })
+            })
+        })
+    </script>
+    <br>
+</div>
+</body>
+</html>
