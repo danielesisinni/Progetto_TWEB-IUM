@@ -40,7 +40,7 @@ public class Docenti extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        HttpSession session = request.getSession();
         String action = request.getParameter("action");
         if(action != null) {
             PrintWriter out = response.getWriter();
@@ -60,6 +60,9 @@ public class Docenti extends HttpServlet {
                 String s = gson.toJson(docente);
                 System.out.println("STRINGA JSON " + s);
                 out.print(s);
+                String jsessionID = session.getId(); // estraggo il session ID
+                System.out.println("JSessionID:" + jsessionID);
+                out.print(jsessionID);
                 out.flush();
             }finally {
                 out.close();

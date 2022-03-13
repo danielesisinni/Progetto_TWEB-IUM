@@ -6,71 +6,103 @@
     <title>Home Login</title>
 
     <link href="bootstrap-4.5.2-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="bootstrap-4.5.2-dist/js/jquery-slim.min.js"></script>
     <script src="bootstrap-4.5.2-dist/js/bootstrap.min.js"></script>
-
-
-    <!--<link rel="stylesheet" href="/css/stileHome.css">-->
+    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">-->
 
 </head>
 <body class="d-flex justify-content-center">
-    <div class="col-8 col-lg-3">
+    <div class="col-8 col-lg-3" v-if="loginHome">
         <h3 class="text-center">Benvenuto </h3>
         <h4>Effettua il login per accedere alle prenotazioni</h4>
-        <br>
-
-        <div id="ospiti">
-            <form>
-                <ul>
-                    <li>
-                        Ospite
-                    </li>
-                </ul>
-                <p>Login: <input id="ospite" type="text" name="login" value="ospite"/></p>
-                <p><input id="entra" type="button" name="action" value="Entra"/></p>
-            </form>
-            <div id="logospite" class="outputTextArea"></div>
-            <script type="text/javascript">
-                $(document).ready(function (){
-                    $("#entra").click(function () {
-                        setTimeout(() => {
-                            window.location.replace("/demo_war_exploded/Home.html");
-                        }, 1000);
-                    })
-                })
-            </script>
-        </div>
 
         <div id="login">
-            <br>
-            <form>
-                <ul>
-                    <li>
-                        Amministratore - Cliente
-                    </li>
-                </ul>
-                <p>Account : <input id="acc" type="text" name="account" required placeholder="account"/></p>
-                <p>Password : <input id="pass" type="password" name="password" required placeholder="password"/></p>
-                <input id="butt" type="button" value="Autentica"/>
-            </form>
-            <div id="scrivi" class="outputTextArea"></div>
-            <script type="text/javascript">
-                $(document).ready(function (){
-                    $("#butt").click(function (){
-                        let a = document.getElementById("acc").value;
-                        let p = document.getElementById("pass").value;
-                        //var JSON = {"account": "a", "password": "p"};
-                        $.post("login", {"account": a, "password": p, "action": "Autentica"} ,
-                            function (data){
-                                $("#scrivi").html(data);
+            <ul>
+                <li>
+                    Ospite
+                </li>
+            </ul>
+            <p>Login: <input type="text" value="ospite"/></p>
+            <button v-on:click="ospite">Entra </button>
 
-                            })
-                    })
-                })
-            </script>
+            <hr>
+            <ul>
+                <li>
+                    Amministratore - Cliente
+                </li>
+            </ul>
+
+            <p>Account : <input v-model="acc" type="text" required placeholder="account"/></p>
+            <p>Password : <input v-model="pass" type="password"  required placeholder="password"/></p>
+            <button v-on:click="log">Autentica </button>
+            <div v-if="check">
+                <div v-if="checkA">
+                    <span class="badge badge-success">Success</span>
+                    <br>
+                    <p>Benvenuto {{ acc }} [Amministratore]</p>
+                </div>
+                <div v-else>
+                    <span class="badge badge-success">Success</span>
+                    <br>
+                    <p>Benvenuto {{ acc }} [Cliente]</p>
+                </div>
+            </div>
+
+            <div v-if="checkE">
+                <span class="badge badge-danger">Errore nel login</span>
+            </div>
+
         </div>
+
+        <script>
+            var app = new Vue ({
+                el: '#login',
+                data: {
+                    loginHome: true, print: '', acc: null, pass: null, check: false, checkA: false, checkE: false,
+                    homeOspite: false,
+                    link: 'login'
+                },
+                methods: {
+                    log:function (){
+                        var self = this;
+                        $.post(this.link, {account: this.acc, password: this.pass},
+                            function (data) {
+                            switch (data) {
+                                case 'sono amministratore':
+                                    self.check = true;
+                                    self.checkA = true;
+                                    self.checkE = false;
+                                    setTimeout(() => {
+                                        window.location.replace("/demo_war_exploded/index.html");
+                                    }, 2000);
+                                    self.loginHome = false;
+                                    break;
+                                case 'sono cliente':
+                                    self.check = true;
+                                    self.checkA = false;
+                                    self.checkE = false;
+                                    setTimeout(() => {
+                                        window.location.replace("/demo_war_exploded/index.html");
+                                    }, 2000);
+                                    self.loginHome = false;
+                                    break;
+                                default:
+                                    self.check = false;
+                                    self.checkA = false;
+                                    self.checkE = true;
+                            }
+                            });
+                    },
+                    ospite:function (){
+                        this.homeOspite = true;
+                    },
+                }
+            })
+        </script>
+
         <br>
         <p>Non hai un account?<a href="registrazione.html"> Crea account</a></p>
 

@@ -33,11 +33,15 @@ public class ServletController extends HttpServlet {
                 } else if (action.equals("Ripetizione")) {
                     rd = ctx.getRequestDispatcher("/index.html");
                 } else if (action.equals("logout")) {
+                    System.out.println("fatto!");
                     rd = ctx.getRequestDispatcher("/index.html");
+                    System.out.println("fatto?");
                     try {
                         session.removeAttribute("logonSessData"); //logonSessData
+                        System.out.println("fatto");
                         session.invalidate();
                         //response.sendRedirect("index.html");
+                        System.out.println("fatto2");
                     } catch (Exception sqle) {
                         System.out.println("error UserValidateServlet message : " + sqle.getMessage());
                         System.out.println("error UserValidateServlet exception : " + sqle);
