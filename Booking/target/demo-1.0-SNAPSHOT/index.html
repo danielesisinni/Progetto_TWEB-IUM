@@ -45,16 +45,35 @@
                 <hr>
             </article>
             <hr>
-            <centro v-on:ospite-inner="ospite" v-on:creazione-inner="creazione"></centro>
-
+            <centro v-on:ospite-inner="transit('ospiteHome')" v-on:creazione-inner="transit('creazione')"></centro>
+            <piedi></piedi>
         </span>
 
 
         <span v-if="creazionehome">
             <testa title="Benvenuto" v-on:log-inner="transit"></testa>
+            <article>
+                <br>
+                    <ul>
+                        <li>
+                            Benvenuto nell'area di registrazione. Crea il tuo account
+                        </li>
+                    </ul>
+                    <p>Account: <input v-model="newacc" type="text" required placeholder="account"/></p>
+                    <p>Password: <input v-model="newpass" type="password" required placeholder="password"/></p>
+                    <button v-on:click="crea">Crea account </button>
+                    <p>{{ print }}</p>
+            </article>
+
+
         </span>
 
         <span v-if="homeOspite">
+            <div id="nav">
+                <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+                  <!-- Navbar content -->
+                </nav>
+            </div>
             <testa title="Bentornato" v-on:log-inner="transit"></testa>
         </span>
     </div>
@@ -71,9 +90,9 @@
         })
         Vue.component('centro',{
             template:'<article>' +
-                '           <p>Non hai ancora un account?<a href="" v-on:click="creazioneInner"> <br>Crea account</a></p>\n' +
-                '            <p>Oppure entra come  <button v-on:click="ospiteInner">OSPITE </button></p>' +
-                '</article>',
+                    '           <p>Non hai ancora un account?<button v-on:click="creazioneInner"> <br>Crea account</a></p>' +
+                    '            <p>Oppure entra come  <button v-on:click="ospiteInner">OSPITE </button></p>' +
+                    '</article>',
             methods: {
                 creazioneInner: function (){
                     this.$emit('creazione-inner');
@@ -84,21 +103,29 @@
                 }
             }
         })
+        /*Vue.component('centroR',{
+            template: ,
+            methods: {
+                logInner: function () {
+                    this.$emit('log-inner');
+                },
+            }
+        })*/
         var app = new Vue ({
             el: '#components',
             data: {
-                prova: false,
-                loginHome: true, acc: null, pass: null, check: false, checkA: false, checkE: false,
+                loginHome: true, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
                 homeOspite: false,
-                creazionehome: false,
+                creazionehome: false, newacc: null, newpass:null, print: '',
                 link: 'login'
             },
             methods: {
                 log: function(){
                     var self = this;
-                    $.post(this.link, {account: this.acc, password: this.pass}, function (data) {
+                    $.post(this.link, {account: this.acc, password: this.pass, flag: 'login'}, function (data) {
                             switch (data) {
                                 case 'sono amministratore':
+                                    self.role = 'Amministratore';
                                     self.check = true;
                                     self.checkA = true;
                                     self.checkE = false;
@@ -107,6 +134,7 @@
                                     }, 3000);
                                     break;
                                 case 'sono cliente':
+                                    self.role = 'Cliente';
                                     self.check = true;
                                     self.checkA = false;
                                     self.checkE = false;
@@ -121,23 +149,21 @@
                             }
                     })
                 },
-                creazione: function () {
-                    this.loginHome = false;
-                    this.creazionehome = true;
-                },
-                ospite: function () {
-                    this.loginHome = false;
-                    this.homeOspite = true;
-                },
-                transit: function () {
-                    if(this.loginHome) {
+                transit: function (flag) {
+                    if(this.loginHome && flag === 'creazione') {
                         this.loginHome = false;
                         this.creazionehome = true;
-                    }else{
-                        this.loginHome = true;
-                        this.creazionehome = false;
+                    }else if(this.loginHome && flag === 'ospiteHome'){
+                        this.loginHome = false;
+                        this.homeOspite = true;
                     }
-                }
+                },
+                crea: function (){
+                    var self = this;
+                    $.post(this.link, {account: this.newacc, password: this.newpass, flag: 'crea'}, function (data) {
+                        self.print = data;
+                    })
+                },
             }
         })
     </script>

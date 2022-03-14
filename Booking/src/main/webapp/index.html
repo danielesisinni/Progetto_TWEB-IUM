@@ -29,12 +29,12 @@
                 <button v-on:click="log">Autentica </button>
                 <template v-if="check">
                     <template v-if="checkA">
-                        <span class="badge badge-success">Success</span>
+                        <span class="badge badge-success">Successo</span>
                         <br>
                         <p>Benvenuto {{ acc }} [Amministratore]</p>
                     </template>
                     <template v-else>
-                        <span class="badge badge-success">Success</span>
+                        <span class="badge badge-success">Successo</span>
                         <br>
                         <p>Benvenuto {{ acc }} [Cliente]</p>
                     </template>
@@ -44,20 +44,38 @@
                 </template>
                 <hr>
             </article>
-            <hr>
-            <centro v-on:ospite-inner="ospite" v-on:creazione-inner="creazione"></centro>
-
+            <centro v-on:ospite-inner="transit('ospiteHome')" v-on:creazione-inner="transit('creazione')"></centro>
+            <piedi></piedi>
         </span>
 
 
         <span v-if="creazionehome">
             <testa title="Benvenuto" v-on:log-inner="transit"></testa>
+            <article>
+                <br>
+                    <ul>
+                        <li>
+                            Benvenuto nell'area di registrazione. Crea il tuo account
+                        </li>
+                    </ul>
+                    <p>Account: <input v-model="newacc" type="text" required placeholder="account"/></p>
+                    <p>Password: <input v-model="newpass" type="password" required placeholder="password"/></p>
+                    <button v-on:click="crea">Crea account </button>
+                    <template v-if="checkC">
+                        <p>Cliente Benvenuto!</p><br>
+                        <p><span class="badge badge-success">Successo</span> Account creato</p>
+                    </template>
+            </article>
+
+
         </span>
 
         <span v-if="homeOspite">
-            <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
-              <!-- Navbar content -->
-            </nav>
+            <div id="nav">
+                <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+                  <!-- Navbar content -->
+                </nav>
+            </div>
             <testa title="Bentornato" v-on:log-inner="transit"></testa>
         </span>
     </div>
@@ -74,9 +92,9 @@
         })
         Vue.component('centro',{
             template:'<article>' +
-                '           <p>Non hai ancora un account?<a href="" v-on:click="creazioneInner"> <br>Crea account</a></p>\n' +
-                '            <p>Oppure entra come  <button v-on:click="ospiteInner">OSPITE </button></p>' +
-                '</article>',
+                    '           <p>Non hai ancora un account? <button type="button" class="btn btn-outline-info" v-on:click="creazioneInner"> Crea account</a></p>' +
+                    '            <p>Oppure entra come  <button type="button" class="btn btn-outline-info" v-on:click="ospiteInner">OSPITE </button></p>' +
+                    '</article>',
             methods: {
                 creazioneInner: function (){
                     this.$emit('creazione-inner');
@@ -87,18 +105,26 @@
                 }
             }
         })
+        /*Vue.component('centroR',{
+            template: ,
+            methods: {
+                logInner: function () {
+                    this.$emit('log-inner');
+                },
+            }
+        })*/
         var app = new Vue ({
             el: '#components',
             data: {
                 loginHome: true, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
                 homeOspite: false,
-                creazionehome: false,
+                creazionehome: false, newacc: null, newpass:null, checkC: false, print: '',
                 link: 'login'
             },
             methods: {
                 log: function(){
                     var self = this;
-                    $.post(this.link, {account: this.acc, password: this.pass}, function (data) {
+                    $.post(this.link, {account: this.acc, password: this.pass, flag: 'login'}, function (data) {
                             switch (data) {
                                 case 'sono amministratore':
                                     self.role = 'Amministratore';
@@ -125,23 +151,27 @@
                             }
                     })
                 },
-                creazione: function () {
-                    this.loginHome = false;
-                    this.creazionehome = true;
-                },
-                ospite: function () {
-                    this.loginHome = false;
-                    this.homeOspite = true;
-                },
-                transit: function () {
-                    if(this.loginHome) {
+                transit: function (flag) {
+                    if(flag === 'creazione') {
                         this.loginHome = false;
                         this.creazionehome = true;
-                    }else{
+                    }else if(this.loginHome && flag === 'ospiteHome'){
+                        this.loginHome = false;
+                        this.homeOspite = true;
+                    }else if(flag === 'loginHome') {
                         this.loginHome = true;
                         this.creazionehome = false;
                     }
-                }
+                },
+                crea: function (){
+                    var self = this;
+                    $.post(this.link, {account: this.newacc, password: this.newpass, flag: 'crea'}, function (data) {
+                        self.checkC = true;
+                        setTimeout(() => {
+                            self.transit('loginHome');
+                        }, 3000);
+                    })
+                },
             }
         })
     </script>
