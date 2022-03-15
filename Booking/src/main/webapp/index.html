@@ -14,15 +14,13 @@
     <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">-->
 
 </head>
-<body class="d-flex justify-content-center">
+<body> <!--class="d-flex justify-content-center"-->
     <div id="components">
         <span v-if="loginHome">
-            <testa title="Benvenuto"></testa>
-            <article>
-                <h4>Applicazione delle prenotazioni - Unito</h4><hr>
-                <ul>
-                    <li>Amministratore - Cliente</li>
-                </ul>
+            <testa></testa>
+            <article class="text-center">
+                <hr><h4>Applicazione delle prenotazioni - Unito</h4><hr>
+                    <p>Amministratore - Cliente</p>
 
                 <p>Account : <input v-model="acc" type="text" required placeholder="account"/></p>
                 <p>Password : <input v-model="pass" type="password"  required placeholder="password"/></p>
@@ -44,7 +42,7 @@
                 </template>
                 <hr>
             </article>
-            <centro v-on:ospite-inner="transit('ospiteHome')" v-on:creazione-inner="transit('creazione')"></centro>
+            <centro v-on:ospite-inner="transit('ospiteHome')" v-on:creazione-inner="transit('creazione')" class="text-center" ></centro>
             <piedi></piedi>
         </span>
 
@@ -62,12 +60,36 @@
                     <p>Password: <input v-model="newpass" type="password" required placeholder="password"/></p>
                     <button v-on:click="crea">Crea account </button>
                     <template v-if="checkC">
-                        <p>Cliente Benvenuto!</p><br>
+                        <p>Cliente Benvenuto!</p>
                         <p><span class="badge badge-success">Successo</span> Account creato</p>
                     </template>
             </article>
+        </span>
 
 
+        <span v-if="homeCliente">
+            <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">UniTO</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Prenotazioni</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Ripetizioni</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            <Cliente></Cliente>
         </span>
 
         <span v-if="homeOspite">
@@ -92,8 +114,8 @@
         })
         Vue.component('centro',{
             template:'<article>' +
-                    '           <p>Non hai ancora un account? <button type="button" class="btn btn-outline-info" v-on:click="creazioneInner"> Crea account</a></p>' +
-                    '            <p>Oppure entra come  <button type="button" class="btn btn-outline-info" v-on:click="ospiteInner">OSPITE </button></p>' +
+                    '     <p>Non hai ancora un account? <button type="button" class="btn btn-outline-info" v-on:click="creazioneInner"> Crea account</button></p>' +
+                    '     <p>Oppure entra come  <button type="button" class="btn btn-outline-info" v-on:click="ospiteInner">Ospite </button></p>' +
                     '</article>',
             methods: {
                 creazioneInner: function (){
@@ -105,19 +127,31 @@
                 }
             }
         })
-        /*Vue.component('centroR',{
-            template: ,
-            methods: {
-                logInner: function () {
-                    this.$emit('log-inner');
-                },
-            }
-        })*/
+        Vue.component('Cliente',{
+            template:
+                '<article class="container">' +
+                '    <br><br><h5>Scegli l\'opzione che desideri</h5>' +
+                '        <ul>\n' +
+                '            <li>\n' +
+                '                <button type="submit" class="btn btn-outline-secondary" name="action" value="printdoce">Visualizzare i docenti</button>\n' +
+                '            </li>\n' +
+                '            <br>\n' +
+                '            <li>\n' +
+                '                <button type="submit" class="btn btn-outline-secondary" name="action" value="printripe">Visualizzare le ripetizioni</button>\n' +
+                '            </li>\n' +
+                '            <br>\n' +
+                '            <li>\n' +
+                '                <button type="submit" class="btn btn-outline-danger" name="action" value="logout">Logout</button>\n' +
+                '            </li>\n' +
+                '       </ul>\n' +
+                '</article>',
+        })
         var app = new Vue ({
             el: '#components',
             data: {
-                loginHome: true, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
+                loginHome: false, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
                 homeOspite: false,
+                homeCliente: true,
                 creazionehome: false, newacc: null, newpass:null, checkC: false, print: '',
                 link: 'login'
             },
@@ -133,7 +167,7 @@
                                     self.checkE = false;
                                     setTimeout(() => {
                                         self.transit();
-                                    }, 3000);
+                                    }, 2500);
                                     break;
                                 case 'sono cliente':
                                     self.role = 'Cliente';
@@ -141,8 +175,8 @@
                                     self.checkA = false;
                                     self.checkE = false;
                                     setTimeout(() => {
-                                        self.transit();
-                                    }, 3000);
+                                        self.transit("clienteHome");
+                                    }, 2500);
                                     break;
                                 default:
                                     self.check = false;
@@ -161,6 +195,9 @@
                     }else if(flag === 'loginHome') {
                         this.loginHome = true;
                         this.creazionehome = false;
+                    }else if(flag === 'clienteHome'){
+                        this.loginHome = false;
+                        this.homeCliente = true;
                     }
                 },
                 crea: function (){
@@ -169,7 +206,7 @@
                         self.checkC = true;
                         setTimeout(() => {
                             self.transit('loginHome');
-                        }, 3000);
+                        }, 2500);
                     })
                 },
             }
