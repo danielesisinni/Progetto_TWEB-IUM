@@ -24,7 +24,7 @@
 
                 <p>Account : <input v-model="acc" type="text" required placeholder="account"/></p>
                 <p>Password : <input v-model="pass" type="password"  required placeholder="password"/></p>
-                <button v-on:click="log">Autentica </button>
+                <button v-on:click="ServletController('login')">Autentica </button>
                 <template v-if="check">
                     <template v-if="checkA">
                         <span class="badge badge-success">Successo</span>
@@ -42,8 +42,7 @@
                 </template>
                 <hr>
             </article>
-            <centro v-on:ospite-inner="transit('ospiteHome')" v-on:creazione-inner="transit('creazione')" class="text-center" ></centro>
-            <piedi></piedi>
+            <centro-login v-on:ospite-inner="transit('ospiteHome')" v-on:creazione-inner="transit('creazione')" class="text-center" ></centro-login>
         </span>
 
 
@@ -89,7 +88,7 @@
                         </div>
                     </div>
                 </nav>
-            <Cliente></Cliente>
+            <Cliente v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="logout"></Cliente>
         </span>
 
         <span v-if="homeOspite">
@@ -103,6 +102,7 @@
     </div>
 
     <script>
+        <!--VueLogin-->
         Vue.component('testa',{
             props: ['title'],
             template:'<header><h3 class="text-center">{{ title }}</h3><br></header>',
@@ -112,7 +112,7 @@
                 },
             }
         })
-        Vue.component('centro',{
+        Vue.component('centro-login',{
             template:'<article>' +
                     '     <p>Non hai ancora un account? <button type="button" class="btn btn-outline-info" v-on:click="creazioneInner"> Crea account</button></p>' +
                     '     <p>Oppure entra come  <button type="button" class="btn btn-outline-info" v-on:click="ospiteInner">Ospite </button></p>' +
@@ -127,17 +127,19 @@
                 }
             }
         })
+
+
         Vue.component('Cliente',{
             template:
                 '<article class="container">' +
                 '    <br><br><h5>Scegli l\'opzione che desideri</h5>' +
                 '        <ul>\n' +
                 '            <li>\n' +
-                '                <button type="submit" class="btn btn-outline-secondary" name="action" value="printdoce">Visualizzare i docenti</button>\n' +
+                '                <button class="btn btn-outline-secondary" v-on:click="transitDocenti">Visualizzare i docenti</button>\n' +
                 '            </li>\n' +
                 '            <br>\n' +
                 '            <li>\n' +
-                '                <button type="submit" class="btn btn-outline-secondary" name="action" value="printripe">Visualizzare le ripetizioni</button>\n' +
+                '                <button class="btn btn-outline-secondary" v-on:click="transitRipetizioni">Visualizzare le ripetizioni</button>\n' +
                 '            </li>\n' +
                 '            <br>\n' +
                 '            <li>\n' +
@@ -145,18 +147,70 @@
                 '            </li>\n' +
                 '       </ul>\n' +
                 '</article>',
+            methods: {
+                transitDocenti: function () {
+                    this.$emit('transit-inner-docenti');
+                },
+                transitRipetizioni: function () {
+                    this.$emit('transit-inner-ripetizioni');
+                },
+                transitLogout: function () {
+                    this.$emit('transit-inner-logout');
+                }
+            }
         })
         var app = new Vue ({
             el: '#components',
             data: {
-                loginHome: false, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
+                loginHome: true, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
+                homeAmministratore: false,
                 homeOspite: false,
-                homeCliente: true,
+                homeCliente: false,
                 creazionehome: false, newacc: null, newpass:null, checkC: false, print: '',
-                link: 'login'
+
+                link: 'ServletController'
             },
             methods: {
-                log: function(){
+                ServletController: function (flag){
+                    var self = this;
+                    $.post(this.link, {account: this.acc, password: this.pass, action: flag}, function (data) {
+                        if(flag === 'login'){
+                            switch (data) {
+                                case 'sono amministratore':
+                                    self.role = 'Amministratore';
+                                    self.check = true;
+                                    self.checkA = true;
+                                    self.checkE = false;
+                                    setTimeout(() => {
+                                        self.transit("homeAmministratore");
+                                    }, 2500);
+                                    break;
+                                case 'sono cliente':
+                                    self.role = 'Cliente';
+                                    self.check = true;
+                                    self.checkA = false;
+                                    self.checkE = false;
+                                    setTimeout(() => {
+                                        self.transit("clienteHome");
+                                    }, 2500);
+                                    break;
+                                case 'errore':
+                                    self.check = false;
+                                    self.checkA = false;
+                                    self.checkE = true;
+                                    break;
+                            }
+                        }else if(flag === 'crea'){
+                            self.checkC = true;
+                            setTimeout(() => {
+                                self.transit('loginHome');
+                            }, 2500);
+                        }else if(flag === 'DocentiCliente'){
+
+                        }
+                    })
+                },
+                /*log: function(){
                     var self = this;
                     $.post(this.link, {account: this.acc, password: this.pass, flag: 'login'}, function (data) {
                             switch (data) {
@@ -185,6 +239,21 @@
                             }
                     })
                 },
+                logout: function (){
+                    var self = this;
+                    $.post('logout', {account: this.newacc, password: this.newpass, flag: 'crea'}, function (data) {
+
+                    })
+                },
+                crea: function (){
+                    var self = this;
+                    $.post(this.link, {account: this.newacc, password: this.newpass, flag: 'crea'}, function (data) {
+                        self.checkC = true;
+                        setTimeout(() => {
+                            self.transit('loginHome');
+                        }, 2500);
+                    })
+                },*/
                 transit: function (flag) {
                     if(flag === 'creazione') {
                         this.loginHome = false;
@@ -198,17 +267,13 @@
                     }else if(flag === 'clienteHome'){
                         this.loginHome = false;
                         this.homeCliente = true;
+                    }else if(flag === 'docenti'){
+                        this.homeCliente = false;
+                        this.ServletController("DocentiCliente");
                     }
+
                 },
-                crea: function (){
-                    var self = this;
-                    $.post(this.link, {account: this.newacc, password: this.newpass, flag: 'crea'}, function (data) {
-                        self.checkC = true;
-                        setTimeout(() => {
-                            self.transit('loginHome');
-                        }, 2500);
-                    })
-                },
+
             }
         })
     </script>

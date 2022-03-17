@@ -14,12 +14,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-@WebServlet(name = "Docenti", value = "/Docenti")
+@WebServlet(name = "docenti", value = "/docenti")
 public class Docenti extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String action = request.getParameter("action");
-        if(action != null) {
+        System.out.println("get");
+        HttpSession session = request.getSession();
+        if(session.getAttribute("userRole").equals("Amministratore")){
             response.setContentType("text/html,charset=UTF-8");
             Integer idDocente = Integer.parseInt(request.getParameter("id"));
             String nomeDocente = request.getParameter("nome");
@@ -35,6 +36,7 @@ public class Docenti extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        System.out.println("post");
         processRequest(request, response);
     }
 
@@ -42,7 +44,7 @@ public class Docenti extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
-        if(action != null) {
+        if(session.getAttribute("userRole").equals("Amministratore")){
             PrintWriter out = response.getWriter();
             try {
                 out.println("<p><span class=\"badge badge-success\">Success</span> Docente aggiunto nel Database!<p>");
@@ -50,7 +52,7 @@ public class Docenti extends HttpServlet {
             } finally {
                 out.close();
             }
-        }else {
+        }if(action.equals("DocentiCliente")){
             response.setContentType("application/json,charset=UTF-8");
             Gson gson = new Gson();
             PrintWriter out = response.getWriter();

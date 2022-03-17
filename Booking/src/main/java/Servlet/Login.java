@@ -23,21 +23,17 @@ public class Login extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
-        String flag = request.getParameter("flag");
-
-
+        String flag = request.getParameter("action");
         if(flag.equals("login")){
             String acc = request.getParameter("account");
             String pass = request.getParameter("password");
-
             String[] esiste_ruolo = DAO.verificaUtenti(acc, pass);
             if (esiste_ruolo[0].equals("true")) {
                 session.setAttribute("userName", acc);
                 session.setAttribute("userRole", esiste_ruolo[1]);
                 processRequest(request, response);
             } else {
-                PrintWriter out = response.getWriter();
-                out.flush();
+                request.setAttribute("risultato", "errore");
             }
         }else {
             String newacc = request.getParameter("account");
@@ -50,40 +46,24 @@ public class Login extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        PrintWriter out = response.getWriter();
-        String flag = request.getParameter("flag");
+        String flag = request.getParameter("action");
         switch (flag) {
             case "login":
-                try {
-                    String acc = (String) session.getAttribute("userName");
-                    String ruolo = (String) session.getAttribute("userRole");
-                    if (ruolo.equals("Amministratore")) {
-                        String jsessionID = session.getId(); // estraggo il session ID
-                        System.out.println("JSessionID:" + jsessionID);
-                        out.print("sono amministratore");
-                        out.flush();
-                    } else {
-                        String jsessionID = session.getId(); // estraggo il session ID
-                        System.out.println("JSessionID:" + jsessionID);
-                        out.print("sono cliente");
-                        out.flush();
-                    }
-                } finally {
-                    if (out != null)
-                        out.close();
+                String acc = (String) session.getAttribute("userName");
+                String ruolo = (String) session.getAttribute("userRole");
+                if (ruolo.equals("Amministratore")) {
+                    String jsessionID = session.getId(); // estraggo il session ID
+                    System.out.println("JSessionID:" + jsessionID);
+                    request.setAttribute("risultato", "sono amministratore");
+                } else {
+                    String jsessionID = session.getId(); // estraggo il session ID
+                    System.out.println("JSessionID:" + jsessionID);
+                    request.setAttribute("risultato", "sono cliente");
                 }
                 break;
             case "crea":
-                try {
-                    out.print("Cliente Benvenuto! ");
-                    out.print("<span class=\"badge badge-success\">Success</span> Account creato");
-                    out.flush();
-                }finally {
-                    if (out != null)
-                        out.close();
-                }
+                request.setAttribute("risultato", "crea");
                 break;
-            }
         }
-
+    }
 }

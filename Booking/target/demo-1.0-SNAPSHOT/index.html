@@ -14,27 +14,25 @@
     <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">-->
 
 </head>
-<body class="d-flex justify-content-center">
+<body> <!--class="d-flex justify-content-center"-->
     <div id="components">
         <span v-if="loginHome">
-            <testa title="Benvenuto"></testa>
-            <article>
-                <h4>Applicazione delle prenotazioni - Unito</h4><hr>
-                <ul>
-                    <li>Amministratore - Cliente</li>
-                </ul>
+            <testa></testa>
+            <article class="text-center">
+                <hr><h4>Applicazione delle prenotazioni - Unito</h4><hr>
+                    <p>Amministratore - Cliente</p>
 
                 <p>Account : <input v-model="acc" type="text" required placeholder="account"/></p>
                 <p>Password : <input v-model="pass" type="password"  required placeholder="password"/></p>
-                <button v-on:click="log">Autentica </button>
+                <button v-on:click="ServletController('login')">Autentica </button>
                 <template v-if="check">
                     <template v-if="checkA">
-                        <span class="badge badge-success">Success</span>
+                        <span class="badge badge-success">Successo</span>
                         <br>
                         <p>Benvenuto {{ acc }} [Amministratore]</p>
                     </template>
                     <template v-else>
-                        <span class="badge badge-success">Success</span>
+                        <span class="badge badge-success">Successo</span>
                         <br>
                         <p>Benvenuto {{ acc }} [Cliente]</p>
                     </template>
@@ -44,9 +42,7 @@
                 </template>
                 <hr>
             </article>
-            <hr>
-            <centro v-on:ospite-inner="transit('ospiteHome')" v-on:creazione-inner="transit('creazione')"></centro>
-            <piedi></piedi>
+            <centro-login v-on:ospite-inner="transit('ospiteHome')" v-on:creazione-inner="transit('creazione')" class="text-center" ></centro-login>
         </span>
 
 
@@ -62,10 +58,37 @@
                     <p>Account: <input v-model="newacc" type="text" required placeholder="account"/></p>
                     <p>Password: <input v-model="newpass" type="password" required placeholder="password"/></p>
                     <button v-on:click="crea">Crea account </button>
-                    <p>{{ print }}</p>
+                    <template v-if="checkC">
+                        <p>Cliente Benvenuto!</p>
+                        <p><span class="badge badge-success">Successo</span> Account creato</p>
+                    </template>
             </article>
+        </span>
 
 
+        <span v-if="homeCliente">
+            <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">UniTO</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Prenotazioni</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Ripetizioni</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            <Cliente v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="logout"></Cliente>
         </span>
 
         <span v-if="homeOspite">
@@ -79,6 +102,7 @@
     </div>
 
     <script>
+        <!--VueLogin-->
         Vue.component('testa',{
             props: ['title'],
             template:'<header><h3 class="text-center">{{ title }}</h3><br></header>',
@@ -88,10 +112,10 @@
                 },
             }
         })
-        Vue.component('centro',{
+        Vue.component('centro-login',{
             template:'<article>' +
-                    '           <p>Non hai ancora un account?<button v-on:click="creazioneInner"> <br>Crea account</a></p>' +
-                    '            <p>Oppure entra come  <button v-on:click="ospiteInner">OSPITE </button></p>' +
+                    '     <p>Non hai ancora un account? <button type="button" class="btn btn-outline-info" v-on:click="creazioneInner"> Crea account</button></p>' +
+                    '     <p>Oppure entra come  <button type="button" class="btn btn-outline-info" v-on:click="ospiteInner">Ospite </button></p>' +
                     '</article>',
             methods: {
                 creazioneInner: function (){
@@ -103,24 +127,90 @@
                 }
             }
         })
-        /*Vue.component('centroR',{
-            template: ,
+
+
+        Vue.component('Cliente',{
+            template:
+                '<article class="container">' +
+                '    <br><br><h5>Scegli l\'opzione che desideri</h5>' +
+                '        <ul>\n' +
+                '            <li>\n' +
+                '                <button class="btn btn-outline-secondary" v-on:click="transitDocenti">Visualizzare i docenti</button>\n' +
+                '            </li>\n' +
+                '            <br>\n' +
+                '            <li>\n' +
+                '                <button class="btn btn-outline-secondary" v-on:click="transitRipetizioni">Visualizzare le ripetizioni</button>\n' +
+                '            </li>\n' +
+                '            <br>\n' +
+                '            <li>\n' +
+                '                <button type="submit" class="btn btn-outline-danger" name="action" value="logout">Logout</button>\n' +
+                '            </li>\n' +
+                '       </ul>\n' +
+                '</article>',
             methods: {
-                logInner: function () {
-                    this.$emit('log-inner');
+                transitDocenti: function () {
+                    this.$emit('transit-inner-docenti');
                 },
+                transitRipetizioni: function () {
+                    this.$emit('transit-inner-ripetizioni');
+                },
+                transitLogout: function () {
+                    this.$emit('transit-inner-logout');
+                }
             }
-        })*/
+        })
         var app = new Vue ({
             el: '#components',
             data: {
                 loginHome: true, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
+                homeAmministratore: false,
                 homeOspite: false,
-                creazionehome: false, newacc: null, newpass:null, print: '',
-                link: 'login'
+                homeCliente: false,
+                creazionehome: false, newacc: null, newpass:null, checkC: false, print: '',
+
+                link: 'ServletController'
             },
             methods: {
-                log: function(){
+                ServletController: function (flag){
+                    var self = this;
+                    $.post(this.link, {account: this.acc, password: this.pass, action: flag}, function (data) {
+                        if(flag === 'login'){
+                            switch (data) {
+                                case 'sono amministratore':
+                                    self.role = 'Amministratore';
+                                    self.check = true;
+                                    self.checkA = true;
+                                    self.checkE = false;
+                                    setTimeout(() => {
+                                        self.transit("homeAmministratore");
+                                    }, 2500);
+                                    break;
+                                case 'sono cliente':
+                                    self.role = 'Cliente';
+                                    self.check = true;
+                                    self.checkA = false;
+                                    self.checkE = false;
+                                    setTimeout(() => {
+                                        self.transit("clienteHome");
+                                    }, 2500);
+                                    break;
+                                case 'errore':
+                                    self.check = false;
+                                    self.checkA = false;
+                                    self.checkE = true;
+                                    break;
+                            }
+                        }else if(flag === 'crea'){
+                            self.checkC = true;
+                            setTimeout(() => {
+                                self.transit('loginHome');
+                            }, 2500);
+                        }else if(flag === 'DocentiCliente'){
+
+                        }
+                    })
+                },
+                /*log: function(){
                     var self = this;
                     $.post(this.link, {account: this.acc, password: this.pass, flag: 'login'}, function (data) {
                             switch (data) {
@@ -131,7 +221,7 @@
                                     self.checkE = false;
                                     setTimeout(() => {
                                         self.transit();
-                                    }, 3000);
+                                    }, 2500);
                                     break;
                                 case 'sono cliente':
                                     self.role = 'Cliente';
@@ -139,8 +229,8 @@
                                     self.checkA = false;
                                     self.checkE = false;
                                     setTimeout(() => {
-                                        self.transit();
-                                    }, 3000);
+                                        self.transit("clienteHome");
+                                    }, 2500);
                                     break;
                                 default:
                                     self.check = false;
@@ -149,21 +239,41 @@
                             }
                     })
                 },
+                logout: function (){
+                    var self = this;
+                    $.post('logout', {account: this.newacc, password: this.newpass, flag: 'crea'}, function (data) {
+
+                    })
+                },
+                crea: function (){
+                    var self = this;
+                    $.post(this.link, {account: this.newacc, password: this.newpass, flag: 'crea'}, function (data) {
+                        self.checkC = true;
+                        setTimeout(() => {
+                            self.transit('loginHome');
+                        }, 2500);
+                    })
+                },*/
                 transit: function (flag) {
-                    if(this.loginHome && flag === 'creazione') {
+                    if(flag === 'creazione') {
                         this.loginHome = false;
                         this.creazionehome = true;
                     }else if(this.loginHome && flag === 'ospiteHome'){
                         this.loginHome = false;
                         this.homeOspite = true;
+                    }else if(flag === 'loginHome') {
+                        this.loginHome = true;
+                        this.creazionehome = false;
+                    }else if(flag === 'clienteHome'){
+                        this.loginHome = false;
+                        this.homeCliente = true;
+                    }else if(flag === 'docenti'){
+                        this.homeCliente = false;
+                        this.ServletController("DocentiCliente");
                     }
+
                 },
-                crea: function (){
-                    var self = this;
-                    $.post(this.link, {account: this.newacc, password: this.newpass, flag: 'crea'}, function (data) {
-                        self.print = data;
-                    })
-                },
+
             }
         })
     </script>
