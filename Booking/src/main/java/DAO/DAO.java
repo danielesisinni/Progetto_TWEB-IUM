@@ -461,7 +461,7 @@ public class DAO {
             conn1 = DriverManager.getConnection(url1, user, password);
 
             int matricola = (int) (Math.random() * 500);
-            String ruolo = "cliente";
+            String ruolo = "Cliente";
             //Execute insert query
             Statement st = conn1.createStatement();
             st.execute("insert into utenti (matricola, account, password, ruolo) values ('" + matricola + "', '" + account + "', '" + passwordutente + "', '" + ruolo + "')");

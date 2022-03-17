@@ -21,6 +21,7 @@ public class ServletController extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8"); // per essere robusti rispetto a caratteri speciali (', etc)
+
         ServletContext ctx = getServletContext();
         HttpSession session = request.getSession();
         PrintWriter out = response.getWriter();
@@ -31,7 +32,6 @@ public class ServletController extends HttpServlet {
             rd.include(request, response);
             out.print(request.getAttribute("risultato"));
         }
-
         if (action != null && !action.equals("login")) {
             if (session.getAttribute("userRole").equals("Amministratore")) {
 
@@ -49,21 +49,30 @@ public class ServletController extends HttpServlet {
                 }
             } else if (session.getAttribute("userRole").equals("Cliente")) {
                     switch (action) {
-                        case "docente":
+                        case "DocentiCliente":
                             rd = getServletContext().getNamedDispatcher("docenti");
                             rd.include(request, response);
+                            response.setContentType("application/json,charset=UTF-8");
+                            out.print(request.getAttribute("risultato"));
                             break;
                         case "corso":
                             rd = ctx.getRequestDispatcher("Corsi");
                             break;
+                        case "RipetizioniCliente":
+                            rd = getServletContext().getNamedDispatcher("ripetizioni");
+                            rd.include(request, response);
+                            response.setContentType("application/json,charset=UTF-8");
+                            out.print(request.getAttribute("risultato"));
+                            break;
                         case "logout":
-                            rd = ctx.getRequestDispatcher("Logout");
+                            rd = getServletContext().getNamedDispatcher("logout");
+                            rd.include(request, response);
                             break;
                 }
             } else if (session.getAttribute("userRole").equals("Ospite")) {
                     switch (action) {
-                        case "docente":
-                            rd = ctx.getRequestDispatcher("/docente.html");
+                        case "DocentiCliente":
+                            rd = ctx.getRequestDispatcher("");
                             break;
                         case "corso":
                             rd = ctx.getRequestDispatcher("/corso.html");
@@ -73,7 +82,6 @@ public class ServletController extends HttpServlet {
                             break;
                     }
             }
-            rd.forward(request, response);
         }
     }
 }

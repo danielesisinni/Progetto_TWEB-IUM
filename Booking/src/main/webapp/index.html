@@ -20,26 +20,26 @@
             <testa></testa>
             <article class="text-center">
                 <hr><h4>Applicazione delle prenotazioni - Unito</h4><hr>
+                <br>
                     <p>Amministratore - Cliente</p>
 
                 <p>Account : <input v-model="acc" type="text" required placeholder="account"/></p>
                 <p>Password : <input v-model="pass" type="password"  required placeholder="password"/></p>
                 <button v-on:click="ServletController('login')">Autentica </button>
-                <template v-if="check">
                     <template v-if="checkA">
                         <span class="badge badge-success">Successo</span>
                         <br>
                         <p>Benvenuto {{ acc }} [Amministratore]</p>
                     </template>
-                    <template v-else>
+                    <template v-if="check">
                         <span class="badge badge-success">Successo</span>
                         <br>
                         <p>Benvenuto {{ acc }} [Cliente]</p>
                     </template>
-                </template>
                 <template v-if="checkE">
                     <span class="badge badge-danger">Errore nel login</span>
                 </template>
+                <br><br><br><br><br>
                 <hr>
             </article>
             <centro-login v-on:ospite-inner="transit('ospiteHome')" v-on:creazione-inner="transit('creazione')" class="text-center" ></centro-login>
@@ -69,14 +69,14 @@
         <span v-if="homeCliente">
             <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="#">UniTO</a>
+                    <a class="navbar-brand" href="https://www.unito.it/">UniTO</a>
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                         <div class="collapse navbar-collapse" id="navbarNav">
                             <ul class="navbar-nav">
                                 <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                                    <a class="nav-link" aria-current="page" type="button" v-on:click="transit('clienteHome')">Home</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">Prenotazioni</a>
@@ -88,7 +88,19 @@
                         </div>
                     </div>
                 </nav>
-            <Cliente v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="logout"></Cliente>
+            <Cliente v-if="checkCl" v-on:transit-inner-prenotazioni="transit('prenotazioni')" v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="transit('logout')"></Cliente>
+            <div v-if="stampaD" v-for="docenti in printD" class="container">
+                <hr>
+                <p>{{docenti.nome}}, {{docenti.cognome}}, {{docenti.iddocente}}</p>
+            </div>
+            <div v-if="stampaR" v-for="ripetizioni in printR" class="container">
+                <hr>
+                <p>{{ripetizioni.docente}}, {{ripetizioni.corso}}, {{ripetizioni.data}}, {{ripetizioni.ora}}, {{ripetizioni.status}}</p>
+            </div>
+            <div class="container" v-if="logout" >
+                <span class="badge bg-warning text-dark">Attenzione:</span>
+                <p> Logout effettuato con successo</p>
+            </div>
         </span>
 
         <span v-if="homeOspite">
@@ -114,8 +126,8 @@
         })
         Vue.component('centro-login',{
             template:'<article>' +
-                    '     <p>Non hai ancora un account? <button type="button" class="btn btn-outline-info" v-on:click="creazioneInner"> Crea account</button></p>' +
-                    '     <p>Oppure entra come  <button type="button" class="btn btn-outline-info" v-on:click="ospiteInner">Ospite </button></p>' +
+                    '     <p>Non hai ancora un account? <button type="button" class="btn btn-outline-info" v-on:click="creazioneInner"> Crea account</button>' +
+                    '     Oppure entra come  <button type="button" class="btn btn-outline-info" v-on:click="ospiteInner">Ospite </button></p>' +
                     '</article>',
             methods: {
                 creazioneInner: function (){
@@ -133,21 +145,28 @@
             template:
                 '<article class="container">' +
                 '    <br><br><h5>Scegli l\'opzione che desideri</h5>' +
-                '        <ul>\n' +
+                '            <ul>\n' +
                 '            <li>\n' +
-                '                <button class="btn btn-outline-secondary" v-on:click="transitDocenti">Visualizzare i docenti</button>\n' +
+                '                <button class="btn btn-outline-secondary" v-on:click="transitPrenotazioni">Le  mie prenotazioni attive</button>\n' +
                 '            </li>\n' +
                 '            <br>\n' +
                 '            <li>\n' +
-                '                <button class="btn btn-outline-secondary" v-on:click="transitRipetizioni">Visualizzare le ripetizioni</button>\n' +
+                '                <button class="btn btn-outline-secondary" v-on:click="transitDocenti">Visualizzare i docenti presenti</button>\n' +
                 '            </li>\n' +
                 '            <br>\n' +
                 '            <li>\n' +
-                '                <button type="submit" class="btn btn-outline-danger" name="action" value="logout">Logout</button>\n' +
+                '                <button class="btn btn-outline-secondary" v-on:click="transitRipetizioni">Visualizzare le ripetizioni disponibili</button>\n' +
+                '            </li>\n' +
+                '            <br>\n' +
+                '            <li>\n' +
+                '                <button class="btn btn-outline-danger" v-on:click="transitLogout">Logout</button>\n' +
                 '            </li>\n' +
                 '       </ul>\n' +
                 '</article>',
             methods: {
+                transitPrenotazioni: function () {
+                    this.$emit('transit-inner-prenotazioni');
+                },
                 transitDocenti: function () {
                     this.$emit('transit-inner-docenti');
                 },
@@ -163,9 +182,9 @@
             el: '#components',
             data: {
                 loginHome: true, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
-                homeAmministratore: false,
+                homeAmministratore: false, logout: false, checkL: false,
                 homeOspite: false,
-                homeCliente: false,
+                homeCliente: false, checkCl: false, printD: [], printR: [], stampaD: false, stampaR: false,
                 creazionehome: false, newacc: null, newpass:null, checkC: false, print: '',
 
                 link: 'ServletController'
@@ -174,16 +193,17 @@
                 ServletController: function (flag){
                     var self = this;
                     $.post(this.link, {account: this.acc, password: this.pass, action: flag}, function (data) {
+                        //Sezione Servlet Login
                         if(flag === 'login'){
                             switch (data) {
                                 case 'sono amministratore':
                                     self.role = 'Amministratore';
-                                    self.check = true;
                                     self.checkA = true;
                                     self.checkE = false;
+                                    self.check = false;
                                     setTimeout(() => {
                                         self.transit("homeAmministratore");
-                                    }, 2500);
+                                    }, 2300);
                                     break;
                                 case 'sono cliente':
                                     self.role = 'Cliente';
@@ -192,7 +212,7 @@
                                     self.checkE = false;
                                     setTimeout(() => {
                                         self.transit("clienteHome");
-                                    }, 2500);
+                                    }, 2300);
                                     break;
                                 case 'errore':
                                     self.check = false;
@@ -200,60 +220,28 @@
                                     self.checkE = true;
                                     break;
                             }
+                        //Sezione Servlet Login, creazione utente
                         }else if(flag === 'crea'){
                             self.checkC = true;
                             setTimeout(() => {
                                 self.transit('loginHome');
-                            }, 2500);
+                            }, 2000);
+                            //Sezione Servlet/Docenti, stampa dei docenti per i clienti
                         }else if(flag === 'DocentiCliente'){
+                            self.printD = data;
+                            //Sezione Servlet/Ripetizioni, stampa delle ripetizioni per i clienti
+                        }else if(flag === 'RipetizioniCliente'){
+                            self.printR = data;
+                            //Sezione Servlet/Logout
+                        }else if(flag === 'logout'){
+                            self.logout = true;
+                            setTimeout(() => {
+                                self.transit("loginHome");
+                            }, 2300);
 
                         }
                     })
                 },
-                /*log: function(){
-                    var self = this;
-                    $.post(this.link, {account: this.acc, password: this.pass, flag: 'login'}, function (data) {
-                            switch (data) {
-                                case 'sono amministratore':
-                                    self.role = 'Amministratore';
-                                    self.check = true;
-                                    self.checkA = true;
-                                    self.checkE = false;
-                                    setTimeout(() => {
-                                        self.transit();
-                                    }, 2500);
-                                    break;
-                                case 'sono cliente':
-                                    self.role = 'Cliente';
-                                    self.check = true;
-                                    self.checkA = false;
-                                    self.checkE = false;
-                                    setTimeout(() => {
-                                        self.transit("clienteHome");
-                                    }, 2500);
-                                    break;
-                                default:
-                                    self.check = false;
-                                    self.checkA = false;
-                                    self.checkE = true;
-                            }
-                    })
-                },
-                logout: function (){
-                    var self = this;
-                    $.post('logout', {account: this.newacc, password: this.newpass, flag: 'crea'}, function (data) {
-
-                    })
-                },
-                crea: function (){
-                    var self = this;
-                    $.post(this.link, {account: this.newacc, password: this.newpass, flag: 'crea'}, function (data) {
-                        self.checkC = true;
-                        setTimeout(() => {
-                            self.transit('loginHome');
-                        }, 2500);
-                    })
-                },*/
                 transit: function (flag) {
                     if(flag === 'creazione') {
                         this.loginHome = false;
@@ -261,15 +249,29 @@
                     }else if(this.loginHome && flag === 'ospiteHome'){
                         this.loginHome = false;
                         this.homeOspite = true;
+                    }else if(flag === 'logout') {
+                        this.ServletController("logout");
                     }else if(flag === 'loginHome') {
                         this.loginHome = true;
                         this.creazionehome = false;
+                        this.homeCliente = false;
+                        this.logout = false;
+                        this.check = false;
+                        this.checkA = false;
                     }else if(flag === 'clienteHome'){
                         this.loginHome = false;
                         this.homeCliente = true;
+                        this.checkCl = true;
+                        this.stampaD = false;
+                        this.stampaR = false;
                     }else if(flag === 'docenti'){
-                        this.homeCliente = false;
+                        this.checkCl = false;
+                        this.stampaD = true;
                         this.ServletController("DocentiCliente");
+                    }else if(flag === 'ripetizioni'){
+                        this.checkCl = false;
+                        this.stampaR = true;
+                        this.ServletController("RipetizioniCliente");
                     }
 
                 },

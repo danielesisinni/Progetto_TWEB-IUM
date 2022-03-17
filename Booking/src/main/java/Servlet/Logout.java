@@ -25,7 +25,6 @@ public class Logout extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        PrintWriter out = response.getWriter();
         try {
             session.removeAttribute("logonSessData"); //logonSessData
             session.invalidate();
@@ -34,7 +33,5 @@ public class Logout extends HttpServlet {
             System.out.println("error UserValidateServlet message : " + sqle.getMessage());
             System.out.println("error UserValidateServlet exception : " + sqle);
         }
-        out.print("Logout effettuato con successo");
-        out.flush();
     }
 }

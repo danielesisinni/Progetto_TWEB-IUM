@@ -16,12 +16,12 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 
-@WebServlet(name = "Ripetizioni", value = "/Ripetizioni")
+@WebServlet(name = "ripetizioni", value = "/ripetizioni")
 public class Ripetizioni extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String action = request.getParameter("action");
-        if(action != null) {
+        HttpSession session = request.getSession();
+        if(session.getAttribute("userRole").equals("Amministratore")) {
             response.setContentType("text/html,charset=UTF-8");
             String docente = request.getParameter("docente");
             String corso = request.getParameter("corso");
@@ -53,8 +53,9 @@ public class Ripetizioni extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         String action = request.getParameter("action");
-        if(action != null) {
+        if(session.getAttribute("userRole").equals("Amministratore")) {
             PrintWriter out = response.getWriter();
             try {
                 out.println("<p><span class=\"badge badge-success\">Success</span> Ripetizione aggiunta nel Database!<p>");
@@ -66,16 +67,11 @@ public class Ripetizioni extends HttpServlet {
             response.setContentType("application/json,charset=UTF-8");
             Gson gson = new Gson();
             PrintWriter out = response.getWriter();
-            try {
-                out.println("Lista delle ripetizioni registrate: ");
-                ArrayList<Ripetizione> ripetizione = DAO.Repetition();
-                String s = gson.toJson(ripetizione);
-                System.out.println("STRINGA JSON " + s);
-                out.print(s);
-                out.flush();
-            }finally {
-                out.close();
-            }
+            ArrayList<Ripetizione> ripetizione = DAO.Repetition();
+            String s = gson.toJson(ripetizione);
+            request.setAttribute("risultato", s);
+            String jsessionID = session.getId(); // estraggo il session ID
+            System.out.println("JSessionID:" + jsessionID);
         }
     }
 }

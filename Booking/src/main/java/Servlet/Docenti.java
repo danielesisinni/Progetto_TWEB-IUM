@@ -56,19 +56,11 @@ public class Docenti extends HttpServlet {
             response.setContentType("application/json,charset=UTF-8");
             Gson gson = new Gson();
             PrintWriter out = response.getWriter();
-            try {
-                out.println("Lista dei docenti registrati: ");
-                ArrayList<Docente> docente = DAO.Teacher();
-                String s = gson.toJson(docente);
-                System.out.println("STRINGA JSON " + s);
-                out.print(s);
-                String jsessionID = session.getId(); // estraggo il session ID
-                System.out.println("JSessionID:" + jsessionID);
-                out.print(jsessionID);
-                out.flush();
-            }finally {
-                out.close();
-            }
+            ArrayList<Docente> docente = DAO.Teacher();
+            String s = gson.toJson(docente);
+            request.setAttribute("risultato", s);
+            String jsessionID = session.getId(); // estraggo il session ID
+            System.out.println("JSessionID:" + jsessionID);
         }
     }
 }
