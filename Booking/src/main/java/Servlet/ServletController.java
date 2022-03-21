@@ -34,7 +34,6 @@ public class ServletController extends HttpServlet {
         }
         if (action != null && !action.equals("login")) {
             if (session.getAttribute("userRole").equals("Amministratore")) {
-
                 switch (action) {
                     case "docente":
                         rd = getServletContext().getNamedDispatcher("docenti");
@@ -49,16 +48,19 @@ public class ServletController extends HttpServlet {
                 }
             } else if (session.getAttribute("userRole").equals("Cliente")) {
                     switch (action) {
-                        case "DocentiCliente":
+                        case "Docenti":
                             rd = getServletContext().getNamedDispatcher("docenti");
                             rd.include(request, response);
                             response.setContentType("application/json,charset=UTF-8");
                             out.print(request.getAttribute("risultato"));
                             break;
-                        case "corso":
-                            rd = ctx.getRequestDispatcher("Corsi");
+                        case "Corsi_Docenti":
+                            rd = getServletContext().getNamedDispatcher("corsi_docenti");
+                            rd.include(request, response);
+                            response.setContentType("application/json,charset=UTF-8");
+                            out.print(request.getAttribute("risultato"));
                             break;
-                        case "RipetizioniCliente":
+                        case "Ripetizioni":
                             rd = getServletContext().getNamedDispatcher("ripetizioni");
                             rd.include(request, response);
                             response.setContentType("application/json,charset=UTF-8");
@@ -71,14 +73,27 @@ public class ServletController extends HttpServlet {
                 }
             } else if (session.getAttribute("userRole").equals("Ospite")) {
                     switch (action) {
-                        case "DocentiCliente":
-                            rd = ctx.getRequestDispatcher("");
+                        case "Docenti":
+                            rd = getServletContext().getNamedDispatcher("docenti");
+                            rd.include(request, response);
+                            response.setContentType("application/json,charset=UTF-8");
+                            out.print(request.getAttribute("risultato"));
                             break;
-                        case "corso":
-                            rd = ctx.getRequestDispatcher("/corso.html");
+                        case "Corsi_Docenti":
+                            rd = getServletContext().getNamedDispatcher("corsi_docenti");
+                            rd.include(request, response);
+                            response.setContentType("application/json,charset=UTF-8");
+                            out.print(request.getAttribute("risultato"));
+                            break;
+                        case "Ripetizioni":
+                            rd = getServletContext().getNamedDispatcher("ripetizioni");
+                            rd.include(request, response);
+                            response.setContentType("application/json,charset=UTF-8");
+                            out.print(request.getAttribute("risultato"));
                             break;
                         case "logout":
-                            rd = ctx.getRequestDispatcher("/logout");
+                            rd = getServletContext().getNamedDispatcher("logout");
+                            rd.include(request, response);
                             break;
                     }
             }

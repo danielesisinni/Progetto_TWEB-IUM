@@ -70,28 +70,35 @@
             <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="https://www.unito.it/">UniTO</a>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="collapse navbar-collapse" id="navbarNav">
-                            <ul class="navbar-nav">
-                                <li class="nav-item">
-                                    <a class="nav-link" aria-current="page" type="button" v-on:click="transit('clienteHome')">Home</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Prenotazioni</a>
-                                </li>
-                                <li class="nav-item">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" type="button" v-on:click="transit('clienteHome')">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Prenotazioni</a>
+                            </li>
+                            <li class="nav-item">
                                     <a class="nav-link" href="#">Ripetizioni</a>
-                                </li>
-                            </ul>
-                        </div>
+                            </li>
+                        </ul>
                     </div>
-                </nav>
-            <Cliente v-if="checkCl" v-on:transit-inner-prenotazioni="transit('prenotazioni')" v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="transit('logout')"></Cliente>
+                </div>
+            </nav>
+            <homeoc v-if="checkCl" v-on:transit-inner-prenotazioni="transit('prenotazioni')" v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="transit('logout')"></homeoc>
             <div v-if="stampaD" v-for="docenti in printD" class="container">
                 <hr>
                 <p>{{docenti.nome}}, {{docenti.cognome}}, {{docenti.iddocente}}</p>
+            </div>
+            <div v-if="stampaCD" class="container">
+                <h4>Corsi...........Docenti</h4>
+                <span v-for="co_do in printCD">
+                    <hr>
+                    <p>[{{co_do.corso}}]--[{{co_do.docente}}]</p>
+                </span>
             </div>
             <div v-if="stampaR" v-for="ripetizioni in printR" class="container">
                 <hr>
@@ -104,12 +111,41 @@
         </span>
 
         <span v-if="homeOspite">
-            <div id="nav">
-                <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
-                  <!-- Navbar content -->
-                </nav>
+            <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="https://www.unito.it/">UniTO</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav2">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" type="button" v-on:click="transit('ospiteHome')">Home</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <homeoc v-if="checkO"  v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="transit('logout')"></homeoc>
+            <div v-if="stampaD" v-for="docenti in printD" class="container">
+                <hr>
+                <p>{{docenti.nome}}, {{docenti.cognome}}, {{docenti.iddocente}}</p>
             </div>
-            <testa title="Bentornato" v-on:log-inner="transit"></testa>
+            <div v-if="stampaCD" class="container">
+                <h4>Corsi...........Docenti</h4>
+                <span v-for="co_do in printCD">
+                    <hr>
+                    <p>[{{co_do.corso}}]--[{{co_do.docente}}]</p>
+                </span>
+            </div>
+            <div v-if="stampaR" v-for="ripetizioni in printR" class="container">
+                <hr>
+                <p>{{ripetizioni.docente}}, {{ripetizioni.corso}}, {{ripetizioni.data}}, {{ripetizioni.ora}}, {{ripetizioni.status}}</p>
+            </div>
+            <div class="container" v-if="logout" >
+                <span class="badge bg-warning text-dark">Attenzione:</span>
+                <p> Logout effettuato con successo</p>
+            </div>
         </span>
     </div>
 
@@ -141,17 +177,21 @@
         })
 
 
-        Vue.component('Cliente',{
+        Vue.component('homeoc',{
             template:
                 '<article class="container">' +
                 '    <br><br><h5>Scegli l\'opzione che desideri</h5>' +
                 '            <ul>\n' +
-                '            <li>\n' +
+                '            <li v-if="checkCl">\n' +
                 '                <button class="btn btn-outline-secondary" v-on:click="transitPrenotazioni">Le  mie prenotazioni attive</button>\n' +
+                '            <br>\n' +
+                '            </li>\n' +
+                '            <li>\n' +
+                '                <button class="btn btn-outline-secondary" v-on:click="transitDocenti">Visualizzare i docenti</button>\n' +
                 '            </li>\n' +
                 '            <br>\n' +
                 '            <li>\n' +
-                '                <button class="btn btn-outline-secondary" v-on:click="transitDocenti">Visualizzare i docenti presenti</button>\n' +
+                '                <button class="btn btn-outline-secondary" v-on:click="transitCorsi_Docenti">Visualizzare i corsi/docenti</button>\n' +
                 '            </li>\n' +
                 '            <br>\n' +
                 '            <li>\n' +
@@ -175,6 +215,9 @@
                 },
                 transitLogout: function () {
                     this.$emit('transit-inner-logout');
+                },
+                transitCorsi_Docenti: function (){
+                    this.$emit('transit-inner-corsi_docenti');
                 }
             }
         })
@@ -183,8 +226,8 @@
             data: {
                 loginHome: true, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
                 homeAmministratore: false, logout: false, checkL: false,
-                homeOspite: false,
-                homeCliente: false, checkCl: false, printD: [], printR: [], stampaD: false, stampaR: false,
+                homeOspite: false, checkO: false,
+                homeCliente: false, checkCl: false, printCD: [], printD: [], printR: [], stampaCD: false, stampaD: false, stampaR: false,
                 creazionehome: false, newacc: null, newpass:null, checkC: false, print: '',
 
                 link: 'ServletController'
@@ -229,6 +272,9 @@
                             //Sezione Servlet/Docenti, stampa dei docenti per i clienti
                         }else if(flag === 'DocentiCliente'){
                             self.printD = data;
+                            //Sezione Servlet/Corsi_Docenti
+                        }else if(flag === 'Corsi_Docenti'){
+                            self.printCD = data;
                             //Sezione Servlet/Ripetizioni, stampa delle ripetizioni per i clienti
                         }else if(flag === 'RipetizioniCliente'){
                             self.printR = data;
@@ -246,9 +292,11 @@
                     if(flag === 'creazione') {
                         this.loginHome = false;
                         this.creazionehome = true;
-                    }else if(this.loginHome && flag === 'ospiteHome'){
+                    }else if(flag === 'ospiteHome'){
                         this.loginHome = false;
                         this.homeOspite = true;
+                        this.checkO = true;
+                        this.stampaCD = false;
                     }else if(flag === 'logout') {
                         this.ServletController("logout");
                     }else if(flag === 'loginHome') {
@@ -264,14 +312,19 @@
                         this.checkCl = true;
                         this.stampaD = false;
                         this.stampaR = false;
+                        this.stampaCD = false;
+                    }else if(flag === 'corsi_docenti'){
+                        this.checkCl = false;
+                        this.stampaCD = true;
+                        this.ServletController("Corsi_Docenti");
                     }else if(flag === 'docenti'){
                         this.checkCl = false;
                         this.stampaD = true;
-                        this.ServletController("DocentiCliente");
+                        this.ServletController("Docenti");
                     }else if(flag === 'ripetizioni'){
                         this.checkCl = false;
                         this.stampaR = true;
-                        this.ServletController("RipetizioniCliente");
+                        this.ServletController("Ripetizioni");
                     }
 
                 },
