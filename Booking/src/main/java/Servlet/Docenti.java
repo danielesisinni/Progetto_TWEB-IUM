@@ -52,7 +52,7 @@ public class Docenti extends HttpServlet {
             } finally {
                 out.close();
             }
-        }if(action.equals("DocentiCliente")){
+        }if(action.equals("Docenti")){
             response.setContentType("application/json,charset=UTF-8");
             Gson gson = new Gson();
             PrintWriter out = response.getWriter();

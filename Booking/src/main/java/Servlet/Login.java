@@ -17,7 +17,13 @@ public class Login extends HttpServlet {
     //private Gson gson = new Gson();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        processRequest(request, response);
+        String flag = request.getParameter("action");
+        if(flag.equals("crea")) {
+            String newacc = request.getParameter("account");
+            String newpass = request.getParameter("password");
+            DAO.insertUsers(newacc, newpass);
+            processRequest(request, response);
+        }
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -35,18 +41,17 @@ public class Login extends HttpServlet {
             } else {
                 request.setAttribute("risultato", "errore");
             }
-        }else {
-            String newacc = request.getParameter("account");
-            String newpass = request.getParameter("password");
-            DAO.insertUsers(newacc, newpass);
-            processRequest(request, response);
+        }else if(flag.equals("crea")) {
+            doGet(request,response);
         }
+        processRequest(request, response);
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         String flag = request.getParameter("action");
+        System.out.println(flag);
         switch (flag) {
             case "login":
                 String acc = (String) session.getAttribute("userName");
@@ -62,7 +67,12 @@ public class Login extends HttpServlet {
                 }
                 break;
             case "crea":
+                System.out.println("ci sono");
                 request.setAttribute("risultato", "crea");
+                break;
+            case "ospite":
+                session.setAttribute("userRole", "Ospite");
+                request.setAttribute("risultato", "ospite");
                 break;
         }
     }

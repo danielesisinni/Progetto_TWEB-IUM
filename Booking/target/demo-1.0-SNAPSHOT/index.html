@@ -22,10 +22,10 @@
                 <hr><h4>Applicazione delle prenotazioni - Unito</h4><hr>
                 <br>
                     <p>Amministratore - Cliente</p>
+                    <p>Account : <input v-model="acc" type="text" required></p>
+                    <p>Password : <input v-model="pass" type="password"  required></p>
 
-                <p>Account : <input v-model="acc" type="text" required placeholder="account"/></p>
-                <p>Password : <input v-model="pass" type="password"  required placeholder="password"/></p>
-                <button v-on:click="ServletController('login')">Autentica </button>
+                    <button v-on:click="ServletController('login')">Autentica </button>
                     <template v-if="checkA">
                         <span class="badge badge-success">Successo</span>
                         <br>
@@ -42,22 +42,24 @@
                 <br><br><br><br><br>
                 <hr>
             </article>
-            <centro-login v-on:ospite-inner="transit('ospiteHome')" v-on:creazione-inner="transit('creazione')" class="text-center" ></centro-login>
+            <centro-login v-on:ospite-inner="ServletController('ospite')" v-on:creazione-inner="transit('creazione')" class="text-center" ></centro-login>
         </span>
 
 
         <span v-if="creazionehome">
-            <testa title="Benvenuto" v-on:log-inner="transit"></testa>
-            <article>
+            <testa title="Benvenuto"></testa>
+            <article class="container">
                 <br>
                     <ul>
                         <li>
                             Benvenuto nell'area di registrazione. Crea il tuo account
                         </li>
                     </ul>
-                    <p>Account: <input v-model="newacc" type="text" required placeholder="account"/></p>
-                    <p>Password: <input v-model="newpass" type="password" required placeholder="password"/></p>
-                    <button v-on:click="crea">Crea account </button>
+                <form>
+                    <p>Account:  <input v-model="acc" type="text" required placeholder="account"/></p>
+                    <p>Password: <input v-model="pass" type="password" required placeholder="password"/></p>
+                </form>
+                    <button v-on:click="ServletController('crea')">Crea account </button>
                     <template v-if="checkC">
                         <p>Cliente Benvenuto!</p>
                         <p><span class="badge badge-success">Successo</span> Account creato</p>
@@ -126,7 +128,7 @@
                     </div>
                 </div>
             </nav>
-            <homeoc v-if="checkO"  v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="transit('logout')"></homeoc>
+            <homeoc v-if="checkO"  v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="transit('logout')"></homeoc>
             <div v-if="stampaD" v-for="docenti in printD" class="container">
                 <hr>
                 <p>{{docenti.nome}}, {{docenti.cognome}}, {{docenti.iddocente}}</p>
@@ -228,7 +230,7 @@
                 homeAmministratore: false, logout: false, checkL: false,
                 homeOspite: false, checkO: false,
                 homeCliente: false, checkCl: false, printCD: [], printD: [], printR: [], stampaCD: false, stampaD: false, stampaR: false,
-                creazionehome: false, newacc: null, newpass:null, checkC: false, print: '',
+                creazionehome: false, checkC: false, print: '',
 
                 link: 'ServletController'
             },
@@ -237,7 +239,9 @@
                     var self = this;
                     $.post(this.link, {account: this.acc, password: this.pass, action: flag}, function (data) {
                         //Sezione Servlet Login
-                        if(flag === 'login'){
+                        if(flag === 'login' || flag === 'crea'|| flag === 'ospite'){
+                            console.log(flag);
+                            console.log(data);
                             switch (data) {
                                 case 'sono amministratore':
                                     self.role = 'Amministratore';
@@ -257,26 +261,37 @@
                                         self.transit("clienteHome");
                                     }, 2300);
                                     break;
+                                case 'sono ospite':
+                                    self.role = 'Ospite';
+                                    self.transit("ospiteHome");
+                                    break;
                                 case 'errore':
                                     self.check = false;
                                     self.checkA = false;
                                     self.checkE = true;
                                     break;
+                                case 'crea':
+                                    console.log("creaaa")
+                                    self.checkC = true;
+                                    self.acc = null;
+                                    self.pass = null;
+                                    setTimeout(() => {
+                                        self.transit('loginHome');
+                                    }, 2000);
+                                    break;
+                                case 'ospite':
+                                    self.role = 'Ospite';
+                                    self.transit("ospiteHome");
+                                    break;
                             }
-                        //Sezione Servlet Login, creazione utente
-                        }else if(flag === 'crea'){
-                            self.checkC = true;
-                            setTimeout(() => {
-                                self.transit('loginHome');
-                            }, 2000);
                             //Sezione Servlet/Docenti, stampa dei docenti per i clienti
-                        }else if(flag === 'DocentiCliente'){
+                        }else if(flag === 'Docenti'){
                             self.printD = data;
                             //Sezione Servlet/Corsi_Docenti
                         }else if(flag === 'Corsi_Docenti'){
                             self.printCD = data;
                             //Sezione Servlet/Ripetizioni, stampa delle ripetizioni per i clienti
-                        }else if(flag === 'RipetizioniCliente'){
+                        }else if(flag === 'Ripetizioni'){
                             self.printR = data;
                             //Sezione Servlet/Logout
                         }else if(flag === 'logout'){
@@ -296,6 +311,7 @@
                         this.loginHome = false;
                         this.homeOspite = true;
                         this.checkO = true;
+                        this.stampaD = false;
                         this.stampaCD = false;
                     }else if(flag === 'logout') {
                         this.ServletController("logout");
@@ -306,6 +322,7 @@
                         this.logout = false;
                         this.check = false;
                         this.checkA = false;
+                        this.checkO = false;
                     }else if(flag === 'clienteHome'){
                         this.loginHome = false;
                         this.homeCliente = true;
@@ -315,16 +332,19 @@
                         this.stampaCD = false;
                     }else if(flag === 'corsi_docenti'){
                         this.checkCl = false;
+                        this.checkO = false;
                         this.stampaCD = true;
                         this.ServletController("Corsi_Docenti");
                     }else if(flag === 'docenti'){
                         this.checkCl = false;
+                        this.checkO = false;
                         this.stampaD = true;
-                        this.ServletController("DocentiCliente");
+                        this.ServletController("Docenti");
                     }else if(flag === 'ripetizioni'){
                         this.checkCl = false;
+                        this.checkO = false;
                         this.stampaR = true;
-                        this.ServletController("RipetizioniCliente");
+                        this.ServletController("Ripetizioni");
                     }
 
                 },
