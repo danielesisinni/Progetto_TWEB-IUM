@@ -51,7 +51,6 @@ public class Login extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         String flag = request.getParameter("action");
-        System.out.println(flag);
         switch (flag) {
             case "login":
                 String acc = (String) session.getAttribute("userName");
@@ -67,7 +66,6 @@ public class Login extends HttpServlet {
                 }
                 break;
             case "crea":
-                System.out.println("ci sono");
                 request.setAttribute("risultato", "crea");
                 break;
             case "ospite":

@@ -55,7 +55,7 @@ public class Ripetizioni extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
-        if(session.getAttribute("userRole").equals("Amministratore")) {
+        if(session.getAttribute("userRole").equals("Amministratore") && !action.equals("Ripetizioni")) {
             PrintWriter out = response.getWriter();
             try {
                 out.println("<p><span class=\"badge badge-success\">Success</span> Ripetizione aggiunta nel Database!<p>");

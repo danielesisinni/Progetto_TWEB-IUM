@@ -44,7 +44,7 @@ public class Docenti extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
-        if(session.getAttribute("userRole").equals("Amministratore")){
+        if(session.getAttribute("userRole").equals("Amministratore") && !action.equals("Docenti")){
             PrintWriter out = response.getWriter();
             try {
                 out.println("<p><span class=\"badge badge-success\">Success</span> Docente aggiunto nel Database!<p>");
@@ -55,7 +55,6 @@ public class Docenti extends HttpServlet {
         }if(action.equals("Docenti")){
             response.setContentType("application/json,charset=UTF-8");
             Gson gson = new Gson();
-            PrintWriter out = response.getWriter();
             ArrayList<Docente> docente = DAO.Teacher();
             String s = gson.toJson(docente);
             request.setAttribute("risultato", s);

@@ -85,7 +85,6 @@ public class ServletController extends HttpServlet {
                         break;
                 }
             } else if (session.getAttribute("userRole") != null && session.getAttribute("userRole").equals("Ospite")) {
-                System.out.println("ciao");
                 switch (action) {
                     case "Docenti":
                         rd = getServletContext().getNamedDispatcher("docenti");
