@@ -17,12 +17,18 @@ public class Login extends HttpServlet {
     //private Gson gson = new Gson();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        System.out.println("gettttttt");
         String flag = request.getParameter("action");
         if(flag.equals("crea")) {
             String newacc = request.getParameter("account");
             String newpass = request.getParameter("password");
-            DAO.insertUsers(newacc, newpass);
-            processRequest(request, response);
+            if(!newacc.equals("") && !newpass.equals("")){
+                DAO.insertUsers(newacc, newpass);
+                processRequest(request, response);
+            }else{
+                request.setAttribute("risultato", "errore2");
+            }
+
         }
     }
 
@@ -44,7 +50,6 @@ public class Login extends HttpServlet {
         }else if(flag.equals("crea")) {
             doGet(request,response);
         }
-        processRequest(request, response);
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)

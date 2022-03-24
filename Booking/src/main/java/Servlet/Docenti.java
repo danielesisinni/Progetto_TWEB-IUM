@@ -18,21 +18,7 @@ import java.util.ArrayList;
 public class Docenti extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        System.out.println("get");
-        HttpSession session = request.getSession();
-        if(session.getAttribute("userRole").equals("Amministratore")){
-            response.setContentType("text/html,charset=UTF-8");
-            Integer idDocente = Integer.parseInt(request.getParameter("id"));
-            String nomeDocente = request.getParameter("nome");
-            String cognomeDocente = request.getParameter("cognome");
-
-            if (idDocente != null && nomeDocente != null && cognomeDocente != null) {
-                DAO.insertTeacher(nomeDocente, cognomeDocente, idDocente);
-            }
-            processRequest(request, response);
-        }else{
-            processRequest(request, response);
-        }
+        processRequest(request,response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

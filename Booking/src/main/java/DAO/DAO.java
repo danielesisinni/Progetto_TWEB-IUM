@@ -232,13 +232,21 @@ public class DAO {
         }
     }
 
-    public static void insertCourse(int id, String title) {
+    public static void insertCourse(String title) {
         Connection conn1 = null;
         Corso c = null;
         Scanner input = new Scanner(System.in);
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
+
+            int id = 0;
+            ArrayList<Corso> cour = Course();
+            for(Corso cour2: cour){
+                id = cour2.getId();
+            }
+            id++;
+
             c = new Corso(id, title);
 
             //Execute insert query
@@ -291,49 +299,13 @@ public class DAO {
         }
     }
 
-    public static void insertTeacher() {
-        Connection conn1 = null;
-        String name;
-        String surname;
-        int id;
-        Docente c = null;
-        Scanner input = new Scanner(System.in);
-
-        try {
-            conn1 = DriverManager.getConnection(url1, user, password);
-
-            System.out.println("Insert a name of teacher: ");
-            name = input.nextLine();
-            System.out.println("Insert a surname of teacher: ");
-            surname = input.nextLine();
-            System.out.println("Insert a id of teacher: ");
-            id = input.nextInt();
-            c = new Docente(name, surname, id);
-
-            //Execute insert query
-            Statement st = conn1.createStatement();
-            st.execute("insert into docente (nome, cognome, id) values ('" + name + "', '" + surname + "', '" + id + "')");
-            System.out.println("New teacher added!");
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        finally {
-            if (conn1 != null) {
-                try {
-                    conn1.close();
-                } catch (SQLException e2) {
-                    System.out.println(e2.getMessage());
-                }
-            }
-        }
-    }
-
-    public static void insertTeacher(String nomeDocente, String cognomeDocente, Integer id) {
+    public static void insertTeacher(String nomeDocente, String cognomeDocente) {
         Connection conn1 = null;
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
+
+            int id = (int) (Math.random() * 500);
 
             Docente c = new Docente(nomeDocente, cognomeDocente, id);
             //Execute insert query

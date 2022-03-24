@@ -63,6 +63,9 @@
                         <p>Cliente Benvenuto!</p>
                         <p><span class="badge badge-success">Successo</span> Account creato</p>
                     </template>
+                    <template v-if="errore2">
+                        <span class="badge badge-danger">Errore nei dati, ricontrolla e riprova. Grazie</span>
+                    </template>
             </article>
         </span>
 
@@ -197,6 +200,10 @@
                     </li>
                     <br>
                     <li>
+                        <button class="btn btn-outline-secondary" v-on:click="transit('aggCD')">Aggiungi corsi e docenti</button>
+                    </li>
+                    <br>
+                    <li>
                         <button class="btn btn-outline-danger" v-on:click="transit('logout')">Logout</button>
                     </li>
                 </ul>
@@ -204,26 +211,46 @@
 
             <!--<home v-if="checkAH" v-on:transit-inner-prenotazioni="transit('prenotazioni')" v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="transit('logout')"></home>-->
             <br>
-            <div v-if="stampaD" v-for="docenti in printD" class="container">
+            <span v-if="stampaD" v-for="docenti in printD" class="container">
                 <hr>
                 <p>{{docenti.nome}}, {{docenti.cognome}}, {{docenti.iddocente}}</p>
-            </div>
-            <div v-if="stampaCD" class="container">
+            </span>
+            <span v-if="stampaCD" class="container">
                 <h4>Corsi...........Docenti</h4>
                 <span v-for="co_do in printCD">
                     <hr>
                     <p>[{{co_do.corso}}]--[{{co_do.docente}}]</p>
                 </span>
-            </div>
-            <div v-if="stampaR" v-for="ripetizioni in printR" class="container">
+            </span>
+            <span v-if="stampaR" v-for="ripetizioni in printR" class="container">
                 <hr>
                 <p>{{ripetizioni.docente}}, {{ripetizioni.corso}}, {{ripetizioni.data}}, {{ripetizioni.ora}}, {{ripetizioni.status}}</p>
-            </div>
-            <div class="container" v-if="logout" >
+            </span>
+            <span v-if="logout" class="container">
                 <span class="badge bg-warning text-dark">Attenzione:</span>
                 <p> Logout effettuato con successo</p>
-            </div>
+            </span>
+
+            <article v-if="aggiungiCD" class="container">
+                <h4>Aggiunta di corsi e docenti affliati</h4>
+                <p>-Hai la possibilit&aacute; di aggiungere un nuovo corso, un nuovo docente e creare la loro affiliazione.</p>
+                <br>
+
+                <p>Aggiungi il corso:</p>
+                <input v-model="corsi" type="text"  placeholder="Nome" required>
+
+                <hr>
+                <p>Aggiungi il docente:</p>
+                <input v-model="var1" type="text" placeholder="Nome" required>
+                <input v-model="var2" type="text" placeholder="Cognome" required>
+
+                <br><br>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary" v-on:click="createArray()">Conferma dati</button>
+                </div>
+            </article>
         </span>
+
     </div>
 
     <script>
@@ -305,11 +332,12 @@
         })*/
 
 
+        let nome = null, cognome = null;
         var app = new Vue ({
             el: '#components',
             data: {
                 loginHome: true, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
-                homeAmministratore: false, logout: false, checkAH: true,
+                homeAmministratore: false, logout: false, errore2: false, checkAH: false, aggiungiCD: false, corsi: null, var1: null, var2: null, docenti: [],
                 homeOspite: false, checkO: false,
                 homeCliente: false, checkCl: false, printCD: [], printD: [], printR: [], stampaCD: false, stampaD: false, stampaR: false,
                 creazionehome: false, checkC: false, print: '',
@@ -317,50 +345,42 @@
                 link: 'ServletController'
             },
             methods: {
+                //ServletController, gestisce tutte le Servlet e passa i data che ottiene alle chiamate
                 ServletController: function (flag){
                     var self = this;
-                    $.post(this.link, {account: this.acc, password: this.pass, action: flag}, function (data) {
+                    $.post(this.link, {account: this.acc, password: this.pass, action: flag, courses: this.corsi, teacher: this.docenti}, function (data) {
                         //Sezione Servlet Login
                         if(flag === 'login' || flag === 'crea'|| flag === 'ospite'){
                             switch (data) {
                                 case 'sono amministratore':
-                                    self.role = 'Amministratore';
-                                    self.checkA = true;
-                                    self.checkE = false;
-                                    self.check = false;
+                                    self.role = 'Amministratore'; self.checkA = true; self.checkE = false; self.check = false;
                                     setTimeout(() => {
                                         self.transit("amministratoreHome");
                                     }, 2300);
                                     break;
                                 case 'sono cliente':
-                                    self.role = 'Cliente';
-                                    self.check = true;
-                                    self.checkA = false;
-                                    self.checkE = false;
+                                    self.role = 'Cliente'; self.check = true; self.checkA = false; self.checkE = false;
                                     setTimeout(() => {
                                         self.transit("clienteHome");
                                     }, 2300);
                                     break;
                                 case 'sono ospite':
-                                    self.role = 'Ospite';
-                                    self.transit("ospiteHome");
+                                    self.role = 'Ospite'; self.transit("ospiteHome");
                                     break;
                                 case 'errore':
-                                    self.check = false;
-                                    self.checkA = false;
-                                    self.checkE = true;
+                                    self.check = false; self.checkA = false; self.checkE = true;
                                     break;
                                 case 'crea':
-                                    self.checkC = true;
-                                    self.acc = null;
-                                    self.pass = null;
+                                    self.checkC = true; self.acc = null; self.pass = null; self.errore2 = false;
                                     setTimeout(() => {
                                         self.transit('loginHome');
                                     }, 2000);
                                     break;
+                                case 'errore2':
+                                    self.errore2 = true;
+                                    break;
                                 case 'ospite':
-                                    self.role = 'Ospite';
-                                    self.transit("ospiteHome");
+                                    self.role = 'Ospite'; self.transit("ospiteHome");
                                     break;
                             }
                             //Sezione Servlet/Docenti, stampa dei docenti per i clienti
@@ -374,67 +394,44 @@
                             self.printR = data;
                             //Sezione Servlet/Logout
                         }else if(flag === 'logout'){
-                            self.logout = true;
+                            self.logout = true; self.acc = null; self.pass = null;
                             setTimeout(() => {
                                 self.transit("loginHome");
                             }, 2300);
                         }
                     })
                 },
+
+                createArray: function(){
+                    console.log(this.var1);console.log(this.var2);
+                    this.docenti.push(this.var1);this.docenti.push(this.var2);
+                    console.log(this.docenti);
+                    this.ServletController("Corsi_Docenti");
+                },
+
+                //Funzione per il transito da pagina a pagina e per la stampa degli oggetti Json
                 transit: function (flag) {
                     if(flag === 'creazione') {
-                        this.loginHome = false;
-                        this.creazionehome = true;
+                        this.loginHome = false; this.creazionehome = true; this.errore2 = false;
                     }else if(flag === 'ospiteHome'){
-                        this.loginHome = false;
-                        this.homeOspite = true;
-                        this.checkO = true;
-                        this.stampaD = false;
-                        this.stampaR = false;
-                        this.stampaCD = false;
+                        this.loginHome = false; this.homeOspite = true; this.checkO = true; this.stampaD = false; this.stampaR = false; this.stampaCD = false;
                     }else if(flag === 'logout') {
                         this.ServletController("logout");
                     }else if(flag === 'loginHome') {
-                        this.loginHome = true;
-                        this.creazionehome = false;
-                        this.homeCliente = false;
-                        this.logout = false;
-                        this.check = false;
-                        this.checkAH = false;
-                        this.checkA = false;
-                        this.checkO = false;
+                        this.loginHome = true; this.homeAmministratore = false; this.creazionehome = false; this.homeCliente = false; this.logout = false; this.check = false; this.checkA = false; this.checkO = false; this.errore2 = false;
                     }else if(flag === 'amministratoreHome'){
-                        this.loginHome = false;
-                        this.homeAmministratore = true;
-                        this.checkAH = true;
-                        this.stampaD = false;
-                        this.stampaR = false;
-                        this.stampaCD = false;
+                        this.loginHome = false; this.homeAmministratore = true; this.checkAH = true; this.stampaD = false; this.stampaR = false; this.stampaCD = false;
                     }else if(flag === 'clienteHome'){
-                        this.loginHome = false;
-                        this.homeCliente = true;
-                        this.checkCl = true;
-                        this.stampaD = false;
-                        this.stampaR = false;
-                        this.stampaCD = false;
-                    }else if(flag === 'corsi_docenti'){
-                        this.checkCl = false;
-                        this.checkAH = false;
-                        this.checkO = false;
-                        this.stampaCD = true;
+                        this.loginHome = false; this.homeCliente = true; this.checkCl = true; this.stampaD = false; this.stampaR = false; this.stampaCD = false;
+                    }else if(flag === 'aggCD'){
+                        this.checkAH = false; this.aggiungiCD = true;
+                    } else if(flag === 'corsi_docenti'){
+                        this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaCD = true;
                         this.ServletController("Corsi_Docenti");
                     }else if(flag === 'docenti'){
-                        this.checkCl = false;
-                        this.checkAH = false;
-                        this.checkO = false;
-                        this.stampaD = true;
-                        this.ServletController("Docenti");
+                        this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaD = true; this.ServletController("Docenti");
                     }else if(flag === 'ripetizioni'){
-                        this.checkCl = false;
-                        this.checkAH = false;
-                        this.checkO = false;
-                        this.stampaR = true;
-                        this.ServletController("Ripetizioni");
+                        this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaR = true; this.ServletController("Ripetizioni");
                     }
                 },
             }

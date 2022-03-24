@@ -18,19 +18,7 @@ import java.util.ArrayList;
 public class Corsi extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String action = request.getParameter("action");
-        if(action != null) {
-            response.setContentType("text/html,charset=UTF-8");
-            Integer idcorso = Integer.parseInt(request.getParameter("id"));
-            String nomecorso = request.getParameter("corso");
-
-            if (nomecorso != null) {
-                DAO.insertCourse(idcorso, nomecorso);
-            }
-            processRequest(request, response);
-        }else{
-            processRequest(request, response);
-        }
+        processRequest(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
