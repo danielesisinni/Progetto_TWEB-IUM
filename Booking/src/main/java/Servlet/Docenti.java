@@ -18,7 +18,18 @@ import java.util.ArrayList;
 public class Docenti extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        processRequest(request,response);
+        System.out.println("getDocenti");
+        HttpSession session = request.getSession();
+        String action = request.getParameter("action");
+        if(action.equals("Docenti")){
+            response.setContentType("application/json,charset=UTF-8");
+            Gson gson = new Gson();
+            ArrayList<Docente> docente = DAO.Teacher();
+            String s = gson.toJson(docente);
+            request.setAttribute("risultato", s);
+            String jsessionID = session.getId(); // estraggo il session ID
+            System.out.println("JSessionID:" + jsessionID);
+        }
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -38,14 +49,6 @@ public class Docenti extends HttpServlet {
             } finally {
                 out.close();
             }
-        }if(action.equals("Docenti")){
-            response.setContentType("application/json,charset=UTF-8");
-            Gson gson = new Gson();
-            ArrayList<Docente> docente = DAO.Teacher();
-            String s = gson.toJson(docente);
-            request.setAttribute("risultato", s);
-            String jsessionID = session.getId(); // estraggo il session ID
-            System.out.println("JSessionID:" + jsessionID);
         }
     }
 }

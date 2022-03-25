@@ -18,21 +18,11 @@ public class Login extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         System.out.println("gettttttt");
-        String flag = request.getParameter("action");
-        if(flag.equals("crea")) {
-            String newacc = request.getParameter("account");
-            String newpass = request.getParameter("password");
-            if(!newacc.equals("") && !newpass.equals("")){
-                DAO.insertUsers(newacc, newpass);
-                processRequest(request, response);
-            }else{
-                request.setAttribute("risultato", "errore2");
-            }
-
-        }
+        processRequest(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        System.out.println("postttt");
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         String flag = request.getParameter("action");
@@ -48,8 +38,18 @@ public class Login extends HttpServlet {
                 request.setAttribute("risultato", "errore");
             }
         }else if(flag.equals("crea")) {
-            doGet(request,response);
+            String newacc = request.getParameter("account");
+            String newpass = request.getParameter("password");
+            if(!newacc.equals("") && !newpass.equals("")){
+                DAO.insertUsers(newacc, newpass);
+                processRequest(request, response);
+            }else{
+                request.setAttribute("risultato", "errore2");
+            }
+        }else if(flag.equals("ospite")){
+            processRequest(request, response);
         }
+
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)

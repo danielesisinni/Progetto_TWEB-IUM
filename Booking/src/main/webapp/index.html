@@ -18,31 +18,33 @@
     <div id="components">
         <span v-if="loginHome">
             <testa></testa>
-            <article class="text-center">
+            <article class="text-center" >
                 <hr><h4>Applicazione delle prenotazioni - Unito</h4><hr>
                 <br>
-                    <p>Amministratore - Cliente</p>
-                    <p>Account : <input v-model="acc" type="text" required></p>
-                    <p>Password : <input v-model="pass" type="password"  required></p>
+                <section class="form-group">
+                        <p>Amministratore - Cliente</p>
+                        <p>Account : <input v-model="acc" type="text" required></p>
+                        <p>Password : <input v-model="pass" type="password"  required></p>
 
-                    <button v-on:click="ServletController('login')">Autentica </button>
-                    <template v-if="checkA">
-                        <span class="badge badge-success">Successo</span>
-                        <br>
-                        <p>Benvenuto {{ acc }} [Amministratore]</p>
-                    </template>
-                    <template v-if="check">
-                        <span class="badge badge-success">Successo</span>
-                        <br>
-                        <p>Benvenuto {{ acc }} [Cliente]</p>
-                    </template>
-                <template v-if="checkE">
-                    <span class="badge badge-danger">Errore nel login</span>
-                </template>
+                        <button v-on:click="ServletControllerPost('login')">Autentica </button>
+                        <template v-if="checkA">
+                            <span class="badge badge-success">Successo</span>
+                            <br>
+                            <p>Benvenuto {{ acc }} <i>[Amministratore]</i></p>
+                        </template>
+                        <template v-if="check">
+                            <span class="badge badge-success">Successo</span>
+                            <br>
+                            <p>Benvenuto {{ acc }} <i>[Cliente]</i></p>
+                        </template>
+                        <template v-if="checkE">
+                            <span class="badge badge-danger">Errore nel login</span>
+                        </template>
+                </section>
                 <br><br><br><br><br>
                 <hr>
             </article>
-            <centro-login v-on:ospite-inner="ServletController('ospite')" v-on:creazione-inner="transit('creazione')" class="text-center" ></centro-login>
+            <centro-login v-on:ospite-inner="ServletControllerPost('ospite')" v-on:creazione-inner="transit('creazione')" class="text-center" ></centro-login>
         </span>
 
         <span v-if="creazionehome">
@@ -58,7 +60,7 @@
                     <p>Account:  <input v-model="acc" type="text" required placeholder="account"/></p>
                     <p>Password: <input v-model="pass" type="password" required placeholder="password"/></p>
                 </form>
-                    <button v-on:click="ServletController('crea')">Crea account </button>
+                    <button v-on:click="ServletControllerPost('crea')">Crea account </button>
                     <template v-if="checkC">
                         <p>Cliente Benvenuto!</p>
                         <p><span class="badge badge-success">Successo</span> Account creato</p>
@@ -129,25 +131,27 @@
                     </div>
                 </div>
             </nav>
+
             <home v-if="checkO"  v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="transit('logout')"></home>
-            <div v-if="stampaD" v-for="docenti in printD" class="container">
-                <hr>
-                <p>{{docenti.nome}}, {{docenti.cognome}}, {{docenti.iddocente}}</p>
-            </div>
-            <div v-if="stampaCD" class="container">
-                <h4>Corsi...........Docenti</h4>
-                <span v-for="co_do in printCD">
-                    <hr>
-                    <p>[{{co_do.corso}}]--[{{co_do.docente}}]</p>
-                </span>
-            </div>
-            <div v-if="stampaR" v-for="ripetizioni in printR" class="container">
-                <hr>
-                <p>{{ripetizioni.docente}}, {{ripetizioni.corso}}, {{ripetizioni.data}}, {{ripetizioni.ora}}</p>
-            </div>
-            <div class="container" v-if="logout" >
-                <span class="badge bg-warning text-dark">Attenzione:</span>
-                <p> Logout effettuato con successo</p>
+
+            <div class="container">
+               <hr>
+                <div v-if="stampaD" v-for="docenti in printD">
+                    <p>{{docenti.nome}}, {{docenti.cognome}}, {{docenti.iddocente}}</p>
+                </div>
+
+                <div v-if="stampaCD" v-for="co_do in printCD">
+                        <p>[{{co_do.corso}}]--[{{co_do.docente}}]</p>
+                </div>
+
+                <div v-if="stampaR" v-for="ripetizioni in printR">
+                    <p>{{ripetizioni.docente}}, {{ripetizioni.corso}}, {{ripetizioni.data}}, {{ripetizioni.ora}}</p>
+                </div>
+
+                <div v-if="logout" >
+                    <span class="badge bg-warning text-dark">Attenzione:</span>
+                    <p> Stai tornando al Login</p>
+                </div>
             </div>
         </span>
 
@@ -176,62 +180,47 @@
                     </div>
                 </div>
             </nav>
-            <article v-if="checkAH" class="container">
-                <br><br><h5>Scegli l'opzione che desideri</h5>
-                <ul>
-                    <li>
-                        <button class="btn btn-outline-secondary" v-on:click="transit('prenotazioni')">Le prenotazioni attive</button>
-                    </li>
-                    <br>
-                    <li>
-                        <button class="btn btn-outline-secondary" v-on:click="transit('prenotazioni2')">Le  mie prenotazioni attive</button>
-                    </li>
-                    <br>
-                    <li>
-                        <button class="btn btn-outline-secondary" v-on:click="transit('docenti')">Visualizzare i docenti</button>
-                    </li>
-                    <br>
-                    <li>
-                        <button class="btn btn-outline-secondary" v-on:click="transit('corsi_docenti')">Visualizzare i corsi/docenti</button>
-                    </li>
-                    <br>
-                    <li>
-                        <button class="btn btn-outline-secondary" v-on:click="transit('ripetizioni')">Visualizzare le ripetizioni disponibili</button>
-                    </li>
-                    <br>
-                    <li>
-                        <button class="btn btn-outline-secondary" v-on:click="transit('aggCD')">Aggiungi corsi e docenti</button>
-                    </li>
-                    <br>
-                    <li>
-                        <button class="btn btn-outline-danger" v-on:click="transit('logout')">Logout</button>
-                    </li>
-                </ul>
-            </article>
 
-            <!--<home v-if="checkAH" v-on:transit-inner-prenotazioni="transit('prenotazioni')" v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="transit('logout')"></home>-->
-            <br>
-            <span v-if="stampaD" v-for="docenti in printD" class="container">
+            <home v-if="checkAH" v-on:transit-inner-prenotazioni="transit('prenotazioni')" v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="transit('logout')">
+                <p>Ciaoooo</p>
+                <br>
+                <p>Stampiii</p>
+            </home>
+            <!--<article v-if="checkAH" class="container">
+                            <br><br><h5>Scegli l'opzione che desideri</h5>
+                            <ul>
+                                <li>
+                                    <button class="btn btn-outline-secondary" v-on:click="transit('prenotazioni')">Le prenotazioni attive</button>
+                                </li>
+                                <br>
+                                <li>
+                                    <button class="btn btn-outline-secondary" v-on:click="transit('prenotazioni2')">Le  mie prenotazioni attive</button>
+                                </li>
+                                <br>
+                                <li>
+                                    <button class="btn btn-outline-secondary" v-on:click="transit('aggCD')">Aggiungi corsi e docenti</button>
+                                </li>
+                                <br>
+                            </ul>
+                        </article>-->
+            <div class="container">
                 <hr>
-                <p>{{docenti.nome}}, {{docenti.cognome}}, {{docenti.iddocente}}</p>
-            </span>
-            <span v-if="stampaCD" class="container">
-                <h4>Corsi...........Docenti</h4>
-                <span v-for="co_do in printCD">
-                    <hr>
-                    <p>[{{co_do.corso}}]--[{{co_do.docente}}]</p>
+                <div v-if="stampaD" v-for="docenti in printD">
+                    <p>{{docenti.nome}}, {{docenti.cognome}}, {{docenti.iddocente}}</p>
+                </div>
+                <span v-if="stampaCD" v-for="co_do in printCD">
+                    <p>{{co_do.corso}} -- {{co_do.docente}}</p>
                 </span>
-            </span>
-            <span v-if="stampaR" v-for="ripetizioni in printR" class="container">
-                <hr>
-                <p>{{ripetizioni.docente}}, {{ripetizioni.corso}}, {{ripetizioni.data}}, {{ripetizioni.ora}}, {{ripetizioni.status}}</p>
-            </span>
-            <span v-if="logout" class="container">
-                <span class="badge bg-warning text-dark">Attenzione:</span>
-                <p> Logout effettuato con successo</p>
-            </span>
+                <span v-if="stampaR" v-for="ripetizioni in printR">
+                    <p>{{ripetizioni.docente}}, {{ripetizioni.corso}}, {{ripetizioni.data}}, {{ripetizioni.ora}}, {{ripetizioni.status}}</p>
+                </span>
+                <span v-if="logout">
+                    <span class="badge bg-warning text-dark">Attenzione:</span>
+                    <p> Logout effettuato con successo</p>
+                </span>
+            </div>
 
-            <article v-if="aggiungiCD" class="container">
+            <article v-if="aggiungiCD">
                 <h4>Aggiunta di corsi e docenti affliati</h4>
                 <p>-Hai la possibilit&aacute; di aggiungere un nuovo corso, un nuovo docente e creare la loro affiliazione.</p>
                 <br>
@@ -280,21 +269,13 @@
             }
         })
 
-        //home di ospite/cliente/amministratore
-        /*Vue.component('home',{
+        //home di ospite/cliente
+        Vue.component('home',{
             template:
                 '<article class="container">' +
-                '    <br><br><h5>Scegli l\'opzione che desideri</h5>' +
+                '    <br><br>' +
+                '        <h5>Scegli l&rsquo;opzione che desideri</h5>\n' +
                 '            <ul>\n' +
-                '            <li v-if="checkAH">\n' +
-                '                <button class="btn btn-outline-secondary" v-on:click="transitPrenotazioni">Le prenotazioni attive</button>\n' +
-                '            <br>\n' +
-                '            </li>\n' +
-                '            <li v-if="checkCL">\n' +
-                '                <button class="btn btn-outline-secondary" v-on:click="transitPrenotazioni">Le  mie prenotazioni attive</button>\n' +
-                '            <br>\n' +
-                '            <br>\n' +
-                '            </li>\n' +
                 '            <li>\n' +
                 '                <button class="btn btn-outline-secondary" v-on:click="transitDocenti">Visualizzare i docenti</button>\n' +
                 '            </li>\n' +
@@ -329,7 +310,7 @@
                     this.$emit('transit-inner-corsi_docenti');
                 }
             }
-        })*/
+        })
 
 
         let nome = null, cognome = null;
@@ -346,7 +327,7 @@
             },
             methods: {
                 //ServletController, gestisce tutte le Servlet e passa i data che ottiene alle chiamate
-                ServletController: function (flag){
+                ServletControllerPost: function (flag){
                     var self = this;
                     $.post(this.link, {account: this.acc, password: this.pass, action: flag, courses: this.corsi, teacher: this.docenti}, function (data) {
                         //Sezione Servlet Login
@@ -383,15 +364,6 @@
                                     self.role = 'Ospite'; self.transit("ospiteHome");
                                     break;
                             }
-                            //Sezione Servlet/Docenti, stampa dei docenti per i clienti
-                        }else if(flag === 'Docenti'){
-                            self.printD = data;
-                            //Sezione Servlet/Corsi_Docenti
-                        }else if(flag === 'Corsi_Docenti'){
-                            self.printCD = data;
-                            //Sezione Servlet/Ripetizioni, stampa delle ripetizioni per i clienti
-                        }else if(flag === 'Ripetizioni'){
-                            self.printR = data;
                             //Sezione Servlet/Logout
                         }else if(flag === 'logout'){
                             self.logout = true; self.acc = null; self.pass = null;
@@ -402,11 +374,34 @@
                     })
                 },
 
+                ServletControllerGet: function (flag){
+                    var self = this;
+                    $.get(this.link, {account: this.acc, password: this.pass, action: flag, courses: this.corsi, teacher: this.docenti}, function (data) {
+                        //Sezione Servlet Login
+                        if(flag === 'login' || flag === 'crea'|| flag === 'ospite'){
+                            switch (data) {
+                                /*case 'errore':
+                                    self.check = false; self.checkA = false; self.checkE = true;
+                                    break;*/
+                            }
+                            //Sezione Servlet/Docenti, stampa dei docenti per i clienti
+                        }else if(flag === 'Docenti'){
+                            self.printD = data;
+                            //Sezione Servlet/Corsi_Docenti
+                        }else if(flag === 'Corsi_Docenti'){
+                            self.printCD = data;
+                            //Sezione Servlet/Ripetizioni, stampa delle ripetizioni per i clienti
+                        }else if(flag === 'Ripetizioni'){
+                            self.printR = data;
+                        }
+                    })
+                },
+
                 createArray: function(){
                     console.log(this.var1);console.log(this.var2);
                     this.docenti.push(this.var1);this.docenti.push(this.var2);
                     console.log(this.docenti);
-                    this.ServletController("Corsi_Docenti");
+                    this.ServletControllerPost("Corsi_Docenti");
                 },
 
                 //Funzione per il transito da pagina a pagina e per la stampa degli oggetti Json
@@ -416,22 +411,22 @@
                     }else if(flag === 'ospiteHome'){
                         this.loginHome = false; this.homeOspite = true; this.checkO = true; this.stampaD = false; this.stampaR = false; this.stampaCD = false;
                     }else if(flag === 'logout') {
-                        this.ServletController("logout");
+                        this.ServletControllerPost("logout");
                     }else if(flag === 'loginHome') {
-                        this.loginHome = true; this.homeAmministratore = false; this.creazionehome = false; this.homeCliente = false; this.logout = false; this.check = false; this.checkA = false; this.checkO = false; this.errore2 = false;
+                        this.loginHome = true; this.homeAmministratore = false; this.creazionehome = false; this.homeOspite = false; this.homeCliente = false; this.logout = false; this.check = false; this.checkA = false; this.checkO = false; this.errore2 = false;
                     }else if(flag === 'amministratoreHome'){
-                        this.loginHome = false; this.homeAmministratore = true; this.checkAH = true; this.stampaD = false; this.stampaR = false; this.stampaCD = false;
+                        this.loginHome = false; this.homeAmministratore = true; this.checkAH = true; this.stampaD = false; this.stampaR = false; this.stampaCD = false; this.aggiungiCD = false;
                     }else if(flag === 'clienteHome'){
                         this.loginHome = false; this.homeCliente = true; this.checkCl = true; this.stampaD = false; this.stampaR = false; this.stampaCD = false;
                     }else if(flag === 'aggCD'){
                         this.checkAH = false; this.aggiungiCD = true;
                     } else if(flag === 'corsi_docenti'){
                         this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaCD = true;
-                        this.ServletController("Corsi_Docenti");
+                        this.ServletControllerGet("Corsi_Docenti");
                     }else if(flag === 'docenti'){
-                        this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaD = true; this.ServletController("Docenti");
+                        this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaD = true; this.ServletControllerGet("Docenti");
                     }else if(flag === 'ripetizioni'){
-                        this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaR = true; this.ServletController("Ripetizioni");
+                        this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaR = true; this.ServletControllerGet("Ripetizioni");
                     }
                 },
             }

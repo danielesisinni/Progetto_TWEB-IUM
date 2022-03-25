@@ -21,6 +21,28 @@ public class Ripetizioni extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
+        String action = request.getParameter("action");
+        response.setContentType("application/json,charset=UTF-8");
+        Gson gson = new Gson();
+        PrintWriter out = response.getWriter();
+        ArrayList<Ripetizione> ripetizione = DAO.Repetition();
+        String s = gson.toJson(ripetizione);
+        request.setAttribute("risultato", s);
+        String jsessionID = session.getId(); // estraggo il session ID
+        System.out.println("JSessionID:" + jsessionID);
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        /*response.setContentType("text/html,charset=UTF-8");
+        String type1 = request.getParameter("type1");
+
+        if(type1.equals("corso-docente")){
+            PrintWriter out = response.getWriter();
+            out.println("Lista delle possibili ripetizioni da inserire: ");
+            ArrayList<CorsoDocente> prova = DAO.CourseTeacher();
+            out.flush();
+        }
+         HttpSession session = request.getSession();
         if(session.getAttribute("userRole").equals("Amministratore")) {
             response.setContentType("text/html,charset=UTF-8");
             String docente = request.getParameter("docente");
@@ -35,19 +57,7 @@ public class Ripetizioni extends HttpServlet {
             processRequest(request, response);
         }else{
             processRequest(request, response);
-        }
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        /*response.setContentType("text/html,charset=UTF-8");
-        String type1 = request.getParameter("type1");
-
-        if(type1.equals("corso-docente")){
-            PrintWriter out = response.getWriter();
-            out.println("Lista delle possibili ripetizioni da inserire: ");
-            ArrayList<CorsoDocente> prova = DAO.CourseTeacher();
-            out.flush();
-        }*/
+        } */
         processRequest(request, response);
     }
 

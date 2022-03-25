@@ -18,22 +18,47 @@ import java.util.ArrayList;
 public class Corsi_Docenti extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        response.setContentType("text/html,charset=UTF-8");
-
         HttpSession session = request.getSession();
-        String nomecorso = request.getParameter("courses");
-        String var2 = request.getParameter("teacher");
+        String action = request.getParameter("action");
+        System.out.println(action);
 
-        if (session.getAttribute("userRole").equals("Amministratore")) {
-            if(!nomecorso.equals("")){
-                DAO.insertCourse(nomecorso);
-            }else if(!var2.equals("")){
+        if (action != null && action.equals("courses")) {
+            request.setAttribute("risultato", "corso_aggiunto");
 
+        }
+        if (action != null && action.equals("Corsi_Docenti")) {
+                response.setContentType("application/json,charset=UTF-8");
+                Gson gson = new Gson();
+                PrintWriter out = response.getWriter();
+                ArrayList<CorsoDocente> corsi_docenti = DAO.CourseTeacher();
+                String s = gson.toJson(corsi_docenti);
+                request.setAttribute("risultato", s);
+                String jsessionID = session.getId(); // estraggo il session ID
+                System.out.println("JSessionID:" + jsessionID);
             }
+    }
 
+        public void doPost (HttpServletRequest request, HttpServletResponse response) throws
+        IOException, ServletException {
+            String action = request.getParameter("courses");
+            Object action2 = request.getParameter("teacher");
+            System.out.println("action-> " + action);
+            System.out.println("action2-> " + action2);
+            //System.out.println("action2-> " + action2[0]);
+            //System.out.println("action2-> " + action2[1]);
+            if (action != null || action2 != null) {
+                HttpSession session = request.getSession();
+                String nomecorso = request.getParameter("courses");
+                String var2 = request.getParameter("teacher");
 
+                if (session.getAttribute("userRole").equals("Amministratore")) {
+                    if(!nomecorso.equals("")){
+                        DAO.insertCourse(nomecorso);
+                    }else if(!var2.equals("")){
 
-            request.setAttribute("risultato","aggiunti");
+                    }
+
+                    request.setAttribute("risultato","aggiunti");
 
             /*response.setContentType("text/html,charset=UTF-8");
             String nomeDocente = request.getParameter("nome");
@@ -51,21 +76,9 @@ public class Corsi_Docenti extends HttpServlet {
             }
 
             processRequest(request, response);*/
-        }else{
-            request.setAttribute("risultato","errore");
-        }
-    }
-
-        public void doPost (HttpServletRequest request, HttpServletResponse response) throws
-        IOException, ServletException {
-            String action = request.getParameter("courses");
-            String action2 = request.getParameter("teacher");
-            System.out.println("action-> " + action);
-            System.out.println("action2-> " + action2);
-           // System.out.println("action2-> " + action2[0]);
-            //System.out.println("action2-> " + action2[1]);
-            if (action != null || action2 != null) {
-                doGet(request, response);
+                }else{
+                    request.setAttribute("risultato","errore");
+                }
             } else {
                 processRequest(request, response);
             }
@@ -74,22 +87,7 @@ public class Corsi_Docenti extends HttpServlet {
 
         private void processRequest (HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            HttpSession session = request.getSession();
-            String action = request.getParameter("action");
-            if (action != null && action.equals("courses")) {
-                request.setAttribute("risultato", "corso_aggiunto");
 
-                if (action.equals("Corsi_Docenti")) {
-                    response.setContentType("application/json,charset=UTF-8");
-                    Gson gson = new Gson();
-                    PrintWriter out = response.getWriter();
-                    ArrayList<CorsoDocente> corsi_docenti = DAO.CourseTeacher();
-                    String s = gson.toJson(corsi_docenti);
-                    request.setAttribute("risultato", s);
-                    String jsessionID = session.getId(); // estraggo il session ID
-                    System.out.println("JSessionID:" + jsessionID);
-                }
-            }
         }
 }
 
