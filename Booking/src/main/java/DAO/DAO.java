@@ -357,20 +357,13 @@ public class DAO {
         }
     }
 
-    public static void insertCourseTeacher() {
+    public static void insertCourseTeacher(String course, String docente) {
         Connection conn1 = null;
-        String course;
-        String docente;
         CorsoDocente c = null;
-        Scanner input = new Scanner(System.in);
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
-            System.out.println("Insert a course: ");
-            course = input.nextLine();
-            System.out.println("Insert a id of teacher: ");
-            docente = input.nextLine();
             c = new CorsoDocente(course, docente);
 
             //Execute insert query
