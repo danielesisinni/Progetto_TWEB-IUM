@@ -10,9 +10,7 @@ import java.io.PrintWriter;
 public class ServletController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         request.setCharacterEncoding("UTF-8"); // per essere robusti rispetto a caratteri speciali (', etc)
-
         ServletContext ctx = getServletContext();
         HttpSession session = request.getSession();
         PrintWriter out = response.getWriter();

@@ -215,19 +215,27 @@
                 <h4>Aggiunta di corsi e docenti affliati</h4>
                 <p>-Hai la possibilit&aacute; di aggiungere un nuovo corso, un nuovo docente e creare la loro affiliazione.</p>
                 <br>
+                <div class="form-group">
+                    <p>Aggiungi il corso:</p>
+                    <input v-model="corsi" type="text"  placeholder="Nome" required>
 
-                <p>Aggiungi il corso:</p>
-                <input v-model="corsi" type="text"  placeholder="Nome" required>
+                    <hr>
+                    <p>Aggiungi il docente:</p>
+                    <input v-model="var1" type="text" placeholder="Nome" required>
+                    <input v-model="var2" type="text" placeholder="Cognome" required>
 
-                <hr>
-                <p>Aggiungi il docente:</p>
-                <input v-model="var1" type="text" placeholder="Nome" required>
-                <input v-model="var2" type="text" placeholder="Cognome" required>
-
-                <br><br>
-                <div class="d-grid gap-2">
-                    <button class="btn btn-primary" v-on:click="ServletControllerPost('Corsi_Docenti')">Conferma dati</button>
+                    <br><br>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" v-on:click="ServletControllerPost('Corsi_Docenti')">Conferma dati</button>
+                    </div>
                 </div>
+                <template v-if="errore2">
+                        <span class="badge badge-danger">Errore nei dati inseriti, ricontrolla e riprova. Grazie</span>
+                </template>
+                <template v-if="successo">
+                        <span class="badge badge-success">Successo</span>
+                </template>
+
             </article>
         </span>
 
@@ -304,7 +312,7 @@
             el: '#components',
             data: {
                 loginHome: true, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
-                homeAmministratore: false, logout: false, errore2: false, checkAH: false, aggiungiCD: false, corsi: null, var1: null, var2: null,
+                homeAmministratore: false, logout: false, errore2: false, successo: false, checkAH: false, aggiungiCD: false, corsi: null, var1: null, var2: null,
                 homeOspite: false, checkO: false,
                 homeCliente: false, checkCl: false, printCD: [], printD: [], printR: [], stampaCD: false, stampaD: false, stampaR: false,
                 creazionehome: false, checkC: false, print: '',
@@ -357,7 +365,14 @@
                                 self.transit("loginHome");
                             }, 2300);
                         }else if(flag === 'Corsi_Docenti') {
-                            //self.printCD = data;
+                            if(data === "errore"){
+                                self.successo = false; self.errore2 = true;
+                            }else if(data === "aggiunti"){
+                                self.errore2 = false; self.successo = true;
+                                setTimeout(() => {
+                                    self.transit('amministratoreHome');
+                                }, 2000);
+                            }
                         }
                     })
                 },
