@@ -3,14 +3,14 @@ package DAO;
 public class Ripetizione {
     private String docente;
     private String corso;
-    private String data;
+    private String giorno;
     private String ora;
     private String status;
 
-    public Ripetizione(String docente, String corso, String data, String ora, String status) {
+    public Ripetizione(String docente, String corso, String giorno, String ora, String status) {
         this.docente = docente;
         this.corso = corso;
-        this.data = data;
+        this.giorno = giorno;
         this.ora = ora;
         this.status = status;
     }
@@ -27,11 +27,11 @@ public class Ripetizione {
     public void setCorso(String corso) {
         this.corso = corso;
     }
-    public void setData(String data){
-        this.data = data;
+    public void setData(String giorno){
+        this.giorno = giorno;
     }
     public String getData(){
-        return data;
+        return giorno;
     }
     public String getOra() {
         return ora;
@@ -46,7 +46,7 @@ public class Ripetizione {
     public String toString() {
         return "Docente='" + docente + '\'' +
                 ", corso='" + corso + '\'' +
-                ", data='" + data + '\'' +
+                ", giorno='" + giorno + '\'' +
                 ", ora=" + ora + '\'' +
                 ", status=" +
                 '}';

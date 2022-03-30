@@ -144,7 +144,7 @@ public class DAO {
         return out;
     }
 
-    public static ArrayList<Prenotazione> Booking() {
+    public static ArrayList<Prenotazione> Prenotazione() {
         Connection conn1 = null;
         ArrayList<Prenotazione> out = new ArrayList<>();
 
@@ -157,7 +157,7 @@ public class DAO {
             Statement st = conn1.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM Prenotazione");
             while (rs.next()) {
-                Prenotazione p = new Prenotazione(rs.getInt("DOCENTE"), rs.getInt("CORSO"), rs.getInt("UTENTE"));
+                Prenotazione p = new Prenotazione(rs.getString("UTENTE"),rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"),rs.getString("STATUS"));
                 out.add(p);
             }
         } catch (SQLException e) {
@@ -206,7 +206,7 @@ public class DAO {
         return out;
     }
 
-    public static void insertRepetition(String docente, String corso, String data, String ora, String status) {
+    public static void insertRepetition(String docente, String corso, String giorno, String ora, String status) {
         Connection conn1 = null;
 
         try {
@@ -214,10 +214,11 @@ public class DAO {
             if (conn1 != null) {
                 System.out.println("Connected to the database test");
             }
-            Ripetizione r = new Ripetizione(docente, corso, data, ora, status);
+            Ripetizione r = new Ripetizione(docente, corso, giorno, ora, status);
 
             Statement st = conn1.createStatement();
-            st.execute("insert into ripetizione (docente, corso, data, ora, status) values ('" + docente + "', '" + corso + "', '" + data + "', '" + ora + "', '" + status + "')");
+            st.execute("insert into ripetizione (docente, corso, giorno, ora, status) values ('" + docente + "', '" + corso + "', '" + giorno + "', '" + ora + "', '" + status + "')");
+            System.out.println("New repetition added!");
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -475,105 +476,20 @@ public class DAO {
         }
     }
 
-    /*public static void insertRepetition(){
+
+    public static void insertPrenotazione(String utente, String docente, String corso, String giorno, String ora, String status) {
         Connection conn1 = null;
-        int id_teacher;
-        String course, date, hour, place;
-        Scanner input = new Scanner(System.in);
 
-        try {
-            conn1 = DriverManager.getConnection(url1, user, password);
-
-            System.out.println("Insert the ID number of the teacher: ");
-            id_teacher = input.nextInt();
-            System.out.println("Insert the course title: ");
-            course = input.nextLine();
-            System.out.println("Insert the date of the lesson: ");
-            date = input.nextLine();
-            System.out.println("Insert the hour of the lesson: ");
-            hour = input.nextLine();
-
-            //Execute insert query
-            Statement st = conn1.createStatement();
-            st.execute("insert into ripetizione (docente, corso, data, ora " +
-                    "values ('" + id_teacher + "', '" + course + "', '" + date + "', '" + hour + "')");
-            System.out.println("Repetition added!");
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        finally {
-            if (conn1 != null) {
-                try {
-                    conn1.close();
-                } catch (SQLException e2) {
-                    System.out.println(e2.getMessage());
-                }
-            }
-        }
-
-    }
-
-    public static void removeRepetition(){
-        Connection conn1 = null;
-        int id_teacher;
-        String course, date, hour;
-        Scanner input = new Scanner(System.in);
-
-        try {
-            conn1 = DriverManager.getConnection(url1, user, password);
-
-            System.out.println("Insert the ID number of the teacher: ");
-            id_teacher = input.nextInt();
-            System.out.println("Insert the course title: ");
-            course = input.nextLine();
-            System.out.println("Insert the date of the lesson: ");
-            date = input.nextLine();
-            System.out.println("Insert the hour of the lesson: ");
-            hour = input.nextLine();
-
-            //Execute insert query
-            Statement st = conn1.createStatement();
-            st.execute("delete from ripetizione where docente =  '" + id_teacher +
-                    "' and corso = '" + course + "' and data = '" + date + "' and ora = '" + hour + "'");
-            System.out.println("The booked lesson is deleted.");
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        finally {
-            if (conn1 != null) {
-                try {
-                    conn1.close();
-                } catch (SQLException e2) {
-                    System.out.println(e2.getMessage());
-                }
-            }
-        }
-    }*/
-
-    public static void insertBooking() {
-        Connection conn1 = null;
-        int id_course;
-        int id_user;
-        int id_teacher;
         Prenotazione c = null;
-        Scanner input = new Scanner(System.in);
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
-            System.out.println("Insert a id of course: ");
-            id_course = input.nextInt();
-            System.out.println("Insert a id of teacher: ");
-            id_teacher = input.nextInt();
-            System.out.println("Insert a id of user: ");
-            id_user = input.nextInt();
-            c = new Prenotazione(id_teacher, id_course, id_user);
+            c = new Prenotazione(utente, docente, corso, giorno, ora, status);
 
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("insert into prenotazione (docente, corso, utente) values ('" + id_teacher + "', '" + id_course + "', '" + id_user + "')");
+            st.execute("insert into prenotazione (utente, docente, corso, giorno, ora, status) values ('" + utente + "', '" + docente + "', '" + corso + "', '" + giorno + "', '" + ora + "', '" + status + "')");
             System.out.println("New booking added!");
 
         } catch (SQLException e) {
@@ -590,7 +506,7 @@ public class DAO {
         }
     }
 
-    public static void removeBooking() {
+    public static void removePrenotazione() {
         Connection conn1 = null;
         int id_course;
         int id_user;

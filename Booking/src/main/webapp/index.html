@@ -22,24 +22,25 @@
                 <hr><h4>Applicazione delle prenotazioni - Unito</h4><hr>
                 <br>
                 <section class="form-group">
-                        <p>Amministratore - Cliente</p>
-                        <p>Account : <input v-model="acc" type="text" required></p>
-                        <p>Password : <input v-model="pass" type="password"  required></p>
+                    <p>Amministratore - Cliente</p>
+                    <input v-model="acc" type="text" placeholder="Account" required>
+                    <br><br><input v-model="pass" type="password"  placeholder="Password" required>
 
-                        <button v-on:click="ServletControllerPost('login')">Autentica </button>
-                        <template v-if="checkA">
-                            <span class="badge badge-success">Successo</span>
-                            <br>
-                            <p>Benvenuto {{ acc }} <i>[Amministratore]</i></p>
-                        </template>
-                        <template v-if="check">
-                            <span class="badge badge-success">Successo</span>
-                            <br>
-                            <p>Benvenuto {{ acc }} <i>[Cliente]</i></p>
-                        </template>
-                        <template v-if="checkE">
-                            <span class="badge badge-danger">Errore nel login</span>
-                        </template>
+                    <br><br>
+                    <button v-on:click="ServletControllerPost('login')">Autentica </button>
+                    <template v-if="checkA">
+                        <span class="badge badge-success">Successo</span>
+                        <br>
+                        <p>Benvenuto {{ acc }} <i>[Amministratore]</i></p>
+                    </template>
+                    <template v-if="check">
+                        <span class="badge badge-success">Successo</span>
+                        <br>
+                        <p>Benvenuto {{ acc }} <i>[Cliente]</i></p>
+                    </template>
+                    <template v-if="checkE">
+                        <span class="badge badge-danger">Errore nel login</span>
+                    </template>
                 </section>
                 <br><br><br><br><br>
                 <hr>
@@ -189,9 +190,12 @@
                     </li>
                     <br>
                     <li>
-                        <button class="btn btn-outline-secondary" v-on:click="transit('aggCD')">Aggiungi corsi e docenti</button>
+                        <button class="btn btn-outline-secondary" v-on:click="transit('aggiungiCD')">Aggiungi corsi e docenti</button>
                     </li>
                     <br>
+                    <li>
+                        <button class="btn btn-outline-secondary" v-on:click="transit('aggiungiR')">Aggiungi ripetizioni</button>
+                    </li>
                 </ul>
             </article>
             <div class="container">
@@ -216,12 +220,12 @@
                 <p>-Hai la possibilit&aacute; di aggiungere un nuovo corso, un nuovo docente e creare la loro affiliazione.</p>
                 <br>
                 <div class="form-group">
-                    <p>Aggiungi il corso:</p>
-                    <input v-model="corsi" type="text"  placeholder="Nome" required>
+                    <label for="aggiungiCorso">Aggiungi il corso:</label>
+                    <input v-model="corsi" id="aggiungiCorso" type="text"  placeholder="Nome" required>
 
                     <hr>
-                    <p>Aggiungi il docente:</p>
-                    <input v-model="var1" type="text" placeholder="Nome" required>
+                    <label for="aggiungiDocente">Aggiungi il docente:</label>
+                    <input v-model="var1" id="aggiungiDocente" type="text" placeholder="Nome" required>
                     <input v-model="var2" type="text" placeholder="Cognome" required>
 
                     <br><br>
@@ -229,14 +233,54 @@
                         <button class="btn btn-primary" v-on:click="ServletControllerPost('Corsi_Docenti')">Conferma dati</button>
                     </div>
                 </div>
-                <template v-if="errore2">
+            </article>
+
+                <article v-if="aggiungiR" class="container">
+                    <h4>Aggiunta di nuove ripetizioni</h4>
+                    <p>-Scegli il docente, il corso, la data e l'ora della ripetizione.</p>
+                    <br>
+                    <div class="form-group">
+                        <label for="docente" >Nome e cognome</label>
+                        <input v-model="var1" id="docente" type="text" placeholder="Docente"/>
+
+                        <label for="Corso" >Corso</label>
+                        <input v-model="courses" id="Corso" type="text" placeholder="Corso"/>
+
+                        <label>Data</label>
+                        <select v-model="day">
+                            <option>Luned&igrave;</option>
+                            <option>Marted&igrave;</option>
+                            <option>Mercoled&igrave;</option>
+                            <option>Gioved&igrave;</option>
+                            <option>Venerd&igrave;</option>
+                        </select>
+
+                        <label>Ora</label>
+                         <select v-model="hour">
+                             <option>15:00</option>
+                             <option>16:00</option>
+                             <option>17:00</option>
+                             <option>18:00</option>
+                             <option>19:00</option>
+                        </select>
+
+                        <br>
+                        <br>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" v-on:click="ServletControllerPost('Ripetizioni')">Conferma dati</button>
+                        </div>
+                    </div>
+
+                </article>
+
+                <template v-if="errore2" class="container">
                         <span class="badge badge-danger">Errore nei dati inseriti, ricontrolla e riprova. Grazie</span>
                 </template>
-                <template v-if="successo">
+                <template v-if="successo" class="container">
                         <span class="badge badge-success">Successo</span>
                 </template>
 
-            </article>
+
         </span>
 
     </div>
@@ -312,7 +356,7 @@
             el: '#components',
             data: {
                 loginHome: true, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
-                homeAmministratore: false, logout: false, errore2: false, successo: false, checkAH: false, aggiungiCD: false, corsi: null, var1: null, var2: null,
+                homeAmministratore: false, logout: false, errore2: false, successo: false, checkAH: false, aggiungiCD: false, aggiungiR: false, courses: null, var1: null, var2: null, day: null, hour: null,
                 homeOspite: false, checkO: false,
                 homeCliente: false, checkCl: false, printCD: [], printD: [], printR: [], stampaCD: false, stampaD: false, stampaR: false,
                 creazionehome: false, checkC: false, print: '',
@@ -323,7 +367,7 @@
                 //ServletController, gestisce le Servlet che ci servono con la doPost e passa i data che ottiene alle chiamate
                 ServletControllerPost: function (flag){
                     var self = this;
-                    $.post(this.link, {account: this.acc, password: this.pass, action: flag, courses: this.corsi, teacherN: this.var1, teacherC: this.var2}, function (data) {
+                    $.post(this.link, {account: this.acc, password: this.pass, action: flag, corsi: this.courses, nome: this.var1, cognome: this.var2, giorno: this.day, ora: this.hour}, function (data) {
                         //Sezione Servlet Login
                         if(flag === 'login' || flag === 'crea'|| flag === 'ospite'){
                             switch (data) {
@@ -373,6 +417,15 @@
                                     self.transit('amministratoreHome');
                                 }, 2000);
                             }
+                        }else if(flag === 'Ripetizioni'){
+                            if(data === "errore"){
+                                self.successo = false; self.errore2 = true;
+                            }else if(data === "aggiunta"){
+                                self.errore2 = false; self.successo = true;
+                                setTimeout(() => {
+                                    self.transit('amministratoreHome');
+                                }, 2000);
+                            }
                         }
                     })
                 },
@@ -412,11 +465,15 @@
                     }else if(flag === 'loginHome') {
                         this.loginHome = true; this.homeAmministratore = false; this.creazionehome = false; this.homeOspite = false; this.homeCliente = false; this.logout = false; this.check = false; this.checkA = false; this.checkO = false; this.errore2 = false;
                     }else if(flag === 'amministratoreHome'){
-                        this.loginHome = false; this.homeAmministratore = true; this.checkAH = true; this.stampaD = false; this.stampaR = false; this.stampaCD = false; this.aggiungiCD = false;
+                        this.loginHome = false; this.homeAmministratore = true; this.checkAH = true; this.stampaD = false; this.stampaR = false; this.stampaCD = false; this.aggiungiCD = false; this.aggiungiR = false; this.aggiungiP = false; this.errore2 = false; this.successo = false;
                     }else if(flag === 'clienteHome'){
                         this.loginHome = false; this.homeCliente = true; this.checkCl = true; this.stampaD = false; this.stampaR = false; this.stampaCD = false;
-                    }else if(flag === 'aggCD'){
-                        this.checkAH = false; this.aggiungiCD = true;
+                    }else if(flag === 'aggiungiCD'){
+                        this.checkAH = false; this.aggiungiCD = true; this.corsi = null; this.var1 = null; this.var2 = null; this.errore2 = false; this.successo = false;
+                    }else if(flag === 'aggiungiR'){
+                        this.checkAH = false; this.aggiungiR = true; this.corsi = null; this.var1 = null; this.var2 = null; this.errore2 = false; this.successo = false;
+                    }else if(flag === 'aggiungiPr'){
+                        this.checkAH = false; this.aggiungiP = true; this.corsi = null; this.var1 = null; this.var2 = null; this.errore2 = false; this.successo = false;
                     } else if(flag === 'corsi_docenti'){
                         this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaCD = true;
                         this.ServletControllerGet("Corsi_Docenti");
@@ -424,6 +481,8 @@
                         this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaD = true; this.ServletControllerGet("Docenti");
                     }else if(flag === 'ripetizioni'){
                         this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaR = true; this.ServletControllerGet("Ripetizioni");
+                    }else if(flag === 'prenotazioni'){
+                        this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaR = true; this.ServletControllerGet("Prenotazioni");
                     }
                 },
             }

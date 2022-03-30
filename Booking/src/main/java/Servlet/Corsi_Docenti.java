@@ -35,13 +35,13 @@ public class Corsi_Docenti extends HttpServlet {
 
     public void doPost (HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html,charset=UTF-8");
-        String nomecorso = request.getParameter("courses");
-        String var2 = request.getParameter("teacherN");
-        String var3 = request.getParameter("teacherC");
-        if (nomecorso != null || (var2 != null && var3 != null)) {
-            HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
 
-            if (session.getAttribute("userRole").equals("Amministratore")) {
+        if (session.getAttribute("userRole").equals("Amministratore")) {
+            String nomecorso = request.getParameter("corsi");
+            String var2 = request.getParameter("nome");
+            String var3 = request.getParameter("cognome");
+            if (nomecorso != null || (var2 != null && var3 != null)) {
                 if (!nomecorso.equals("") && (!var2.equals("") && !var3.equals(""))) {
                     DAO.insertCourse(nomecorso);
                     DAO.insertTeacher(var2, var3);

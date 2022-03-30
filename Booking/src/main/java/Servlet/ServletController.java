@@ -97,7 +97,12 @@ public class ServletController extends HttpServlet {
                     case "Ripetizioni":
                         rd = getServletContext().getNamedDispatcher("ripetizioni");
                         rd.include(request, response);
-                        response.setContentType("application/json,charset=UTF-8");
+                        System.out.println(request.getAttribute("risultato"));
+                        out.print(request.getAttribute("risultato"));
+                        break;
+                    case "Prenotazioni":
+                        rd = getServletContext().getNamedDispatcher("prenotazioni");
+                        rd.include(request, response);
                         out.print(request.getAttribute("risultato"));
                         break;
                     case "logout":
