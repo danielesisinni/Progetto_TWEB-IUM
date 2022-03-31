@@ -188,7 +188,7 @@ public class DAO {
             Statement st = conn1.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM Ripetizione");
             while (rs.next()) {
-                Ripetizione p = new Ripetizione(rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("DATA"), rs.getString("ORA"), rs.getString("STATUS"));
+                Ripetizione p = new Ripetizione(rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
                 out.add(p);
             }
         } catch (SQLException e) {

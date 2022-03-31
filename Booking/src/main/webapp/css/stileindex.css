@@ -1,0 +1,22 @@
+#components {
+}
+    table {
+        width: 75%;
+        border-collapse: collapse;
+        border: 5px solid;
+        text-align: center;
+        margin: 0 auto;
+        color: lightblue;
+    }
+
+    thead {
+        border: 5px solid;
+        text-align: center;
+        align-content: center;
+    }
+
+    td, th {
+        border: 1px solid #ddd;
+        padding: 8px;
+        color: black;
+    }
