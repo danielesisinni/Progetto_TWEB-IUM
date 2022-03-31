@@ -3,7 +3,6 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="Cache-Control" content="no-store" />
-    <meta charset="utf-8" />
     <title>Booking</title>
 
     <link href="bootstrap-4.5.2-dist/css/bootstrap.min.css" rel="stylesheet">
@@ -24,7 +23,7 @@
                 <br>
                 <section class="form-group">
                     <p>Amministratore - Cliente</p>
-                    <input v-model="acc" type="text" placeholder="Account" required>
+                    <input v-model="em" type="text" placeholder="Email" required>
                     <br><br><input v-model="pass" type="password"  placeholder="Password" required>
 
                     <br><br>
@@ -32,12 +31,12 @@
                     <template v-if="checkA">
                         <span class="badge badge-success">Successo</span>
                         <br>
-                        <p><i>Benvenuto {{ acc }} [Amministratore]</i></p>
+                        <p><i>Benvenuto {{ em }} [Amministratore]</i></p>
                     </template>
                     <template v-if="check">
                         <span class="badge badge-success">Successo</span>
                         <br>
-                        <p><i>Benvenuto {{ acc }} [Cliente]</i></p>
+                        <p><i>Benvenuto {{ em }} [Cliente]</i></p>
                     </template>
                     <template v-if="checkE">
                         <span class="badge badge-danger">Errore nel login</span>
@@ -58,10 +57,10 @@
                             Benvenuto nell'area di registrazione. Crea il tuo account
                         </li>
                     </ul>
-                <form>
-                    <p>Account:  <input v-model="acc" type="text" required placeholder="account"/></p>
-                    <p>Password: <input v-model="pass" type="password" required placeholder="password"/></p>
-                </form>
+
+                    <input v-model="em" type="text" required placeholder="email"/>
+                    <input v-model="acc" type="text" required placeholder="account"/>
+                    <input v-model="pass" type="password" required placeholder="password"/>
                     <button v-on:click="ServletControllerPost('crea')">Crea account </button>
                     <template v-if="checkC">
                         <p>Cliente Benvenuto!</p>
@@ -116,11 +115,11 @@
                 <div v-if="stampaR">
                     <table>
                         <thead>
-                            <tr><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORA</b></i></td><td><i><b>STATUS</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>
+                            <tr><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>
                         </thead>
                         <tbody>
                             <template v-for="ripetizioni in printR">
-                                <tr><td>{{ripetizioni.docente}}</td><td>{{ripetizioni.corso}}</td><td>{{ripetizioni.giorno}}</td><td>{{ripetizioni.ora}}</td><td><span class="badge badge-success">{{ripetizioni.status}}</span></td></tr>
+                                <tr onclick="app"><td>{{ripetizioni.docente}}</td><td>{{ripetizioni.corso}}</td><td>{{ripetizioni.giorno}}</td><td>{{ripetizioni.ora}}</td><td><span class="badge badge-success">{{ripetizioni.status}}</span></td><td><button v-on:click="ServletControllerPost(ripetizioni.corso)">Prenota</button></td></tr>
                             </template>
                         </tbody>
                     </table>
@@ -172,7 +171,7 @@
                 <div v-if="stampaR">
                     <table>
                         <thead>
-                            <tr><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORA</b></i></td></tr>
+                            <tr><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td></tr>
                         </thead>
                         <tbody>
                             <template v-for="ripetizioni in printR">
@@ -410,7 +409,7 @@
         var app = new Vue ({
             el: '#components',
             data: {
-                loginHome: true, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
+                loginHome: true, em: null, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
                 homeAmministratore: false, logout: false, errore2: false, successo: false, checkAH: false, aggiungiCD: false, aggiungiR: false, courses: null, var1: null, var2: null, day: null, hour: null,
                 homeOspite: false, checkO: false,
                 homeCliente: false, checkCl: false, printCD: [], printD: [], printR: [], stampaCD: false, stampaD: false, stampaR: false,
@@ -422,7 +421,8 @@
                 //ServletController, gestisce le Servlet che ci servono con la doPost e passa i data che ottiene alle chiamate
                 ServletControllerPost: function (flag){
                     var self = this;
-                    $.post(this.link, {account: this.acc, password: this.pass, action: flag, corsi: this.courses, nome: this.var1, cognome: this.var2, giorno: this.day, ora: this.hour}, function (data) {
+                    console.log(flag);
+                    $.post(this.link, {email: this.em, account: this.acc, password: this.pass, action: flag, corsi: this.courses, nome: this.var1, cognome: this.var2, giorno: this.day, ora: this.hour}, function (data) {
                         //Sezione Servlet Login
                         if(flag === 'login' || flag === 'crea'|| flag === 'ospite'){
                             switch (data) {
@@ -512,7 +512,7 @@
                 //Funzione per il transito da pagina a pagina e per la stampa degli oggetti Json
                 transit: function (flag) {
                     if(flag === 'creazione') {
-                        this.loginHome = false; this.creazionehome = true; this.errore2 = false;
+                        this.loginHome = false; this.creazionehome = true; this.errore2 = false; this.checkC = false;
                     }else if(flag === 'ospiteHome'){
                         this.loginHome = false; this.homeOspite = true; this.checkO = true; this.stampaD = false; this.stampaR = false; this.stampaCD = false;
                     }else if(flag === 'logout') {

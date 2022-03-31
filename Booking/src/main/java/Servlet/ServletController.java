@@ -112,6 +112,12 @@ public class ServletController extends HttpServlet {
                 }
             } else if (session.getAttribute("userRole") != null && session.getAttribute("userRole").equals("Cliente")) {
                 switch (action) {
+                    case "Prenota":
+                        rd = getServletContext().getNamedDispatcher("prenotazioni");
+                        rd.include(request, response);
+                        response.setContentType("text/html");
+                        out.print(request.getAttribute("risultato"));
+                        break;
                     case "Ripetizioni":
                         rd = getServletContext().getNamedDispatcher("ripetizioni");
                         rd.include(request, response);

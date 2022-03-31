@@ -2,15 +2,25 @@ package DAO;
 
 public class Utenti{
     private int matricola;
+    private String email;
     private String account;
     private String password;
     private String ruolo;
 
-    public Utenti(int matricola, String account, String password, String ruolo) {
+    public Utenti(int matricola, String account, String email, String password, String ruolo) {
         this.matricola = matricola;
+        this.email = email;
         this.account = account;
         this.password = password;
         this.ruolo = ruolo;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public int getMatricola() {
@@ -48,10 +58,6 @@ public class Utenti{
     @Override
     public String toString() {
         return "Utenti{" +
-                "matricola=" + matricola +
-                ", account='" + account + '\'' +
-                ", password='" + password + '\'' +
-                ", ruolo='" + ruolo + '\'' +
                 '}';
     }
 }

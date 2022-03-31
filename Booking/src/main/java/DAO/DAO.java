@@ -126,7 +126,7 @@ public class DAO {
             Statement st = conn1.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM utenti");
             while (rs.next()) {
-                Utenti p = new Utenti(rs.getInt("MATRICOLA"), rs.getString("ACCOUNT"), rs.getString("PASSWORD"), rs.getString("RUOLO"));
+                Utenti p = new Utenti(rs.getInt("MATRICOLA"), rs.getString("EMAIL"), rs.getString("ACCOUNT"), rs.getString("PASSWORD"), rs.getString("RUOLO"));
                 out.add(p);
             }
         } catch (SQLException e) {
@@ -188,7 +188,7 @@ public class DAO {
             Statement st = conn1.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM Ripetizione");
             while (rs.next()) {
-                Ripetizione p = new Ripetizione(rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
+                Ripetizione p = new Ripetizione(rs.getString("CODICE"), rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
                 out.add(p);
             }
         } catch (SQLException e) {
@@ -214,10 +214,17 @@ public class DAO {
             if (conn1 != null) {
                 System.out.println("Connected to the database test");
             }
-            Ripetizione r = new Ripetizione(docente, corso, giorno, ora, status);
+
+            String codice;
+
+            do {
+                codice = "#" + (Math.random() * 500);
+            } while(RepetitionCod().contains(codice));
+
+            Ripetizione r = new Ripetizione(codice, docente, corso, giorno, ora, status);
 
             Statement st = conn1.createStatement();
-            st.execute("insert into ripetizione (docente, corso, giorno, ora, status) values ('" + docente + "', '" + corso + "', '" + giorno + "', '" + ora + "', '" + status + "')");
+            st.execute("insert into ripetizione (codice, docente, corso, giorno, ora, status) values ('" + codice + "', '" + docente + "', '" + corso + "', '" + giorno + "', '" + ora + "', '" + status + "')");
             System.out.println("New repetition added!");
 
         } catch (SQLException e) {
@@ -419,18 +426,24 @@ public class DAO {
         }
     }
 
-    public static void insertUsers(String account, String passwordutente) {
+    public static void insertUsers(String email, String account, String passwordutente) {
         DAO.registerDriver();
         Connection conn1 = null;
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
+            int matricola;
 
-            int matricola = (int) (Math.random() * 500);
+            do {
+                matricola = (int) (Math.random() * 500);
+            } while(UsersMatr().contains(matricola));
+
             String ruolo = "Cliente";
+
+            Utenti u = new Utenti(matricola, email, account, passwordutente, ruolo);
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("insert into utenti (matricola, account, password, ruolo) values ('" + matricola + "', '" + account + "', '" + passwordutente + "', '" + ruolo + "')");
+            st.execute("insert into utenti (matricola, email, account, password, ruolo) values ('" + matricola + "', '" + email + "', '" + account + "', '" + passwordutente + "', '" + ruolo + "')");
             System.out.println("New users added!");
 
         } catch (SQLException e) {
@@ -542,17 +555,75 @@ public class DAO {
         }
     }
 
-    public static String[] verificaUtenti(String account, String password) {
+    public static String[] verificaUtenti(String email, String password) {
         DAO.registerDriver();
         ArrayList<Utenti> utentiCreati = DAO.Users();
         String[] esiste_ruolo = {"false", ""};
         for( Utenti p: utentiCreati){
-            if(p.getAccount().equals(account) && p.getPassword().equals(password)){
+            if(p.getEmail().equals(email) && p.getPassword().equals(password)){
                 esiste_ruolo[0] = "true";
                 esiste_ruolo[1] = p.getRuolo();
             }
         }
         return esiste_ruolo;
+    }
+
+    public static ArrayList<Integer> UsersMatr(){
+        Connection conn1 = null;
+        ArrayList<Integer> out = new ArrayList<>();
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database test");
+            }
+
+            Statement st = conn1.createStatement();
+            ResultSet rs = st.executeQuery("SELECT MATRICOLA FROM utenti");
+            while (rs.next()) {
+                out.add(rs.getInt("MATRICOLA"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+        return out;
+    }
+
+    public static ArrayList<String> RepetitionCod() {
+        Connection conn1 = null;
+        ArrayList<String> out = new ArrayList<>();
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database test");
+            }
+
+            Statement st = conn1.createStatement();
+            ResultSet rs = st.executeQuery("SELECT CODICE FROM ripetizioni");
+            while (rs.next()) {
+                out.add(rs.getString("CODICE"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+        return out;
     }
 }
 

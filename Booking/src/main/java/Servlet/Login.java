@@ -27,21 +27,22 @@ public class Login extends HttpServlet {
         HttpSession session = request.getSession();
         String flag = request.getParameter("action");
         if(flag.equals("login")){
-            String acc = request.getParameter("account");
+            String em = request.getParameter("email");
             String pass = request.getParameter("password");
-            String[] esiste_ruolo = DAO.verificaUtenti(acc, pass);
+            String[] esiste_ruolo = DAO.verificaUtenti(em, pass);
             if (esiste_ruolo[0].equals("true")) {
-                session.setAttribute("userName", acc);
+                session.setAttribute("userName", em);
                 session.setAttribute("userRole", esiste_ruolo[1]);
                 processRequest(request, response);
             } else {
                 request.setAttribute("risultato", "errore");
             }
         }else if(flag.equals("crea")) {
+            String newemail = request.getParameter("email");
             String newacc = request.getParameter("account");
             String newpass = request.getParameter("password");
-            if(!newacc.equals("") && !newpass.equals("")){
-                DAO.insertUsers(newacc, newpass);
+            if(!newacc.equals("") && !newpass.equals("") && !newemail.equals("")){
+                DAO.insertUsers(newemail, newacc, newpass);
                 processRequest(request, response);
             }else{
                 request.setAttribute("risultato", "errore2");
