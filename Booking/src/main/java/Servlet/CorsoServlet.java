@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 @WebServlet(name = "Corsi", value = "/Corsi")
-public class Corsi extends HttpServlet {
+public class CorsoServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         processRequest(request, response);

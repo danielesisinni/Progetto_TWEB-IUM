@@ -144,7 +144,7 @@ public class DAO {
         return out;
     }
 
-    public static ArrayList<Prenotazione> Prenotazione() {
+    public static ArrayList<Prenotazione> Booking() {
         Connection conn1 = null;
         ArrayList<Prenotazione> out = new ArrayList<>();
 
@@ -175,7 +175,7 @@ public class DAO {
         return out;
     }
 
-    public static ArrayList<Ripetizione> Repetition() {
+    public static ArrayList<Ripetizione> Repetition(String account) {
         Connection conn1 = null;
         ArrayList<Ripetizione> out = new ArrayList<>();
 
@@ -185,11 +185,15 @@ public class DAO {
                 System.out.println("Connected to the database test");
             }
 
+
             Statement st = conn1.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM Ripetizione");
             while (rs.next()) {
-                Ripetizione p = new Ripetizione(rs.getString("CODICE"), rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
-                out.add(p);
+                //System.out.println("prova->" + rs.getString("UTENTE"));
+                //if(!rs.getString("UTENTE").equals(account)){
+                    Ripetizione p = new Ripetizione(rs.getString("CODICE"), rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
+                    out.add(p);
+                //}
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -218,7 +222,7 @@ public class DAO {
             String codice;
 
             do {
-                codice = "#" + (Math.random() * 500);
+                codice = "#" + Math.floor(Math.random() * 500);
             } while(RepetitionCod().contains(codice));
 
             Ripetizione r = new Ripetizione(codice, docente, corso, giorno, ora, status);
@@ -249,11 +253,15 @@ public class DAO {
             conn1 = DriverManager.getConnection(url1, user, password);
 
             int id = 0;
+            int max = id;
+
             ArrayList<Corso> cour = Course();
             for(Corso cour2: cour){
                 id = cour2.getId();
+                if(id >= max)
+                    max = id;
             }
-            id++;
+            id = max++;
 
             c = new Corso(id, title);
 
@@ -313,7 +321,11 @@ public class DAO {
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
-            int id = (int) (Math.random() * 500);
+            int id;
+
+            do {
+                id = (int) (Math.random() * 500);
+            } while(TeacherId().contains(id));
 
             Docente c = new Docente(nomeDocente, cognomeDocente, id);
             //Execute insert query
@@ -490,7 +502,7 @@ public class DAO {
     }
 
 
-    public static void insertPrenotazione(String utente, String docente, String corso, String giorno, String ora, String status) {
+    public static void insertBooking(String utente, String docente, String corso, String giorno, String ora, String status) {
         Connection conn1 = null;
 
         Prenotazione c = null;
@@ -597,6 +609,35 @@ public class DAO {
         return out;
     }
 
+    public static ArrayList<Integer> TeacherId(){
+        Connection conn1 = null;
+        ArrayList<Integer> out = new ArrayList<>();
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database test");
+            }
+
+            Statement st = conn1.createStatement();
+            ResultSet rs = st.executeQuery("SELECT IDDOCENTE FROM docenti");
+            while (rs.next()) {
+                out.add(rs.getInt("IDDOCENTE"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+        return out;
+    }
+
     public static ArrayList<String> RepetitionCod() {
         Connection conn1 = null;
         ArrayList<String> out = new ArrayList<>();
@@ -610,6 +651,66 @@ public class DAO {
             ResultSet rs = st.executeQuery("SELECT CODICE FROM ripetizioni");
             while (rs.next()) {
                 out.add(rs.getString("CODICE"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+        return out;
+    }
+
+    public static ArrayList<Prenotazione> MyBooking(String users) {
+        Connection conn1 = null;
+        ArrayList<Prenotazione> out = new ArrayList<>();
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database test");
+            }
+
+            Statement st = conn1.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM prenotazione WHERE UTENTE = '"+ users + "'");
+            while (rs.next()) {
+                Prenotazione p = new Prenotazione(rs.getString("UTENTE"), rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
+                out.add(p);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+        return out;
+    }
+
+    public static ArrayList<Ripetizione> SearchRepetition(String cod) {
+        Connection conn1 = null;
+        ArrayList<Ripetizione> out = new ArrayList<>();
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database test");
+            }
+
+            Statement st = conn1.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM ripetizione WHERE CODICE = '"+ cod + "'");
+            while (rs.next()) {
+                Ripetizione p = new Ripetizione(rs.getString("CODICE"), rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
+                out.add(p);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());

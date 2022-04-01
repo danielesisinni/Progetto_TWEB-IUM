@@ -33,7 +33,16 @@ public class ServletController extends HttpServlet {
                         break;
                 }
             } else if (session.getAttribute("userRole") != null && session.getAttribute("userRole").equals("Cliente")) {
+                System.out.println("Eccomi");
+                System.out.println(action);
                 switch (action) {
+                    case "MiePrenotazioni":
+                        rd = getServletContext().getNamedDispatcher("prenotazioni");
+                        rd.include(request, response);
+                        response.setContentType("application/json,charset=UTF-8");
+                        System.out.println(request.getAttribute("risultato"));
+                        out.print(request.getAttribute("risultato"));
+                        break;
                     case "Corsi_Docenti":
                         rd = getServletContext().getNamedDispatcher("corsi_docenti");
                         rd.include(request, response);

@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 @WebServlet(name = "corsi_docenti", value = "/corsi_docenti")
-public class Corsi_Docenti extends HttpServlet {
+public class CorsiDocentiServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
@@ -36,11 +36,14 @@ public class Corsi_Docenti extends HttpServlet {
     public void doPost (HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html,charset=UTF-8");
         HttpSession session = request.getSession();
-
         if (session.getAttribute("userRole").equals("Amministratore")) {
+            System.out.println("prova");
             String nomecorso = request.getParameter("corsi");
             String var2 = request.getParameter("nome");
             String var3 = request.getParameter("cognome");
+            System.out.println(request.getParameter("corsi"));
+            System.out.println(request.getParameter("nome"));
+            System.out.println(request.getParameter("cognome"));
             if (nomecorso != null || (var2 != null && var3 != null)) {
                 if (!nomecorso.equals("") && (!var2.equals("") && !var3.equals(""))) {
                     DAO.insertCourse(nomecorso);
