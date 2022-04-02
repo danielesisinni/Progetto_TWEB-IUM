@@ -42,7 +42,6 @@ public class PrenotazioneServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html,charset=UTF-8");
-        System.out.println("Entrooooo");
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
 
@@ -60,15 +59,23 @@ public class PrenotazioneServlet extends HttpServlet {
             }
             if(status.equals("DISPONIBILE")){
                 if (docente != null && corso != null && giorno != null && ora != null) {
-                    if (!docente.equals("") && !corso.equals("") && !giorno.equals("") && !ora.equals("")) {
-                        status = "EFFETTUATA";
-                        DAO.insertBooking(utente, docente, corso, giorno, ora, status);
-                        request.setAttribute("risultato", "aggiunta");
-                    }
+                    status = "EFFETTUATA";
+                    DAO.insertBooking(utente, codice, docente, corso, giorno, ora, status);
+                    request.setAttribute("risultato", "aggiunta");
                 }
             }else{
                 request.setAttribute("risultato", "errore");
             }
+        }else if(action.equals("Disdetta") && (session.getAttribute("userRole").equals("Amministratore") || session.getAttribute("userRole").equals("Cliente"))) {
+            String utente = (String) session.getAttribute("userName");
+            String codice = request.getParameter("codex");
+            DAO.updateBooking(utente, codice, action);
+            request.setAttribute("risultato", "rimossa");
+        }else if(action.equals("Riprenota") && (session.getAttribute("userRole").equals("Amministratore") || session.getAttribute("userRole").equals("Cliente"))) {
+            String utente = (String) session.getAttribute("userName");
+            String codice = request.getParameter("codex");
+            DAO.updateBooking(utente, codice, action);
+            request.setAttribute("risultato", "rimossa");
         }
     }
 

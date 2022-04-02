@@ -131,7 +131,7 @@
                         </thead>
                         <tbody>
                             <template v-for="prenotazioni in printMPr">
-                                <tr><td>{{prenotazioni.codice}}</td><td>{{prenotazioni.docente}}</td><td>{{prenotazioni.corso}}</td><td>{{prenotazioni.giorno}}</td><td>{{prenotazioni.ora}}</td><td><span class="badge badge-success">{{prenotazioni.status}}</span></td><td><button v-on:click="ServletControllerPost('Disdetta', prenotazioni.codice)">Disdetta</button></td></tr>
+                                <tr><td>{{prenotazioni.codice}}</td><td>{{prenotazioni.docente}}</td><td>{{prenotazioni.corso}}</td><td>{{prenotazioni.giorno}}</td><td>{{prenotazioni.ora}}</td><td v-if="prenotazioni.status === 'RIMOSSA'"><span class="badge rounded-pill bg-danger">{{prenotazioni.status}}</span></td><td v-else><span class="badge badge-success">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === 'RIMOSSA'"><button class="btn btn-info" v-on:click="ServletControllerPost('Riprenota', prenotazioni.codice)">Riprenota</button></td><td v-else><button class="btn btn-danger" v-on:click="ServletControllerPost('Disdetta', prenotazioni.codice)">Disdetta</button></td></tr>
                             </template>
                         </tbody>
                     </table>
@@ -145,7 +145,7 @@
                         </thead>
                         <tbody>
                             <template v-for="ripetizioni in printR">
-                                <tr><td>{{ripetizioni.codice}}</td><td>{{ripetizioni.docente}}</td><td>{{ripetizioni.corso}}</td><td>{{ripetizioni.giorno}}</td><td>{{ripetizioni.ora}}</td><td><span class="badge badge-success">{{ripetizioni.status}}</span></td><td><button v-on:click="ServletControllerPost('Prenota', ripetizioni.codice)">Prenota</button></td></tr>
+                                <tr><td>{{ripetizioni.codice}}</td><td>{{ripetizioni.docente}}</td><td>{{ripetizioni.corso}}</td><td>{{ripetizioni.giorno}}</td><td>{{ripetizioni.ora}}</td><td><span class="badge bg-warning text-dark">{{ripetizioni.status}}</span></td><td><button class="btn btn-info" v-on:click="ServletControllerPost('Prenota', ripetizioni.codice)">Prenota</button></td></tr>
                             </template>
                         </tbody>
                     </table>
@@ -520,7 +520,11 @@
                             if(data === "errore"){
                                 self.successo = false; self.errore2 = true;
                             }else if(data === "aggiunta"){
-                                self.stampaR = false; self.errore2 = false; self.transit("ripetizione");
+                                self.errore2 = false;
+                            }
+                        }else if(flag === 'Disdetta') {
+                            if(data === "aggiunta"){
+                                self.stampaR = false; self.errore2 = false;
                             }
                         }
                     })
@@ -556,7 +560,7 @@
 
                 //Funzione per il transito da pagina a pagina e per la stampa degli oggetti Json
                 transit: function (flag) {
-                    //this.printR = [];
+                    this.printR = [];
                     if(flag === 'creazione') {
                         this.loginHome = false; this.creazionehome = true; this.errore2 = false; this.checkC = false;
                     }else if(flag === 'ospiteHome'){

@@ -2,19 +2,29 @@ package DAO;
 
 public class Prenotazione {
     private String utente;
+    private String codice;
     private String docente;
     private String corso;
     private String giorno;
     private String ora;
     private String status;
 
-    public Prenotazione(String utente, String docente, String corso, String giorno, String ora, String status) {
+    public Prenotazione(String utente, String codice, String docente, String corso, String giorno, String ora, String status) {
         this.utente = utente;
+        this.codice = codice;
         this.docente = docente;
         this.corso = corso;
         this.giorno = giorno;
         this.ora = ora;
         this.status = status;
+    }
+
+    public String getCodice() {
+        return codice;
+    }
+
+    public void setCodice(String codice) {
+        this.codice = codice;
     }
 
     public String getUtente() {
@@ -69,6 +79,7 @@ public class Prenotazione {
     public String toString() {
         return "Prenotazione{" +
                 "utente=" + utente +
+                ", codice=" + codice +
                 ", docente=" + docente +
                 ", corso=" + corso +
                 ", giorno=" + giorno +

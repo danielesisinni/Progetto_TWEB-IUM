@@ -157,7 +157,7 @@ public class DAO {
             Statement st = conn1.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM Prenotazione");
             while (rs.next()) {
-                Prenotazione p = new Prenotazione(rs.getString("UTENTE"),rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"),rs.getString("STATUS"));
+                Prenotazione p = new Prenotazione(rs.getString("UTENTE"),rs.getString("CODICE"),rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"),rs.getString("STATUS"));
                 out.add(p);
             }
         } catch (SQLException e) {
@@ -502,7 +502,7 @@ public class DAO {
     }
 
 
-    public static void insertBooking(String utente, String docente, String corso, String giorno, String ora, String status) {
+    public static void insertBooking(String utente, String codice,String docente, String corso, String giorno, String ora, String status) {
         Connection conn1 = null;
 
         Prenotazione c = null;
@@ -510,11 +510,11 @@ public class DAO {
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
-            c = new Prenotazione(utente, docente, corso, giorno, ora, status);
+            c = new Prenotazione(utente, codice, docente, corso, giorno, ora, status);
 
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("insert into prenotazione (utente, docente, corso, giorno, ora, status) values ('" + utente + "', '" + docente + "', '" + corso + "', '" + giorno + "', '" + ora + "', '" + status + "')");
+            st.execute("insert into prenotazione (utente, codice, docente, corso, giorno, ora, status) values ('" + utente + "', '" + codice + "', '" + docente + "', '" + corso + "', '" + giorno + "', '" + ora + "', '" + status + "')");
             System.out.println("New booking added!");
 
         } catch (SQLException e) {
@@ -531,26 +531,46 @@ public class DAO {
         }
     }
 
-    public static void removePrenotazione() {
+    public static void updateBooking(String utente, String codice, String action) {
         Connection conn1 = null;
-        int id_course;
-        int id_user;
-        int id_teacher;
-        Scanner input = new Scanner(System.in);
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
-            System.out.println("Insert a id of course to delete: ");
-            id_course = input.nextInt();
-            System.out.println("Insert a id of teacher to delete: ");
-            id_teacher = input.nextInt();
-            System.out.println("Insert a id of user to delete: ");
-            id_user = input.nextInt();
+            String stat;
+            if(action.equals("Disdetta")){
+                stat = "RIMOSSA";
+            }else {
+                stat = "EFFETTUATA";
+            }
+            //Execute insert query
+            Statement st = conn1.createStatement();
+            st.execute("update prenotazione set status = '" + stat + "' where utente = '" + utente + "' and codice = '" + codice + "'");
+            System.out.println("Booking update!");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+    }
+
+    public static void removeBooking(String utente, String codice) {
+        Connection conn1 = null;
+
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
 
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("delete from prenotazione where docente = '" + id_teacher + "' and corso = '" + id_course + "' and utente = '" + id_user + "'");
+            st.execute("delete from prenotazione where utente = '" + utente + "' and codice = '" + codice + "'");
             System.out.println("Booking removed!");
 
         } catch (SQLException e) {
@@ -679,7 +699,7 @@ public class DAO {
             Statement st = conn1.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM prenotazione WHERE UTENTE = '"+ users + "'");
             while (rs.next()) {
-                Prenotazione p = new Prenotazione(rs.getString("UTENTE"), rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
+                Prenotazione p = new Prenotazione(rs.getString("UTENTE"), rs.getString("CODICE"),rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
                 out.add(p);
             }
         } catch (SQLException e) {
@@ -709,6 +729,7 @@ public class DAO {
             Statement st = conn1.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM ripetizione WHERE CODICE = '"+ cod + "'");
             while (rs.next()) {
+                System.out.println("ok");
                 Ripetizione p = new Ripetizione(rs.getString("CODICE"), rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
                 out.add(p);
             }

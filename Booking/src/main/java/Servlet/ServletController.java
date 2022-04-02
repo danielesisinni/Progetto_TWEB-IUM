@@ -33,14 +33,11 @@ public class ServletController extends HttpServlet {
                         break;
                 }
             } else if (session.getAttribute("userRole") != null && session.getAttribute("userRole").equals("Cliente")) {
-                System.out.println("Eccomi");
-                System.out.println(action);
                 switch (action) {
                     case "MiePrenotazioni":
                         rd = getServletContext().getNamedDispatcher("prenotazioni");
                         rd.include(request, response);
                         response.setContentType("application/json,charset=UTF-8");
-                        System.out.println(request.getAttribute("risultato"));
                         out.print(request.getAttribute("risultato"));
                         break;
                     case "Corsi_Docenti":
@@ -121,18 +118,28 @@ public class ServletController extends HttpServlet {
                 }
             } else if (session.getAttribute("userRole") != null && session.getAttribute("userRole").equals("Cliente")) {
                 switch (action) {
+                    //Disdetta delle prenotazioni
+                    case "Disdetta":
+                        rd = getServletContext().getNamedDispatcher("prenotazioni");
+                        rd.include(request, response);
+                        response.setContentType("text/html");
+                        out.print(request.getAttribute("risultato"));
+                        break;
+                    //Prenota delle ripetizioni
                     case "Prenota":
                         rd = getServletContext().getNamedDispatcher("prenotazioni");
                         rd.include(request, response);
                         response.setContentType("text/html");
                         out.print(request.getAttribute("risultato"));
                         break;
-                    case "Ripetizioni":
-                        rd = getServletContext().getNamedDispatcher("ripetizioni");
+                    //Riprenota le ripetizioni
+                    case "Riprenota":
+                        rd = getServletContext().getNamedDispatcher("prenotazioni");
                         rd.include(request, response);
-                        response.setContentType("application/json,charset=UTF-8");
+                        response.setContentType("text/html");
                         out.print(request.getAttribute("risultato"));
                         break;
+                    //Logout
                     case "logout":
                         rd = getServletContext().getNamedDispatcher("logout");
                         rd.include(request, response);
