@@ -6,70 +6,114 @@
     <title>Booking</title>
 
     <link href="bootstrap-4.5.2-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="bootstrap-4.5.2-dist/js/jquery-slim.min.js"></script>
     <script src="bootstrap-4.5.2-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
     <link rel="stylesheet" href="css/stileindex.css">
 
 </head>
 <body> <!--class="d-flex justify-content-center"-->
     <div id="components">
-        <span v-if="loginHome">
-            <testa></testa>
-            <article class="text-center" >
-                <hr><h4>Applicazione delle prenotazioni - Unito</h4><hr>
-                <br>
-                <section class="form-group">
-                    <p>Amministratore - Cliente</p>
-                    <input v-model="em" type="text" placeholder="Email" required>
-                    <br><br><input v-model="pass" type="password"  placeholder="Password" required>
+        <span v-if="loginHome" id="login"><br><br><br><br><br>
+            <div class="container h-100">
+                <div class="d-flex justify-content-center h-100">
+                    <div class="user_card">
+                        <div class="d-flex justify-content-center">
+                            <div class="brand_logo_container">
+                                <img src="https://upload.wikimedia.org/wikipedia/it/thumb/4/47/Unito-logo.svg/1200px-Unito-logo.svg.png" class="brand_logo" alt="Logo">
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center form_container">
+                            <article class="form-group">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    </div>
+                                <input v-model="em" type="text" class="form-control input_user" placeholder="Email">
+                                </div>
+                                <div class="input-group mb-2">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                    </div>
+                                    <input v-model="pass" type="password" class="form-control input_pass" placeholder="Password">
+                                </div>
+                                <div class="d-flex justify-content-center mt-3 login_container">
+                                    <button v-on:click="ServletControllerPost('login', '')" class="btn login_btn">Autentica </button>
+                                </div>
 
-                    <br><br>
-                    <button v-on:click="ServletControllerPost('login', '')">Autentica </button>
-                    <template v-if="checkA">
-                        <span class="badge badge-success">Successo</span>
-                        <br>
-                        <p><i>Benvenuto {{ em }} [Amministratore]</i></p>
-                    </template>
-                    <template v-if="check">
-                        <span class="badge badge-success">Successo</span>
-                        <br>
-                        <p><i>Benvenuto {{ em }} [Cliente]</i></p>
-                    </template>
-                    <template v-if="checkE">
-                        <span class="badge badge-danger">Errore nel login</span>
-                    </template>
-                </section>
-                <br><br><br><br><br>
-                <hr>
-            </article>
-            <centro-login v-on:ospite-inner="ServletControllerPost('ospite', '')" v-on:creazione-inner="transit('creazione')" class="text-center" ></centro-login>
+                                <template v-if="checkA">
+                                    <span class="badge badge-success">Successo</span>
+                                    <p><i>Benvenuto {{ em }} [Amministratore]</i></p>
+                                </template>
+                                <template v-if="check">
+                                    <span class="badge badge-success">Successo</span>
+                                    <p><i>Benvenuto {{ em }} [Cliente]</i></p>
+                                </template>
+                                <template v-if="checkE">
+                                    <span class="badge badge-danger">Errore nel login</span>
+                                </template>
+                                <br>
+                                <centro-login v-on:ospite-inner="ServletControllerPost('ospite', '')" v-on:creazione-inner="transit('creazione')" ></centro-login>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </span>
 
-        <span v-if="creazionehome">
-            <testa title="Benvenuto"></testa>
-            <article class="container">
-                <br>
-                    <ul>
-                        <li>
-                            Benvenuto nell'area di registrazione. Crea il tuo account
-                        </li>
-                    </ul>
-
-                    <input v-model="em" type="text" required placeholder="email"/>
-                    <input v-model="acc" type="text" required placeholder="account"/>
-                    <input v-model="pass" type="password" required placeholder="password"/>
-                    <button v-on:click="ServletControllerPost('crea', '')">Crea account </button>
-                    <template v-if="checkC">
-                        <p>Cliente Benvenuto!</p>
-                        <p><span class="badge badge-success">Successo</span> Account creato</p>
-                    </template>
-                    <template v-if="errore2">
-                        <span class="badge badge-danger">Errore nei dati, ricontrolla e riprova. Grazie</span>
-                    </template>
-            </article>
+        <span v-if="creazionehome"><br>
+            <testa title="BENVENUTO. CREA IL TUO ACCOUNT"></testa>
+            <br><br><br>
+            <div class="container h-100">
+                <div class="d-flex justify-content-center h-100">
+                    <div class="user_card">
+                        <div class="d-flex justify-content-center">
+                            <div class="brand_logo_container">
+                                <img src="https://upload.wikimedia.org/wikipedia/it/thumb/4/47/Unito-logo.svg/1200px-Unito-logo.svg.png" class="brand_logo" alt="Logo">
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center form_container">
+                            <article class="form-group">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    </div>
+                                <input v-model="em" type="text" class="form-control input_user" placeholder="Email">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    </div>
+                                <input v-model="acc" type="text" class="form-control input_user" placeholder="Account">
+                                </div>
+                                <div class="input-group mb-2">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                    </div>
+                                    <input v-model="pass" type="password" class="form-control input_pass" placeholder="Password">
+                                </div>
+                                <div class="d-flex justify-content-center mt-3 login_container">
+                                    <button v-on:click="ServletControllerPost('crea', '')" class="btn login_btn">Crea account </button>
+                                </div>
+                            </article>
+                            <template v-if="checkC">
+                                <p>Cliente Benvenuto!</p>
+                                <p><span class="badge badge-success">Successo</span> Account creato</p>
+                            </template>
+                            <template v-if="errore2">
+                                <span class="badge badge-danger">Errore nei dati, ricontrolla e riprova. Grazie</span>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </span>
 
         <span v-if="homeCliente">
@@ -100,9 +144,8 @@
 
             <article v-if="checkCl" class="container">
                 <ul>
-                    <br>
                     <li>
-                        <button class="btn btn-outline-secondary" v-on:click="transit('mieprenotazioni')">Le  mie prenotazioni attive</button>
+                        <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('mieprenotazioni')">Le  mie prenotazioni attive</button>
                     </li>
                 </ul>
             </article>
@@ -250,19 +293,19 @@
             <article v-if="checkAH" class="container">
                 <ul>
                     <li>
-                        <button class="btn btn-outline-secondary" v-on:click="transit('prenotazioni')">Le prenotazioni attive</button>
+                        <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('prenotazioni')">Le prenotazioni attive</button>
                     </li>
                     <br>
                     <li>
-                        <button class="btn btn-outline-secondary" v-on:click="transit('prenotazioni2')">Le  mie prenotazioni attive</button>
+                        <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('prenotazioni2')">Le  mie prenotazioni attive</button>
                     </li>
                     <br>
                     <li>
-                        <button class="btn btn-outline-secondary" v-on:click="transit('aggiungiCD')">Aggiungi corsi e docenti</button>
+                        <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('aggiungiCD')">Aggiungi corsi e docenti</button>
                     </li>
                     <br>
                     <li>
-                        <button class="btn btn-outline-secondary" v-on:click="transit('aggiungiR')">Aggiungi ripetizioni</button>
+                        <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('aggiungiR')">Aggiungi ripetizioni</button>
                     </li>
                 </ul>
             </article>
@@ -340,11 +383,11 @@
 
                     <label>Data</label>
                     <select v-model="day">
-                        <option>Luned&igrave;</option>
-                        <option>Marted&igrave;</option>
-                        <option>Mercoled&igrave;</option>
-                        <option>Gioved&igrave;</option>
-                        <option>Venerd&igrave;</option>
+                        <option>Lunedi</option>
+                        <option>Martedi</option>
+                        <option>Mercoledi</option>
+                        <option>Giovedi</option>
+                        <option>Venerdi</option>
                     </select>
 
                     <label>Ora</label>
@@ -381,16 +424,11 @@
         Vue.component('testa',{
             props: ['title'],
             template:'<header><h3 class="text-center">{{ title }}</h3><br></header>',
-            methods: {
-                logInner: function () {
-                    this.$emit('log-inner');
-                },
-            }
         })
         Vue.component('centro-login',{
-            template:'<article>' +
-                    '     <p>Non hai ancora un account? <button type="button" class="btn btn-outline-info" v-on:click="creazioneInner"> Crea account</button>' +
-                    '     Oppure entra come  <button type="button" class="btn btn-outline-info" v-on:click="ospiteInner">Ospite </button></p>' +
+            template:'<article class="d-flex justify-content-center links">' +
+                    '     <p>Non hai ancora un account? <button type="button" class="btn btn-outline-dark" style="background: #c0392b" v-on:click="creazioneInner"> Crea account</button>' +
+                    '     <br><br>Oppure entra come ospite&nbsp&nbsp&nbsp&nbsp<button type="button" class="btn btn-outline-dark" style="background: #c0392b" v-on:click="ospiteInner">Entra </button></p>' +
                     '</article>',
             methods: {
                 creazioneInner: function (){
@@ -411,15 +449,15 @@
                 '        <h5>Scegli l&rsquo;opzione che desideri</h5>\n' +
                 '            <ul>\n' +
                 '            <li>\n' +
-                '                <button class="btn btn-outline-secondary" v-on:click="transitCorsi_Docenti">Visualizzare i corsi e i loro docenti</button>\n' +
+                '                <button class="btn btn-info" style="background: #f39c12 " v-on:click="transitCorsi_Docenti">Visualizzare i corsi e i loro docenti</button>\n' +
                 '            </li>\n' +
                 '            <br>\n' +
                 '            <li>\n' +
-                '                <button class="btn btn-outline-secondary" v-on:click="transitRipetizioni">Visualizzare le ripetizioni disponibili</button>\n' +
+                '                <button class="btn btn-secondary" style="background: #f39c12 " v-on:click="transitRipetizioni">Visualizzare le ripetizioni disponibili</button>\n' +
                 '            </li>\n' +
                 '            <br>\n' +
                 '            <li>\n' +
-                '                <button class="btn btn-outline-danger" v-on:click="transitLogout">Logout</button>\n' +
+                '                <button class="btn btn-danger" v-on:click="transitLogout">Logout</button>\n' +
                 '            </li>\n' +
                 '       </ul>\n' +
                 '</article>',
@@ -480,7 +518,7 @@
                                     self.check = false; self.checkA = false; self.checkE = true;
                                     break;
                                 case 'crea':
-                                    self.checkC = true; self.email = null; self.acc = null; self.pass = null; self.errore2 = false;
+                                    self.checkC = true; self.em = null; self.acc = null; self.pass = null; self.errore2 = false;
                                     setTimeout(() => {
                                         self.transit('loginHome');
                                     }, 2000);

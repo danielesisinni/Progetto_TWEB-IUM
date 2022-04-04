@@ -30,6 +30,7 @@
                                 <img src="https://upload.wikimedia.org/wikipedia/it/thumb/4/47/Unito-logo.svg/1200px-Unito-logo.svg.png" class="brand_logo" alt="Logo">
                             </div>
                         </div>
+                        <br>
                         <div class="d-flex justify-content-center form_container">
                             <article class="form-group">
                                 <div class="input-group mb-3">
@@ -68,28 +69,53 @@
             </div>
         </span>
 
-        <span v-if="creazionehome">
-            <testa title="Benvenuto"></testa>
-            <article class="container">
-                <br>
-                    <ul>
-                        <li>
-                            Benvenuto nell'area di registrazione. Crea il tuo account
-                        </li>
-                    </ul>
+        <span v-if="creazionehome"><br>
+            <testa title="BENVENUTO. CREA IL TUO ACCOUNT"></testa>
+            <br><br><br>
+            <div class="container h-100">
+                <div class="d-flex justify-content-center h-100">
+                    <div class="user_card">
+                        <div class="d-flex justify-content-center">
+                            <div class="brand_logo_container">
+                                <img src="https://upload.wikimedia.org/wikipedia/it/thumb/4/47/Unito-logo.svg/1200px-Unito-logo.svg.png" class="brand_logo" alt="Logo">
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center form_container">
+                            <article class="form-group">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    </div>
+                                <input v-model="em" type="text" class="form-control input_user" placeholder="Email">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    </div>
+                                <input v-model="acc" type="text" class="form-control input_user" placeholder="Account">
+                                </div>
+                                <div class="input-group mb-2">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                    </div>
+                                    <input v-model="pass" type="password" class="form-control input_pass" placeholder="Password">
+                                </div>
+                                <div class="d-flex justify-content-center mt-3 login_container">
+                                    <button v-on:click="ServletControllerPost('crea', '')" class="btn login_btn">Crea account </button>
+                                </div>
 
-                    <input v-model="em" type="text" required placeholder="email"/>
-                    <input v-model="acc" type="text" required placeholder="account"/>
-                    <input v-model="pass" type="password" required placeholder="password"/>
-                    <button v-on:click="ServletControllerPost('crea', '')">Crea account </button>
-                    <template v-if="checkC">
-                        <p>Cliente Benvenuto!</p>
-                        <p><span class="badge badge-success">Successo</span> Account creato</p>
-                    </template>
-                    <template v-if="errore2">
-                        <span class="badge badge-danger">Errore nei dati, ricontrolla e riprova. Grazie</span>
-                    </template>
-            </article>
+                                <template v-if="checkC">
+                                    <p>Cliente Benvenuto!</p>
+                                    <p><span class="badge badge-success">Successo</span> Account creato</p>
+                                </template>
+                                <template v-if="errore2">
+                                    <span class="badge badge-danger">Errore nei dati, ricontrolla e riprova. Grazie</span>
+                                </template>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </span>
 
         <span v-if="homeCliente">
@@ -403,8 +429,8 @@
         })
         Vue.component('centro-login',{
             template:'<article class="d-flex justify-content-center links">' +
-                    '     <p>Non hai ancora un account? <button type="button" class="btn btn-link" v-on:click="creazioneInner"> Crea account</button>' +
-                    '     <br><br>Oppure entra come ospite&nbsp&nbsp&nbsp<button type="button" class="btn btn-outline-dark" style="background: #c0392b" v-on:click="ospiteInner">Entra </button></p>' +
+                    '     <p>Non hai ancora un account? <button type="button" class="btn btn-outline-dark" style="background: #c0392b" v-on:click="creazioneInner"> Crea account</button>' +
+                    '     <br><br>Oppure entra come ospite&nbsp&nbsp&nbsp&nbsp<button type="button" class="btn btn-outline-dark" style="background: #c0392b" v-on:click="ospiteInner">Entra </button></p>' +
                     '</article>',
             methods: {
                 creazioneInner: function (){
@@ -459,10 +485,10 @@
         var app = new Vue ({
             el: '#components',
             data: {
-                loginHome: false, em: null, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
+                loginHome: true, em: null, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
                 homeAmministratore: false, logout: false, errore2: false, successo: false, checkAH: false, aggiungiCD: false, aggiungiR: false, courses: null, var1: null, var2: null, day: null, hour: null,
                 homeOspite: false, checkO: false,
-                homeCliente: true, checkCl: true, printCD: [], printD: [], printR: [], printMPr: [], stampaCD: false, stampaD: false, stampaR: false, stampaMPr: false,
+                homeCliente: false, checkCl: false, printCD: [], printD: [], printR: [], printMPr: [], stampaCD: false, stampaD: false, stampaR: false, stampaMPr: false,
                 creazionehome: false, checkC: false, print: '',
 
                 link: 'ServletController'
