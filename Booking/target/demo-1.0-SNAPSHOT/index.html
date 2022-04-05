@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="css/stileindex.css">
 
 </head>
-<body> <!--class="d-flex justify-content-center"-->
+<body>
     <div id="components">
         <span v-if="loginHome" id="login"><br><br><br><br><br>
             <div class="container h-100">
@@ -30,6 +30,7 @@
                                 <img src="https://upload.wikimedia.org/wikipedia/it/thumb/4/47/Unito-logo.svg/1200px-Unito-logo.svg.png" class="brand_logo" alt="Logo">
                             </div>
                         </div>
+                        <br>
                         <div class="d-flex justify-content-center form_container">
                             <article class="form-group">
                                 <div class="input-group mb-3">
@@ -48,15 +49,13 @@
                                     <button v-on:click="ServletControllerPost('login', '')" class="btn login_btn">Autentica </button>
                                 </div>
 
-                                <template v-if="checkA">
+                                <template v-if="checkA" class="text-center">
                                     <span class="badge badge-success">Successo</span>
-                                    <p><i>Benvenuto {{ em }} [Amministratore]</i></p>
                                 </template>
-                                <template v-if="check">
+                                <template v-if="check" class="text-center">
                                     <span class="badge badge-success">Successo</span>
-                                    <p><i>Benvenuto {{ em }} [Cliente]</i></p>
                                 </template>
-                                <template v-if="checkE">
+                                <template v-if="checkE" class="text-center">
                                     <span class="badge badge-danger">Errore nel login</span>
                                 </template>
                                 <br>
@@ -102,14 +101,15 @@
                                 <div class="d-flex justify-content-center mt-3 login_container">
                                     <button v-on:click="ServletControllerPost('crea', '')" class="btn login_btn">Crea account </button>
                                 </div>
+
+                                <template v-if="checkC">
+                                    <p>Cliente Benvenuto!</p>
+                                    <p><span class="badge badge-success">Successo</span> Account creato</p>
+                                </template>
+                                <template v-if="errore2">
+                                    <span class="badge badge-danger">Errore nei dati, ricontrolla e riprova. Grazie</span>
+                                </template>
                             </article>
-                            <template v-if="checkC">
-                                <p>Cliente Benvenuto!</p>
-                                <p><span class="badge badge-success">Successo</span> Account creato</p>
-                            </template>
-                            <template v-if="errore2">
-                                <span class="badge badge-danger">Errore nei dati, ricontrolla e riprova. Grazie</span>
-                            </template>
                         </div>
                     </div>
                 </div>
@@ -140,15 +140,10 @@
             </nav>
 
             <!--HOME CLIENTE-->
-            <home v-if="checkCl" v-on:transit-inner-prenotazioni="transit('prenotazioni')" v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="transit('logout')"></home>
+            <home v-if="checkCl" v-on:transit-inner-prenotazioni="transit('mieprenotazioni')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')"></home>
 
-            <article v-if="checkCl" class="container">
-                <ul>
-                    <li>
-                        <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('mieprenotazioni')">Le  mie prenotazioni attive</button>
-                    </li>
-                </ul>
-            </article>
+           <hr>
+            <logout class="container" v-on:transit-inner-logout="transit('logout')"></logout>
 
             <div class="container">
                <hr>
@@ -224,7 +219,9 @@
                 </div>
             </nav>
 
-            <home v-if="checkO"  v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="transit('logout')"></home>
+            <home v-if="checkO"  v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" ></home>
+
+            <logout class="container" v-on:transit-inner-logout="transit('logout')"></logout>
 
             <div class="container">
                <hr>
@@ -289,7 +286,7 @@
             </nav>
 
             <!--HOME AMMINISTRATORE-->
-            <home v-if="checkAH" v-on:transit-inner-prenotazioni="transit('prenotazioni')" v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="transit('logout')"></home>
+            <home v-if="checkAH" v-on:transit-inner-prenotazioni="transit('prenotazioni')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')"></home>
             <article v-if="checkAH" class="container">
                 <ul>
                     <li>
@@ -306,6 +303,10 @@
                     <br>
                     <li>
                         <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('aggiungiR')">Aggiungi ripetizioni</button>
+                    </li>
+                    <br>
+                    <li>
+                        <logout class="container" v-on:transit-inner-logout="transit('logout')"></logout>
                     </li>
                 </ul>
             </article>
@@ -441,25 +442,28 @@
             }
         })
 
+        Vue.component('logout',{
+            template:'<article>' +
+                '       <button class="btn btn-danger" v-on:click="transitLogout">Logout</button>' +
+                '     </article>',
+            methods: {
+                transitLogout: function () {
+                    this.$emit('transit-inner-logout');
+                },
+            }
+        })
         //home di ospite/cliente/amministratore
         Vue.component('home',{
             template:
                 '<article class="container">' +
                 '    <br><br>' +
                 '        <h5>Scegli l&rsquo;opzione che desideri</h5>\n' +
-                '            <ul>\n' +
-                '            <li>\n' +
-                '                <button class="btn btn-info" style="background: #f39c12 " v-on:click="transitCorsi_Docenti">Visualizzare i corsi e i loro docenti</button>\n' +
-                '            </li>\n' +
                 '            <br>\n' +
-                '            <li>\n' +
-                '                <button class="btn btn-secondary" style="background: #f39c12 " v-on:click="transitRipetizioni">Visualizzare le ripetizioni disponibili</button>\n' +
-                '            </li>\n' +
-                '            <br>\n' +
-                '            <li>\n' +
-                '                <button class="btn btn-danger" v-on:click="transitLogout">Logout</button>\n' +
-                '            </li>\n' +
-                '       </ul>\n' +
+                '            <button class="botton" v-on:click="transitCorsi_Docenti"><img src="img/lista.png" width="280" height="280" alt><br> Visualizza corsi e docenti</button>\n' +
+                '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'+
+                '            <button class="botton" v-on:click="transitRipetizioni"><img src="img/prenotazionecortisonici2020-1.png" width="280" height="280" alt><br>Prenota le tue lezioni</button>\n' +
+                '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'+
+                '            <button class="botton" v-on:click="transitPrenotazioni"> <img src="img/docentecorso.png" height="280" width="280" alt> <br>Le  mie prenotazioni attive</button>\n' +
                 '</article>',
             methods: {
                 transitPrenotazioni: function () {
@@ -470,9 +474,6 @@
                 },
                 transitRipetizioni: function () {
                     this.$emit('transit-inner-ripetizioni');
-                },
-                transitLogout: function () {
-                    this.$emit('transit-inner-logout');
                 },
                 transitCorsi_Docenti: function (){
                     this.$emit('transit-inner-corsi_docenti');

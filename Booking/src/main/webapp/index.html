@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="css/stileindex.css">
 
 </head>
-<body> <!--class="d-flex justify-content-center"-->
+<body>
     <div id="components">
         <span v-if="loginHome" id="login"><br><br><br><br><br>
             <div class="container h-100">
@@ -51,11 +51,9 @@
 
                                 <template v-if="checkA">
                                     <span class="badge badge-success">Successo</span>
-                                    <p><i>Benvenuto {{ em }} [Amministratore]</i></p>
                                 </template>
                                 <template v-if="check">
                                     <span class="badge badge-success">Successo</span>
-                                    <p><i>Benvenuto {{ em }} [Cliente]</i></p>
                                 </template>
                                 <template v-if="checkE">
                                     <span class="badge badge-danger">Errore nel login</span>
@@ -142,15 +140,10 @@
             </nav>
 
             <!--HOME CLIENTE-->
-            <home v-if="checkCl" v-on:transit-inner-prenotazioni="transit('prenotazioni')" v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="transit('logout')"></home>
+            <home v-if="checkCl" v-on:transit-inner-prenotazioni="transit('mieprenotazioni')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')"></home>
 
-            <article v-if="checkCl" class="container">
-                <ul>
-                    <li>
-                        <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('mieprenotazioni')">Le  mie prenotazioni attive</button>
-                    </li>
-                </ul>
-            </article>
+           <hr>
+            <logout class="container" v-on:transit-inner-logout="transit('logout')"></logout>
 
             <div class="container">
                <hr>
@@ -226,7 +219,9 @@
                 </div>
             </nav>
 
-            <home v-if="checkO"  v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="transit('logout')"></home>
+            <home v-if="checkO"  v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" ></home>
+
+            <logout class="container" v-on:transit-inner-logout="transit('logout')"></logout>
 
             <div class="container">
                <hr>
@@ -285,36 +280,28 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Ripetizioni</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="btn btn-warning" type="button" v-on:click="transit('logout')">Logout</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
             </nav>
 
             <!--HOME AMMINISTRATORE-->
-            <home v-if="checkAH" v-on:transit-inner-prenotazioni="transit('prenotazioni')" v-on:transit-inner-docenti="transit('docenti')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-logout="transit('logout')"></home>
+            <home v-if="checkAH" v-on:transit-inner-prenotazioni="transit('prenotazioni')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')"></home>
             <article v-if="checkAH" class="container">
                 <ul>
-                    <li>
-                        <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('prenotazioni')">Le prenotazioni attive</button>
-                    </li>
                     <br>
                     <li>
-                        <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('prenotazioni2')">Le  mie prenotazioni attive</button>
-                    </li>
-                    <br>
-                    <li>
-                        <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('aggiungiCD')">Aggiungi corsi e docenti</button>
-                    </li>
-                    <br>
-                    <li>
-                        <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('aggiungiR')">Aggiungi ripetizioni</button>
+                        <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('prenotazioni')">Le prenotazioni attive</button>&nbsp&nbsp&nbsp<button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('prenotazioni2')">Le  mie prenotazioni attive</button>&nbsp&nbsp&nbsp<button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('aggiungiCD')">Aggiungi corsi e docenti</button>&nbsp&nbsp&nbsp<button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('aggiungiR')">Aggiungi ripetizioni</button>
                     </li>
                 </ul>
             </article>
 
+            <!--SEZIONE STAMPA E AGGIUNTA DEI DATI-->
             <div class="container">
                <hr>
-
                 <!--STAMPA DEI CORSI E DOCENTI-->
                 <div v-if="stampaCD">
                     <table>
@@ -348,77 +335,81 @@
                     <span class="badge bg-warning text-dark">Attenzione:</span>
                     <p> Logout effettuato con successo</p>
                 </div>
-            </div>
 
-            <!--FORMA DELLA AGGIUNTA DI CORSI E DOCENTI-->
-            <article v-if="aggiungiCD" class="container">
-                <h4>Aggiunta di corsi e docenti affliati</h4>
-                <p>-Hai la possibilit&aacute; di aggiungere un nuovo corso, un nuovo docente e creare la loro affiliazione.</p>
-                <br>
-                <div class="form-group">
-                    <label for="aggiungiCorso">Aggiungi il corso:</label>
-                    <input v-model="courses" id="aggiungiCorso" type="text"  placeholder="Nome" required>
 
-                    <hr>
-                    <label for="aggiungiDocente">Aggiungi il docente:</label>
-                    <input v-model="var1" id="aggiungiDocente" type="text" placeholder="Nome" required>
-                    <input v-model="var2" type="text" placeholder="Cognome" required>
+                <!--FORMA DELLA AGGIUNTA DI CORSI E DOCENTI-->
+                <article v-if="aggiungiCD" >
+                    <h4>Aggiunta di corsi e docenti affliati</h4>
+                    <p>-Hai la possibilit&aacute; di aggiungere un nuovo corso, un nuovo docente e creare la loro affiliazione.</p>
+                    <br>
+                    <div class="form-group">
+                        <label for="aggiungiCorso">Aggiungi il corso:</label>
+                        <input v-model="courses" id="aggiungiCorso" type="text"  placeholder="Nome" required>
 
-                    <br><br>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary" v-on:click="ServletControllerPost('Corsi_Docenti', '')">Conferma dati</button>
-                    </div>
-                </div>
-            </article>
+                        <hr>
+                        <label for="aggiungiDocente">Aggiungi il docente:</label>
+                        <input v-model="var1" id="aggiungiDocente" type="text" placeholder="Nome" required>
+                        <input v-model="var2" type="text" placeholder="Cognome" required>
 
-            <!--FORMA DELLA AGGIUNTA DELLE RIPETIZIONI-->
-            <article v-if="aggiungiR" class="container">
-                <h4>Aggiunta di nuove ripetizioni</h4>
-                <p>-Scegli il docente, il corso, la data e l'ora della ripetizione.</p>
-                <br>
-                <div class="form-group">
-                    <label for="docente" >Nome e cognome</label>
-                    <input v-model="var1" id="docente" type="text" placeholder="Docente"/>
-
-                    <label for="Corso" >Corso</label>
-                    <input v-model="courses" id="Corso" type="text" placeholder="Corso"/>
-
-                    <label>Data</label>
-                    <select v-model="day">
-                        <option>Lunedi</option>
-                        <option>Martedi</option>
-                        <option>Mercoledi</option>
-                        <option>Giovedi</option>
-                        <option>Venerdi</option>
-                    </select>
-
-                    <label>Ora</label>
-                        <select v-model="hour">
-                            <option>15:00</option>
-                            <option>16:00</option>
-                            <option>17:00</option>
-                            <option>18:00</option>
-                            <option>19:00</option>
-                        </select>
-
-                        <br>
-                        <br>
+                        <br><br>
                         <div class="d-grid gap-2">
-                            <button class="btn btn-primary" v-on:click="ServletControllerPost('Ripetizioni', '')">Conferma dati</button>
+                            <button class="btn btn-primary" v-on:click="ServletControllerPost('Corsi_Docenti', '')">Conferma dati</button>
                         </div>
                     </div>
                 </article>
 
-                <template v-if="errore2" class="container">
-                        <span class="badge badge-danger">Errore nei dati inseriti, ricontrolla e riprova. Grazie</span>
-                </template>
-                <template v-if="successo" class="container">
-                        <span class="badge badge-success">Successo</span>
-                </template>
+                <!--FORMA DELLA AGGIUNTA DELLE RIPETIZIONI-->
+                <article v-if="aggiungiR">
+                    <h4>Aggiunta di nuove ripetizioni</h4>
+                    <p>-Scegli il docente, il corso, la data e l'ora della ripetizione.</p>
+                    <br>
+                    <div class="form-group">
+                        <label for="docente" >Nome e cognome</label>
+                        <input v-model="var1" id="docente" type="text" placeholder="Docente"/>
 
+                        <label for="Corso" >Corso</label>
+                        <input v-model="courses" id="Corso" type="text" placeholder="Corso"/>
 
+                        <label>Data</label>
+                        <select v-model="day">
+                            <option>Lunedi</option>
+                            <option>Martedi</option>
+                            <option>Mercoledi</option>
+                            <option>Giovedi</option>
+                            <option>Venerdi</option>
+                        </select>
+
+                        <label>Ora</label>
+                            <select v-model="hour">
+                                <option>15:00</option>
+                                <option>16:00</option>
+                                <option>17:00</option>
+                                <option>18:00</option>
+                                <option>19:00</option>
+                            </select>
+
+                            <br>
+                            <br>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary" v-on:click="ServletControllerPost('Ripetizioni', '')">Conferma dati</button>
+                            </div>
+                        </div>
+                    </article>
+
+                <template v-if="errore2" >
+                            <span class="badge badge-danger">Errore nei dati inseriti, ricontrolla e riprova. Grazie</span>
+                    </template>
+                <template v-if="successo">
+                            <span class="badge badge-success">Successo</span>
+                    </template>
+            </div>
+
+            <ul class="container">
+                <li>
+                    <logout class="container" v-on:transit-inner-logout="transit('logout')"></logout>
+                </li>
+            </ul>
         </span>
-
     </div>
 
     <script>
@@ -443,25 +434,28 @@
             }
         })
 
+        Vue.component('logout',{
+            template:'<article>' +
+                '       <button class="btn btn-danger" v-on:click="transitLogout">Logout</button>' +
+                '     </article>',
+            methods: {
+                transitLogout: function () {
+                    this.$emit('transit-inner-logout');
+                },
+            }
+        })
         //home di ospite/cliente/amministratore
         Vue.component('home',{
             template:
                 '<article class="container">' +
                 '    <br><br>' +
                 '        <h5>Scegli l&rsquo;opzione che desideri</h5>\n' +
-                '            <ul>\n' +
-                '            <li>\n' +
-                '                <button class="btn btn-info" style="background: #f39c12 " v-on:click="transitCorsi_Docenti">Visualizzare i corsi e i loro docenti</button>\n' +
-                '            </li>\n' +
                 '            <br>\n' +
-                '            <li>\n' +
-                '                <button class="btn btn-secondary" style="background: #f39c12 " v-on:click="transitRipetizioni">Visualizzare le ripetizioni disponibili</button>\n' +
-                '            </li>\n' +
-                '            <br>\n' +
-                '            <li>\n' +
-                '                <button class="btn btn-danger" v-on:click="transitLogout">Logout</button>\n' +
-                '            </li>\n' +
-                '       </ul>\n' +
+                '            <button class="botton" v-on:click="transitCorsi_Docenti"><img src="img/lista.png" width="280" height="280" alt><br> Visualizza corsi e docenti</button>\n' +
+                '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'+
+                '            <button class="botton" v-on:click="transitRipetizioni"><img src="img/prenotazionecortisonici2020-1.png" width="280" height="280" alt><br>Prenota le tue lezioni</button>\n' +
+                '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'+
+                '            <button class="botton" v-on:click="transitPrenotazioni"> <img src="img/docentecorso.png" height="280" width="280" alt> <br>Le  mie prenotazioni attive</button>\n' +
                 '</article>',
             methods: {
                 transitPrenotazioni: function () {
@@ -473,9 +467,6 @@
                 transitRipetizioni: function () {
                     this.$emit('transit-inner-ripetizioni');
                 },
-                transitLogout: function () {
-                    this.$emit('transit-inner-logout');
-                },
                 transitCorsi_Docenti: function (){
                     this.$emit('transit-inner-corsi_docenti');
                 }
@@ -485,8 +476,8 @@
         var app = new Vue ({
             el: '#components',
             data: {
-                loginHome: true, em: null, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
-                homeAmministratore: false, logout: false, errore2: false, successo: false, checkAH: false, aggiungiCD: false, aggiungiR: false, courses: null, var1: null, var2: null, day: null, hour: null,
+                loginHome: false, em: null, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
+                homeAmministratore: true, logout: false, errore2: false, successo: false, checkAH: true, aggiungiCD: false, aggiungiR: false, courses: null, var1: null, var2: null, day: null, hour: null,
                 homeOspite: false, checkO: false,
                 homeCliente: false, checkCl: false, printCD: [], printD: [], printR: [], printMPr: [], stampaCD: false, stampaD: false, stampaR: false, stampaMPr: false,
                 creazionehome: false, checkC: false, print: '',
