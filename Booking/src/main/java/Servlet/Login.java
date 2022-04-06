@@ -10,14 +10,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import DAO.*;
-import com.google.gson.Gson;
 
 @WebServlet(name = "login", value = "/login")
 public class Login extends HttpServlet {
-    //private Gson gson = new Gson();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        System.out.println("gettttttt");
         processRequest(request, response);
     }
 

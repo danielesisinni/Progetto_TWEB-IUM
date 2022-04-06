@@ -17,7 +17,7 @@ public class ServletController extends HttpServlet {
         RequestDispatcher rd = ctx.getRequestDispatcher ("/index.html");
         String action = request.getParameter("action");
         if(action != null) {
-            if (session.getAttribute("userRole") != null && session.getAttribute("userRole").equals("Amministratore")) {
+            if (session.getAttribute("userRole") != null) {
                 switch (action) {
                     case "Corsi_Docenti":
                         rd = getServletContext().getNamedDispatcher("corsi_docenti");
@@ -31,38 +31,8 @@ public class ServletController extends HttpServlet {
                         response.setContentType("application/json,charset=UTF-8");
                         out.print(request.getAttribute("risultato"));
                         break;
-                }
-            } else if (session.getAttribute("userRole") != null && session.getAttribute("userRole").equals("Cliente")) {
-                switch (action) {
                     case "MiePrenotazioni":
                         rd = getServletContext().getNamedDispatcher("prenotazioni");
-                        rd.include(request, response);
-                        response.setContentType("application/json,charset=UTF-8");
-                        out.print(request.getAttribute("risultato"));
-                        break;
-                    case "Corsi_Docenti":
-                        rd = getServletContext().getNamedDispatcher("corsi_docenti");
-                        rd.include(request, response);
-                        response.setContentType("application/json,charset=UTF-8");
-                        out.print(request.getAttribute("risultato"));
-                        break;
-                    case "Ripetizioni":
-                        rd = getServletContext().getNamedDispatcher("ripetizioni");
-                        rd.include(request, response);
-                        response.setContentType("application/json,charset=UTF-8");
-                        out.print(request.getAttribute("risultato"));
-                        break;
-                }
-            } else if (session.getAttribute("userRole") != null && session.getAttribute("userRole").equals("Ospite")) {
-                switch (action) {
-                    case "Corsi_Docenti":
-                        rd = getServletContext().getNamedDispatcher("corsi_docenti");
-                        rd.include(request, response);
-                        response.setContentType("application/json,charset=UTF-8");
-                        out.print(request.getAttribute("risultato"));
-                        break;
-                    case "Ripetizioni":
-                        rd = getServletContext().getNamedDispatcher("ripetizioni");
                         rd.include(request, response);
                         response.setContentType("application/json,charset=UTF-8");
                         out.print(request.getAttribute("risultato"));
@@ -93,7 +63,7 @@ public class ServletController extends HttpServlet {
                 System.out.println(request.getAttribute("risultato"));
                 out.print(request.getAttribute("risultato"));
             }
-            if (session.getAttribute("userRole") != null && session.getAttribute("userRole").equals("Amministratore")) {
+            if (session.getAttribute("userRole") != null){
                 switch (action) {
                     case "Corsi_Docenti":
                         rd = getServletContext().getNamedDispatcher("corsi_docenti");
@@ -111,42 +81,17 @@ public class ServletController extends HttpServlet {
                         rd.include(request, response);
                         out.print(request.getAttribute("risultato"));
                         break;
-                    case "logout":
-                        rd = getServletContext().getNamedDispatcher("logout");
-                        rd.include(request, response);
-                        break;
-                }
-            } else if (session.getAttribute("userRole") != null && session.getAttribute("userRole").equals("Cliente")) {
-                switch (action) {
-                    //Disdetta delle prenotazioni
+                        //Disdetta delle prenotazioni
                     case "Disdetta":
-                        rd = getServletContext().getNamedDispatcher("prenotazioni");
-                        rd.include(request, response);
-                        response.setContentType("text/html");
-                        out.print(request.getAttribute("risultato"));
-                        break;
-                    //Prenota delle ripetizioni
+                        //Prenota delle ripetizioni
                     case "Prenota":
-                        rd = getServletContext().getNamedDispatcher("prenotazioni");
-                        rd.include(request, response);
-                        response.setContentType("text/html");
-                        out.print(request.getAttribute("risultato"));
-                        break;
-                    //Riprenota le ripetizioni
+                        //Riprenota le ripetizioni
                     case "Riprenota":
                         rd = getServletContext().getNamedDispatcher("prenotazioni");
                         rd.include(request, response);
                         response.setContentType("text/html");
                         out.print(request.getAttribute("risultato"));
                         break;
-                    //Logout
-                    case "logout":
-                        rd = getServletContext().getNamedDispatcher("logout");
-                        rd.include(request, response);
-                        break;
-                }
-            } else if (session.getAttribute("userRole") != null && session.getAttribute("userRole").equals("Ospite")) {
-                switch (action) {
                     case "logout":
                         rd = getServletContext().getNamedDispatcher("logout");
                         rd.include(request, response);

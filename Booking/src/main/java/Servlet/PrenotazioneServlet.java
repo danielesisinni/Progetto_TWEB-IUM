@@ -23,8 +23,8 @@ public class PrenotazioneServlet extends HttpServlet {
         String action = request.getParameter("action");
         response.setContentType("application/json,charset=UTF-8");
         Gson gson = new Gson();
-        PrintWriter out = response.getWriter();
         String acc = (String) session.getAttribute("userName");
+
         if(action.equals("MiePrenotazioni")){
             ArrayList<Prenotazione> prenotazione = DAO.MyBooking(acc);
             String s = gson.toJson(prenotazione);
