@@ -294,7 +294,7 @@
                 <ul>
                     <br>
                     <li>
-                        <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('prenotazioni')">Le prenotazioni attive</button>&nbsp&nbsp&nbsp<button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('aggiungiCD')">Aggiungi corsi e docenti</button>&nbsp&nbsp&nbsp<button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('aggiungiR')">Aggiungi ripetizioni</button>
+                        <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('prenotazioni')">Le prenotazioni attive</button>&nbsp&nbsp&nbsp<button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('gestioneCD')">Gestione di corsi e docenti</button>&nbsp&nbsp&nbsp<button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('aggiungiR')">Aggiungi ripetizioni</button>
                     </li>
                 </ul>
             </article>
@@ -345,7 +345,7 @@
                 </div>
 
                 <!--FORMA DELLA AGGIUNTA DI CORSI E DOCENTI-->
-                <article v-if="aggiungiCD" >
+                <article v-if="gestioneCD" >
                     <h4>Aggiunta di corsi e docenti affliati</h4>
                     <p>-Hai la possibilit&aacute; di aggiungere un nuovo corso, un nuovo docente e creare la loro affiliazione.</p>
                     <br>
@@ -371,11 +371,15 @@
                     <p>-Scegli il docente, il corso, la data e l'ora della ripetizione.</p>
                     <br>
                     <div class="form-group">
-                        <label for="docente" >Nome e cognome</label>
-                        <input v-model="var1" id="docente" type="text" placeholder="Docente"/>
+                        <label>Docente</label>
+                        <select v-model="var1">
+                            <option v-for="co_do in printD">{{co_do.nome}} {{co_do.cognome}}</option>
+                        </select>
 
-                        <label for="Corso" >Corso</label>
-                        <input v-model="courses" id="Corso" type="text" placeholder="Corso"/>
+                        <label>Corso</label>
+                        <select v-model="courses">
+                            <option v-for="co_do in printC">{{co_do.titolo}}</option>
+                        </select>
 
                         <label>Data</label>
                         <select v-model="day">
@@ -475,9 +479,9 @@
             el: '#components',
             data: {
                 loginHome: true, em: null, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
-                homeAmministratore: false, logout: false, errore2: false, successo: false, checkAH: false, aggiungiCD: false, aggiungiR: false, courses: null, var1: null, var2: null, day: null, hour: null,
+                homeAmministratore: false, logout: false, errore2: false, successo: false, checkAH: false, gestioneCD: false, aggiungiR: false, courses: null, var1: null, var2: null, day: null, hour: null,
                 homeOspite: false, checkO: false,
-                homeCliente: false, checkCl: false, printCD: [], printD: [], printR: [], printMPr: [], stampaCD: false, stampaD: false, stampaR: false, stampaMPr: false,
+                homeCliente: false, checkCl: false, printCD: [], printC: [], printD: [], printR: [], printMPr: [], stampaCD: false, stampaD: false, stampaR: false, stampaMPr: false,
                 creazionehome: false, checkC: false, print: '',
 
                 link: 'ServletController'
@@ -549,11 +553,16 @@
                             if(data === "errore"){
                                 self.successo = false; self.errore2 = true;
                             }else if(data === "aggiunta"){
+                                this.stampaMPr = false;
                                 self.errore2 = false;
                             }
+                        }else if(flag === 'Riprenota') {
+                            if(data === "riaggiunta"){
+                               self.stampaMPr = false; self.transit('mieprenotazioni');
+                            }
                         }else if(flag === 'Disdetta') {
-                            if(data === "aggiunta"){
-                                self.stampaR = false; self.errore2 = false;
+                            if(data === "rimossa"){
+                                self.stampaMPr = false; self.transit('mieprenotazioni');
                             }
                         }
                     })
@@ -573,6 +582,9 @@
                             //Sezione Servlet/Docenti, stampa dei docenti per i clienti
                         }else if(flag === 'Docenti'){
                             self.printD = data;
+                            //Sezione Servlet/Corsi
+                        }else if(flag === 'Corsi'){
+                            self.printC = data;
                             //Sezione Servlet/Corsi_Docenti
                         }else if(flag === 'Corsi_Docenti'){
                             self.printCD = data;
@@ -581,7 +593,6 @@
                             self.printR = data;
                            //Sezione Servlet/Ripetizioni, stampa delle ripetizioni per i clienti
                         }else if(flag === 'MiePrenotazioni'){
-                            console.log(data)
                             self.printMPr = data;
                     }
                     })
@@ -602,10 +613,10 @@
                         this.loginHome = false; this.homeAmministratore = true; this.checkAH = true; this.stampaD = false; this.stampaMPr = false; this.stampaR = false; this.stampaCD = false; this.aggiungiCD = false; this.aggiungiR = false; this.aggiungiP = false; this.errore2 = false; this.successo = false;
                     }else if(flag === 'clienteHome'){
                         this.loginHome = false; this.homeCliente = true; this.checkCl = true; this.stampaMPr = false; this.stampaD = false; this.stampaR = false; this.stampaCD = false;
-                    }else if(flag === 'aggiungiCD'){
-                        this.checkAH = false; this.aggiungiCD = true; this.corsi = null; this.var1 = null; this.var2 = null; this.errore2 = false; this.successo = false;
+                    }else if(flag === 'gestioneCD'){
+                        this.checkAH = false; this.gestioneCD = true; this.corsi = null; this.var1 = null; this.var2 = null; this.errore2 = false; this.successo = false;
                     }else if(flag === 'aggiungiR'){
-                        this.checkAH = false; this.aggiungiR = true; this.corsi = null; this.var1 = null; this.var2 = null; this.errore2 = false; this.successo = false;
+                        this.checkAH = false; this.aggiungiR = true; this.corsi = null; this.var1 = null; this.errore2 = false; this.successo = false; this.ServletControllerGet("Corsi"); this.ServletControllerGet("Docenti");
                     }else if(flag === 'aggiungiPr'){
                         this.checkAH = false; this.aggiungiP = true; this.corsi = null; this.var1 = null; this.var2 = null; this.errore2 = false; this.successo = false;
                     } else if(flag === 'corsi_docenti'){

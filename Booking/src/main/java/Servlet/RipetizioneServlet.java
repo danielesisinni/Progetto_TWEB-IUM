@@ -30,13 +30,12 @@ public class RipetizioneServlet extends HttpServlet {
         ArrayList<Ripetizione> ripetizione = DAO.Repetition(account);
         String s = gson.toJson(ripetizione);
         request.setAttribute("risultato", s);
-        String jsessionID = session.getId(); // estraggo il session ID
-        System.out.println("JSessionID:" + jsessionID);
+        /*String jsessionID = session.getId(); // estraggo il session ID
+        System.out.println("JSessionID:" + jsessionID);*/
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html,charset=UTF-8");
-        System.out.println("Non devo entrare qui");
         HttpSession session = request.getSession();
 
         if(session.getAttribute("userRole").equals("Amministratore")) {
@@ -44,7 +43,7 @@ public class RipetizioneServlet extends HttpServlet {
             String corso = request.getParameter("corsi");
             String giorno = request.getParameter("giorno");
             String ora = request.getParameter("ora");
-            String status = "attiva";
+            String status = "DISPONIBILE";
             if (docente != null && corso != null && giorno != null && ora != null) {
                 if (!docente.equals("") && !corso.equals("") && !giorno.equals("") && !ora.equals("")) {
                     DAO.insertRepetition(docente, corso, giorno, ora, status);

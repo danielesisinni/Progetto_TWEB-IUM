@@ -29,14 +29,14 @@ public class PrenotazioneServlet extends HttpServlet {
             ArrayList<Prenotazione> prenotazione = DAO.MyBooking(acc);
             String s = gson.toJson(prenotazione);
             request.setAttribute("risultato", s);
-            String jsessionID = session.getId(); // estraggo il session ID
-            System.out.println("JSessionID:" + jsessionID);
+            /*String jsessionID = session.getId(); // estraggo il session ID
+            System.out.println("JSessionID:" + jsessionID);*/
         }else {
             ArrayList<Prenotazione> prenotazione = DAO.Booking();
             String s = gson.toJson(prenotazione);
             request.setAttribute("risultato", s);
-            String jsessionID = session.getId(); // estraggo il session ID
-            System.out.println("JSessionID:" + jsessionID);
+            /*String jsessionID = session.getId(); // estraggo il session ID
+            System.out.println("JSessionID:" + jsessionID);*/
         }
     }
 
@@ -75,7 +75,7 @@ public class PrenotazioneServlet extends HttpServlet {
             String utente = (String) session.getAttribute("userName");
             String codice = request.getParameter("codex");
             DAO.updateBooking(utente, codice, action);
-            request.setAttribute("risultato", "rimossa");
+            request.setAttribute("risultato", "riaggiunta");
         }
     }
 

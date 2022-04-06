@@ -218,11 +218,10 @@ public class DAO {
             if (conn1 != null) {
                 System.out.println("Connected to the database test");
             }
-
             String codice;
 
             do {
-                codice = "#" + Math.floor(Math.random() * 500);
+                codice = "#" + Math.round(Math.random() * 500);
             } while(RepetitionCod().contains(codice));
 
             Ripetizione r = new Ripetizione(codice, docente, corso, giorno, ora, status);
@@ -230,7 +229,6 @@ public class DAO {
             Statement st = conn1.createStatement();
             st.execute("insert into ripetizione (codice, docente, corso, giorno, ora, status) values ('" + codice + "', '" + docente + "', '" + corso + "', '" + giorno + "', '" + ora + "', '" + status + "')");
             System.out.println("New repetition added!");
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -668,7 +666,7 @@ public class DAO {
             }
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT CODICE FROM ripetizioni");
+            ResultSet rs = st.executeQuery("SELECT CODICE FROM ripetizione");
             while (rs.next()) {
                 out.add(rs.getString("CODICE"));
             }

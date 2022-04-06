@@ -96,3 +96,7 @@ html{
     background: #a0acde;
     border: 0;
 }
+
+.btn-outline-dark{
+    color: white;
+}

@@ -2,6 +2,8 @@ package Servlet;
 
 import DAO.DAO;
 import DAO.CorsoDocente;
+import DAO.Corso;
+import DAO.Docente;
 import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
@@ -19,17 +21,30 @@ public class CorsiDocentiServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
+        response.setContentType("application/json,charset=UTF-8");
+        Gson gson = new Gson();
         String action = request.getParameter("action");
+        /*String jsessionID = session.getId(); // estraggo il session ID
+        System.out.println("JSessionID:" + jsessionID);*/
 
-        if (action != null && action.equals("Corsi_Docenti")) {
-            response.setContentType("application/json,charset=UTF-8");
-            Gson gson = new Gson();
-            PrintWriter out = response.getWriter();
-            ArrayList<CorsoDocente> corsi_docenti = DAO.CourseTeacher();
-            String s = gson.toJson(corsi_docenti);
-            request.setAttribute("risultato", s);
-            String jsessionID = session.getId(); // estraggo il session ID
-            System.out.println("JSessionID:" + jsessionID);
+        if (action != null){
+            switch (action){
+                case "Corsi_Docenti":
+                    ArrayList<CorsoDocente> corsi_docenti = DAO.CourseTeacher();
+                    String s = gson.toJson(corsi_docenti);
+                    request.setAttribute("risultato", s);
+                    break;
+                case "Corsi":
+                    ArrayList<Corso> corsi = DAO.Course();
+                    String s1 = gson.toJson(corsi);
+                    request.setAttribute("risultato", s1);
+                    break;
+                case "Docenti":
+                    ArrayList<Docente> docenti = DAO.Teacher();
+                    String s2 = gson.toJson(docenti);
+                    request.setAttribute("risultato", s2);
+                    break;
+            }
         }
     }
 

@@ -20,6 +20,8 @@ public class ServletController extends HttpServlet {
             if (session.getAttribute("userRole") != null) {
                 switch (action) {
                     case "Corsi_Docenti":
+                    case "Corsi":
+                    case "Docenti":
                         rd = getServletContext().getNamedDispatcher("corsi_docenti");
                         rd.include(request, response);
                         response.setContentType("application/json,charset=UTF-8");
@@ -60,7 +62,6 @@ public class ServletController extends HttpServlet {
             if (action.equals("login") || action.equals("crea") || action.equals("ospite")) {
                 rd = getServletContext().getNamedDispatcher("login");
                 rd.include(request, response);
-                System.out.println(request.getAttribute("risultato"));
                 out.print(request.getAttribute("risultato"));
             }
             if (session.getAttribute("userRole") != null){
@@ -73,7 +74,6 @@ public class ServletController extends HttpServlet {
                     case "Ripetizioni":
                         rd = getServletContext().getNamedDispatcher("ripetizioni");
                         rd.include(request, response);
-                        System.out.println(request.getAttribute("risultato"));
                         out.print(request.getAttribute("risultato"));
                         break;
                     case "Prenotazioni":
