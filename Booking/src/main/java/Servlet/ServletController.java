@@ -33,6 +33,7 @@ public class ServletController extends HttpServlet {
                         response.setContentType("application/json,charset=UTF-8");
                         out.print(request.getAttribute("risultato"));
                         break;
+                    case "Prenotazioni":
                     case "MiePrenotazioni":
                         rd = getServletContext().getNamedDispatcher("prenotazioni");
                         rd.include(request, response);

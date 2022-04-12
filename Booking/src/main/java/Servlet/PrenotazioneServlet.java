@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
 @WebServlet(name = "prenotazioni", value = "/prenotazioni")
@@ -29,14 +28,10 @@ public class PrenotazioneServlet extends HttpServlet {
             ArrayList<Prenotazione> prenotazione = DAO.MyBooking(acc);
             String s = gson.toJson(prenotazione);
             request.setAttribute("risultato", s);
-            /*String jsessionID = session.getId(); // estraggo il session ID
-            System.out.println("JSessionID:" + jsessionID);*/
         }else {
             ArrayList<Prenotazione> prenotazione = DAO.Booking();
             String s = gson.toJson(prenotazione);
             request.setAttribute("risultato", s);
-            /*String jsessionID = session.getId(); // estraggo il session ID
-            System.out.println("JSessionID:" + jsessionID);*/
         }
     }
 
@@ -47,7 +42,7 @@ public class PrenotazioneServlet extends HttpServlet {
 
         if(action.equals("Prenota") && (session.getAttribute("userRole").equals("Amministratore") || session.getAttribute("userRole").equals("Cliente"))) {
             String utente = (String) session.getAttribute("userName");
-            String codice = request.getParameter("codex");
+            String codice = request.getParameter("action2");
             String docente = null;String corso = null;String giorno = null;String ora = null;String status = null;
             ArrayList<Ripetizione> rip = DAO.SearchRepetition(codice);
             for(Ripetizione a: rip){
@@ -68,12 +63,12 @@ public class PrenotazioneServlet extends HttpServlet {
             }
         }else if(action.equals("Disdetta") && (session.getAttribute("userRole").equals("Amministratore") || session.getAttribute("userRole").equals("Cliente"))) {
             String utente = (String) session.getAttribute("userName");
-            String codice = request.getParameter("codex");
+            String codice = request.getParameter("action2");
             DAO.updateBooking(utente, codice, action);
             request.setAttribute("risultato", "rimossa");
         }else if(action.equals("Riprenota") && (session.getAttribute("userRole").equals("Amministratore") || session.getAttribute("userRole").equals("Cliente"))) {
             String utente = (String) session.getAttribute("userName");
-            String codice = request.getParameter("codex");
+            String codice = request.getParameter("action2");
             DAO.updateBooking(utente, codice, action);
             request.setAttribute("risultato", "riaggiunta");
         }

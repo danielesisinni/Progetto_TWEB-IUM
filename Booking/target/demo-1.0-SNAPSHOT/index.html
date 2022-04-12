@@ -225,8 +225,6 @@
 
             <home v-if="checkO"  v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" ></home>
 
-            <logout class="container" v-on:transit-inner-logout="transit('logout')"></logout>
-
             <!--SEZIONE STAMPA DEI DATI-->
             <div class="container">
                <hr>
@@ -294,7 +292,7 @@
                 <ul>
                     <br>
                     <li>
-                        <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('prenotazioni')">Le prenotazioni attive</button>&nbsp&nbsp&nbsp<button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('aggiungiCD')">Aggiungi corsi e docenti</button>&nbsp&nbsp&nbsp<button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('aggiungiR')">Aggiungi ripetizioni</button>
+                        <button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('prenotazioni')">Le prenotazioni attive</button>&nbsp&nbsp&nbsp<button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('gestioneCD')">Gestione di corsi e docenti</button>&nbsp&nbsp&nbsp<button class="btn btn-secondary" style="background: #f39c12" v-on:click="transit('aggiungiR')">Aggiungi ripetizioni</button>
                     </li>
                 </ul>
             </article>
@@ -306,11 +304,11 @@
                 <div v-if="stampaCD">
                     <table>
                         <thead>
-                            <tr><td><i><b>CORSO</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>
+                            <tr><td><i><b>CORSO</b></i></td><td><i><b>DOCENTE</b></i></td></tr>
                         </thead>
                         <tbody>
                             <template v-for="co_do in printCD">
-                                <tr><td>{{co_do.corso}}</td><td>{{co_do.docente}}</td><td><button class="btn btn-info" v-on:click="ServletControllerPost('RimuoviCD', co_do.corso)">Rimuovi corso</button></td></tr>
+                                <tr><td>{{co_do.corso}}</td><td>{{co_do.docente}}</td></tr>
                             </template>
                         </tbody>
                     </table>
@@ -331,6 +329,20 @@
                 </div>
 
                 <!--STAMPA DELLE PRENOTAZIONI-->
+                <div v-if="stampaPr">
+                    <table>
+                        <thead>
+                            <tr><td><i><b>UTENTE</b></i></td><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td></tr>
+                        </thead>
+                        <tbody>
+                            <template v-for="prenotazioni in printPr">
+                                <tr><td>{{prenotazioni.utente}}</td><td>{{prenotazioni.codice}}</td><td>{{prenotazioni.docente}}</td><td>{{prenotazioni.corso}}</td><td>{{prenotazioni.giorno}}</td><td>{{prenotazioni.ora}}</td><td v-if="prenotazioni.status === 'RIMOSSA'"><span class="badge rounded-pill bg-danger">{{prenotazioni.status}}</span></td><td v-else><span class="badge badge-success">{{prenotazioni.status}}</span></td></tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!--STAMPA DELLE MIE PRENOTAZIONI-->
                 <div v-if="stampaMPr">
                     <table>
                         <thead>
@@ -345,8 +357,8 @@
                 </div>
 
                 <!--FORMA DELLA AGGIUNTA DI CORSI E DOCENTI-->
-                <article v-if="aggiungiCD" >
-                    <h4>Aggiunta di corsi e docenti affliati</h4>
+                <article v-if="gestioneCD" >
+                    <h4>Aggiunta di corsi e docenti affiliati</h4>
                     <p>-Hai la possibilit&aacute; di aggiungere un nuovo corso, un nuovo docente e creare la loro affiliazione.</p>
                     <br>
                     <div class="form-group">
@@ -360,8 +372,25 @@
 
                         <br><br>
                         <div class="d-grid gap-2">
-                            <button class="btn btn-primary" v-on:click="ServletControllerPost('Corsi_Docenti', '')">Conferma dati</button>
+                            <button class="btn btn-primary" v-on:click="ServletControllerPost('Corsi_Docenti', 'Aggiunta')">Conferma dati</button>
                         </div>
+                    </div>
+
+                    <hr>
+                    <h4>Rimozione di corsi e docenti</h4>
+                    <p>-Hai la possibilit&aacute; di rimuovere un docente o un corso con le loro affiliazioni. Solo se non compaiono in nessuna prenotazioni attiva.</p>
+                    <label>Seleziona docente da rimuovere&nbsp</label>
+                    <select v-model="docElim">
+                        <option v-for="co_do in printD">{{co_do.nome}} {{co_do.cognome}}</option>
+                    </select>
+                    <br>
+                    <label>Selezione corso da rimuovere&nbsp&nbsp&nbsp&nbsp&nbsp</label>
+                    <select v-model="corsElim">
+                        <option v-for="co_do in printC">{{co_do.titolo}}</option>
+                    </select>
+                    <br>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" v-on:click="ServletControllerPost('Corsi_Docenti', 'Rimozione')">Conferma</button>
                     </div>
                 </article>
 
@@ -398,8 +427,6 @@
                                 <option>18:00</option>
                                 <option>19:00</option>
                             </select>
-
-                            <br>
                             <br>
                             <div class="d-grid gap-2">
                                 <button class="btn btn-primary" v-on:click="ServletControllerPost('Ripetizioni', '')">Conferma dati</button>
@@ -407,6 +434,7 @@
                         </div>
                     </article>
 
+                <!--STAMPA DELL'ERRORE O SUCCESSO-->
                 <template v-if="errore2" >
                             <span class="badge badge-danger">Errore nei dati inseriti, ricontrolla e riprova. Grazie</span>
                     </template>
@@ -479,7 +507,7 @@
             el: '#components',
             data: {
                 loginHome: true, em: null, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
-                homeAmministratore: false, logout: false, errore2: false, successo: false, checkAH: false, aggiungiCD: false, aggiungiR: false, courses: null, var1: null, var2: null, day: null, hour: null,
+                homeAmministratore: false, logout: false, errore2: false, successo: false, checkAH: false, gestioneCD: false, aggiungiR: false, printPr: [], stampaPr: false, ourses: null, var1: null, var2: null, docElim: null, corsElim: null, day: null, hour: null,
                 homeOspite: false, checkO: false,
                 homeCliente: false, checkCl: false, printCD: [], printC: [], printD: [], printR: [], printMPr: [], stampaCD: false, stampaD: false, stampaR: false, stampaMPr: false,
                 creazionehome: false, checkC: false, print: '',
@@ -488,9 +516,9 @@
             },
             methods: {
                 //ServletController, gestisce le Servlet che ci servono con la doPost e passa i data che ottiene alle chiamate
-                ServletControllerPost: function (flag, code){
+                ServletControllerPost: function (flag, flag2){
                     var self = this;
-                    $.post(this.link, {email: this.em, account: this.acc, password: this.pass, action: flag, codex: code, corsi: this.courses, nome: this.var1, cognome: this.var2, giorno: this.day, ora: this.hour}, function (data) {
+                    $.post(this.link, {email: this.em, account: this.acc, password: this.pass, action: flag, action2: flag2, corsi: this.courses, nome: this.var1, cognome: this.var2, giorno: this.day, ora: this.hour, docEli: this.docElim, corEli: this.corsElim}, function (data) {
                         //Sezione Servlet Login
                         if(flag === 'login' || flag === 'crea'|| flag === 'ospite'){
                             switch (data) {
@@ -534,7 +562,7 @@
                         }else if(flag === 'Corsi_Docenti') {
                             if(data === "errore"){
                                 self.successo = false; self.errore2 = true;
-                            }else if(data === "aggiunti"){
+                            }else if(data === "aggiunto"){
                                 self.errore2 = false; self.successo = true;
                                 setTimeout(() => {
                                     self.transit('amministratoreHome');
@@ -579,7 +607,7 @@
                                     self.check = false; self.checkA = false; self.checkE = true;
                                     break;
                             }
-                            //Sezione Servlet/Docenti, stampa dei docenti per i clienti
+                            //Sezione Servlet/Docenti, stampa dei docenti
                         }else if(flag === 'Docenti'){
                             self.printD = data;
                             //Sezione Servlet/Corsi
@@ -588,19 +616,22 @@
                             //Sezione Servlet/Corsi_Docenti
                         }else if(flag === 'Corsi_Docenti'){
                             self.printCD = data;
-                            //Sezione Servlet/Ripetizioni, stampa delle ripetizioni per i clienti
+                            //Sezione Servlet/Ripetizioni, stampa delle ripetizioni
                         }else if(flag === 'Ripetizioni'){
                             self.printR = data;
-                           //Sezione Servlet/Ripetizioni, stampa delle ripetizioni per i clienti
+                           //Sezione Servlet/Prenotazioni, stampa delle prenotazioni personali dei clienti
                         }else if(flag === 'MiePrenotazioni'){
                             self.printMPr = data;
+                            //Sezione Servlet/Prenotazioni, stampa delle prenotazioni totali
+                        }else if(flag === 'Prenotazioni'){
+                            self.printPr = data;
                     }
                     })
                 },
 
                 //Funzione per il transito da pagina a pagina e per la stampa degli oggetti Json
                 transit: function (flag) {
-                    this.printR = [];
+                    //this.printR = [];
                     if(flag === 'creazione') {
                         this.loginHome = false; this.creazionehome = true; this.errore2 = false; this.checkC = false;
                     }else if(flag === 'ospiteHome'){
@@ -610,26 +641,25 @@
                     }else if(flag === 'loginHome') {
                         this.loginHome = true; this.homeAmministratore = false; this.creazionehome = false; this.homeOspite = false; this.homeCliente = false; this.logout = false; this.check = false; this.checkA = false; this.checkO = false; this.errore2 = false;
                     }else if(flag === 'amministratoreHome'){
-                        this.loginHome = false; this.homeAmministratore = true; this.checkAH = true; this.stampaD = false; this.stampaMPr = false; this.stampaR = false; this.stampaCD = false; this.aggiungiCD = false; this.aggiungiR = false; this.aggiungiP = false; this.errore2 = false; this.successo = false;
+                        this.loginHome = false; this.homeAmministratore = true; this.checkAH = true; this.stampaD = false; this.stampaMPr = false; this.stampaR = false; this.stampaCD = false; this.gestioneCD = false; this.aggiungiR = false; this.aggiungiP = false; this.errore2 = false; this.successo = false;
                     }else if(flag === 'clienteHome'){
                         this.loginHome = false; this.homeCliente = true; this.checkCl = true; this.stampaMPr = false; this.stampaD = false; this.stampaR = false; this.stampaCD = false;
-                    }else if(flag === 'aggiungiCD'){
-                        this.checkAH = false; this.aggiungiCD = true; this.corsi = null; this.var1 = null; this.var2 = null; this.errore2 = false; this.successo = false;
+                    }else if(flag === 'gestioneCD'){
+                        this.checkAH = false; this.gestioneCD = true; this.corsi = null; this.var1 = null; this.var2 = null; this.errore2 = false; this.successo = false; this.ServletControllerGet("Corsi"); this.ServletControllerGet("Docenti");
                     }else if(flag === 'aggiungiR'){
                         this.checkAH = false; this.aggiungiR = true; this.corsi = null; this.var1 = null; this.errore2 = false; this.successo = false; this.ServletControllerGet("Corsi"); this.ServletControllerGet("Docenti");
                     }else if(flag === 'aggiungiPr'){
                         this.checkAH = false; this.aggiungiP = true; this.corsi = null; this.var1 = null; this.var2 = null; this.errore2 = false; this.successo = false;
                     } else if(flag === 'corsi_docenti'){
-                        this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaCD = true;
-                        this.ServletControllerGet("Corsi_Docenti");
+                        this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaCD = true; this.ServletControllerGet("Corsi_Docenti");
                     }else if(flag === 'docenti'){
                         this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaD = true; this.ServletControllerGet("Docenti");
                     }else if(flag === 'ripetizioni'){
-                        this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaR = true; this.ServletControllerGet("Ripetizioni");
+                        this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaPr = false; this.stampaR = true; this.stampaMPr = false; this.ServletControllerGet("Ripetizioni");
                     }else if(flag === 'prenotazioni'){
-                        this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaR = true; this.ServletControllerGet("Prenotazioni");
+                        this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaPr = true; this.stampaMPr = false; this.stampaR = false; this.ServletControllerGet("Prenotazioni");
                     }else if(flag === 'mieprenotazioni'){
-                        this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaMPr = true; this.ServletControllerGet("MiePrenotazioni");
+                        this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaPr = false; this.stampaMPr = true; this.stampaR = false; this.ServletControllerGet("MiePrenotazioni");
                     }
                 },
             }

@@ -4,11 +4,13 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class DAO {
+
+public class DAO{
 
     private static final String url1 = "jdbc:mysql://localhost:3306/test";
     private static final String user = "root";
     private static final String password = "";
+
 
     public static void registerDriver() {
         try {
@@ -242,10 +244,9 @@ public class DAO {
         }
     }
 
-    public static void insertCourse(String title) {
+    public static boolean insertCourse(String title) {
         Connection conn1 = null;
         Corso c = null;
-        Scanner input = new Scanner(System.in);
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
@@ -255,17 +256,20 @@ public class DAO {
 
             ArrayList<Corso> cour = Course();
             for(Corso cour2: cour){
+                if(title.equals(cour2.getTitolo()) || title.equals(""))
+                    return false;
                 id = cour2.getId();
                 if(id >= max)
                     max = id;
+                System.out.println("max->"+ max);
+                System.out.println("id->"+ id);
             }
-            id = max++;
-
-            c = new Corso(id, title);
+            System.out.println(max++);
+            c = new Corso(max++, title);
 
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("insert into corso (id,titolo) values ('" + id + "', '" + title + "')");
+            st.execute("insert into corso (id,titolo) values ('" + max++ + "', '" + title + "')");
             System.out.println("New course added!");
 
         } catch (SQLException e) {
@@ -280,6 +284,7 @@ public class DAO {
                 }
             }
         }
+        return true;
     }
 
     public static void removeCourse() {
@@ -313,13 +318,19 @@ public class DAO {
         }
     }
 
-    public static void insertTeacher(String nomeDocente, String cognomeDocente) {
+    public static boolean insertTeacher(String nomeDocente, String cognomeDocente) {
         Connection conn1 = null;
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
             int id;
+
+            ArrayList<Docente> teach = Teacher();
+            for(Docente teach2: teach){
+                if(nomeDocente.equals(teach2.getNome()) && cognomeDocente.equals(teach2.getCognome()))
+                    return false;
+            }
 
             do {
                 id = (int) (Math.random() * 500);
@@ -343,6 +354,7 @@ public class DAO {
                 }
             }
         }
+        return true;
     }
 
     public static void removeTeacher() {
@@ -637,7 +649,7 @@ public class DAO {
             }
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT IDDOCENTE FROM docenti");
+            ResultSet rs = st.executeQuery("SELECT IDDOCENTE FROM docente");
             while (rs.next()) {
                 out.add(rs.getInt("IDDOCENTE"));
             }

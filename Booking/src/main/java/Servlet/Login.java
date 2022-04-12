@@ -1,15 +1,11 @@
 package Servlet;
 
+import DAO.DAO;
+
 import java.io.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Objects;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
-import DAO.*;
 
 @WebServlet(name = "login", value = "/login")
 public class Login extends HttpServlet {
@@ -19,7 +15,6 @@ public class Login extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        System.out.println("postttt");
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         String flag = request.getParameter("action");
