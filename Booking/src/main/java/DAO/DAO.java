@@ -66,7 +66,7 @@ public class DAO{
             Statement st = conn1.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM Docente");
             while (rs.next()) {
-                Docente p = new Docente(rs.getString("NOME"), rs.getString("COGNOME"), rs.getInt("IDDOCENTE"));
+                Docente p = new Docente(rs.getInt("ID"), rs.getString("NOME"));
                 out.add(p);
             }
         } catch (SQLException e) {
@@ -157,7 +157,7 @@ public class DAO{
             }
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM Prenotazione");
+            ResultSet rs = st.executeQuery("SELECT * FROM Prenotazione ORDER BY giorno, ora");
             while (rs.next()) {
                 Prenotazione p = new Prenotazione(rs.getString("UTENTE"),rs.getString("CODICE"),rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"),rs.getString("STATUS"));
                 out.add(p);
@@ -189,7 +189,7 @@ public class DAO{
 
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM Ripetizione");
+            ResultSet rs = st.executeQuery("SELECT * FROM Ripetizione r WHERE NOT EXISTS (SELECT * FROM Prenotazione p WHERE r.CODICE = p.CODICE AND P.UTENTE = '"+ account + "') ORDER BY giorno, ora ");
             while (rs.next()) {
                 //System.out.println("prova->" + rs.getString("UTENTE"));
                 //if(!rs.getString("UTENTE").equals(account)){
@@ -261,12 +261,10 @@ public class DAO{
                 id = cour2.getId();
                 if(id >= max)
                     max = id;
-                System.out.println("max->"+ max);
-                System.out.println("id->"+ id);
             }
-            System.out.println(max++);
+            System.out.println("max->"+ max);
             c = new Corso(max++, title);
-
+            System.out.println("max->"+ max);
             //Execute insert query
             Statement st = conn1.createStatement();
             st.execute("insert into corso (id,titolo) values ('" + max++ + "', '" + title + "')");
@@ -287,20 +285,15 @@ public class DAO{
         return true;
     }
 
-    public static void removeCourse() {
+    public static void removeCourse(String nome) {
         Connection conn1 = null;
-        int id;
-        Scanner input = new Scanner(System.in);
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
-            System.out.println("Insert the id of the course to be deleted: ");
-            id = input.nextInt();
-
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("delete from corso where id = '" + id + "'");
+            st.execute("delete from corso where titolo = '" + nome + "'");
             System.out.println("Course removed!");
 
 
@@ -318,17 +311,16 @@ public class DAO{
         }
     }
 
-    public static boolean insertTeacher(String nomeDocente, String cognomeDocente) {
+    public static boolean insertTeacher(String nomeDocente) {
         Connection conn1 = null;
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
             int id;
-
             ArrayList<Docente> teach = Teacher();
             for(Docente teach2: teach){
-                if(nomeDocente.equals(teach2.getNome()) && cognomeDocente.equals(teach2.getCognome()))
+                if(nomeDocente.equals(teach2.getNome()) || (nomeDocente.equals("")))
                     return false;
             }
 
@@ -336,10 +328,10 @@ public class DAO{
                 id = (int) (Math.random() * 500);
             } while(TeacherId().contains(id));
 
-            Docente c = new Docente(nomeDocente, cognomeDocente, id);
+            Docente c = new Docente(id ,nomeDocente);
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("insert into docente (nome, cognome, iddocente) values ('" + nomeDocente + "', '" + cognomeDocente + "', '" + id + "')");
+            st.execute("insert into docente (id,nome) values ('" + id + "','" + nomeDocente + "')");
             System.out.println("New teacher added!");
 
         } catch (SQLException e) {
@@ -357,20 +349,15 @@ public class DAO{
         return true;
     }
 
-    public static void removeTeacher() {
+    public static void removeTeacher(String nome) {
         Connection conn1 = null;
-        int id;
-        Scanner input = new Scanner(System.in);
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
-            System.out.println("Insert the id of teacher to be deleted: ");
-            id = input.nextInt();
-
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("delete from docente where id = '" + id + "'");
+            st.execute("delete from docente where nome = '" + nome + "'");
             System.out.println("Teacher removed!");
 
         } catch (SQLException e) {
@@ -415,23 +402,16 @@ public class DAO{
         }
     }
 
-    public static void removeCourseTeacher() {
+    public static void removeCourseTeacher(String corso, String docente) {
         Connection conn1 = null;
-        String course;
-        int id;
-        Scanner input = new Scanner(System.in);
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
-            System.out.println("Insert the course to be deleted: ");
-            course = input.nextLine();
-            System.out.println("Insert the id of the teacher to be deleted: ");
-            id = input.nextInt();
 
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("delete from corsodocente where corso = '" + course + "' and docente = '" + id + "'");
+            st.execute("delete from corsodocente where corso = '" + corso + "' and docente = '" + docente + "'");
             System.out.println("Courseteacher removed!");
 
         } catch (SQLException e) {
@@ -597,6 +577,31 @@ public class DAO{
         }
     }
 
+    public static void removeRepetition(String codice) {
+        Connection conn1 = null;
+
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+
+            //Execute insert query
+            Statement st = conn1.createStatement();
+            st.execute("delete from ripetizione where codice = '" + codice + "'");
+            System.out.println("Repetition removed!");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+    }
+
     public static String[] verificaUtenti(String email, String password) {
         DAO.registerDriver();
         ArrayList<Utenti> utentiCreati = DAO.Users();
@@ -649,9 +654,9 @@ public class DAO{
             }
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT IDDOCENTE FROM docente");
+            ResultSet rs = st.executeQuery("SELECT ID FROM docente");
             while (rs.next()) {
-                out.add(rs.getInt("IDDOCENTE"));
+                out.add(rs.getInt("ID"));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -707,7 +712,7 @@ public class DAO{
             }
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM prenotazione WHERE UTENTE = '"+ users + "'");
+            ResultSet rs = st.executeQuery("SELECT * FROM prenotazione WHERE UTENTE = '"+ users + "' ORDER BY giorno, ora");
             while (rs.next()) {
                 Prenotazione p = new Prenotazione(rs.getString("UTENTE"), rs.getString("CODICE"),rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
                 out.add(p);

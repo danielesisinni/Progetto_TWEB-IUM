@@ -47,15 +47,16 @@ public class CorsiDocentiServlet extends HttpServlet {
         HttpSession session = request.getSession();
         if (session.getAttribute("userRole").equals("Amministratore") && request.getParameter("action2").equals("Aggiunta")) {
             String nomecorso = request.getParameter("corsi");
-            String var2 = request.getParameter("nome");
-            String var3 = request.getParameter("cognome");
-            if(nomecorso != null && var2 != null && var3 != null){
+            String docente = request.getParameter("nome");
+            if(nomecorso != null && docente != null){
                 boolean check = DAO.insertCourse(nomecorso);
-                boolean check2 = DAO.insertTeacher(var2, var3);
+                boolean check2 = DAO.insertTeacher(docente);
                 if(check && check2){
-                    DAO.insertCourseTeacher(nomecorso, var2 + " " + var3);
-                    request.setAttribute("risultato", "aggiunti");
-                } else {
+                    DAO.insertCourseTeacher(nomecorso, docente);
+                    request.setAttribute("risultato", "aggiunto");
+                } else if(check || check2){
+                    request.setAttribute("risultato", "aggiunto");
+                } else{
                     request.setAttribute("risultato", "errore");
                 }
             }
@@ -63,7 +64,19 @@ public class CorsiDocentiServlet extends HttpServlet {
             String docente = request.getParameter("docEli");
             String corso = request.getParameter("corEli");
             if(docente != null && corso != null){
-
+                ArrayList<Prenotazione> prenotazioni = DAO.Booking();
+                for (Prenotazione list : prenotazioni) {
+                    if (list.getCorso().equals(corso) || list.getDocente().equals(docente)) {
+                        if (list.getStatus().equals("DISPONIBILE")) {
+                            DAO.removeCourse(corso);
+                            DAO.removeTeacher(docente);
+                            DAO.removeCourseTeacher(corso, docente);
+                            request.setAttribute("risultato", "rimossa");
+                        } else {
+                            request.setAttribute("risultato", "errore");
+                        }
+                    }
+                }
             }
         }
     }

@@ -97,6 +97,10 @@ html{
     border: 0;
 }
 
+.dropdown-menu{
+    background-color: #e3f2fd;
+}
+
 .btn-outline-dark{
     color: white;
 }

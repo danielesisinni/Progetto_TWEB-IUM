@@ -1,7 +1,7 @@
 package Servlet;
 
 import DAO.DAO;
-import DAO.Ripetizione;
+import DAO.*;
 import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
@@ -30,8 +30,9 @@ public class RipetizioneServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html,charset=UTF-8");
         HttpSession session = request.getSession();
+        String action2 = request.getParameter("action2");
 
-        if(session.getAttribute("userRole").equals("Amministratore")) {
+        if(session.getAttribute("userRole").equals("Amministratore") && action2.equals("")) {
             String docente = request.getParameter("nome");
             String corso = request.getParameter("corsi");
             String giorno = request.getParameter("giorno");
@@ -43,6 +44,21 @@ public class RipetizioneServlet extends HttpServlet {
                     request.setAttribute("risultato", "aggiunta");
                 } else {
                     request.setAttribute("risultato", "errore");
+                }
+            }
+        }else if(session.getAttribute("userRole").equals("Amministratore") && action2.equals("Rimozione")){
+            String value = request.getParameter("prenEli");
+            if(value != null) {
+                ArrayList<Prenotazione> prenotazioni = DAO.Booking();
+                for (Prenotazione list : prenotazioni) {
+                    if (list.getCodice().equals(value)) {
+                        if (list.getStatus().equals("DISPONIBILE")) {
+                            DAO.removeRepetition(value);
+                            request.setAttribute("risultato", "rimossa");
+                        } else {
+                            request.setAttribute("risultato", "errore");
+                        }
+                    }
                 }
             }
         }

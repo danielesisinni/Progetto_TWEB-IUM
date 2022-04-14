@@ -2,12 +2,10 @@ package DAO;
 
 public class Docente {
     private String nome;
-    private String cognome;
     private int iddocente;
 
-    public Docente(String nome, String cognome, int id) {
+    public Docente(int id, String nome) {
         this.nome = nome;
-        this.cognome = cognome;
         this.iddocente = id;
     }
 
@@ -17,14 +15,6 @@ public class Docente {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public String getCognome() {
-        return cognome;
-    }
-
-    public void setCognome(String cognome) {
-        this.cognome = cognome;
     }
 
     public int getIdDocente() {
@@ -39,7 +29,6 @@ public class Docente {
     public String toString() {
         return "Docente{" +
                 "nome='" + nome + '\'' +
-                ", cognome='" + cognome + '\'' +
                 ", id=" + iddocente +
                 '}';
     }

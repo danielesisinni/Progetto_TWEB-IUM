@@ -67,6 +67,7 @@ public class Login extends HttpServlet {
                 request.setAttribute("risultato", "crea");
                 break;
             case "ospite":
+                DAO.registerDriver();
                 String jsessionID = session.getId(); // estraggo il session ID
                 System.out.println("JSessionID:" + jsessionID);
                 session.setAttribute("userRole", "Ospite");
