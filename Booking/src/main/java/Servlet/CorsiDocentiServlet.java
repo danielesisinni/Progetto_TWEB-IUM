@@ -34,7 +34,7 @@ public class CorsiDocentiServlet extends HttpServlet {
                     request.setAttribute("risultato", s1);
                     break;
                 case "Docenti":
-                    ArrayList<Docente> docenti = DAO.Teacher();
+                    ArrayList<Docente> docenti = DAO.TeacherFree();
                     String s2 = gson.toJson(docenti);
                     request.setAttribute("risultato", s2);
                     break;
@@ -60,23 +60,15 @@ public class CorsiDocentiServlet extends HttpServlet {
                     request.setAttribute("risultato", "errore");
                 }
             }
-        }else if (session.getAttribute("userRole").equals("Amministratore") && request.getParameter("action2").equals("Rimozione")) {
-            String docente = request.getParameter("docEli");
-            String corso = request.getParameter("corEli");
-            if(docente != null && corso != null){
-                ArrayList<Prenotazione> prenotazioni = DAO.Booking();
-                for (Prenotazione list : prenotazioni) {
-                    if (list.getCorso().equals(corso) || list.getDocente().equals(docente)) {
-                        if (list.getStatus().equals("DISPONIBILE")) {
-                            DAO.removeCourse(corso);
-                            DAO.removeTeacher(docente);
-                            DAO.removeCourseTeacher(corso, docente);
-                            request.setAttribute("risultato", "rimossa");
-                        } else {
-                            request.setAttribute("risultato", "errore");
-                        }
-                    }
-                }
+        }else if (session.getAttribute("userRole").equals("Amministratore")) {
+            String var = request.getParameter("action2");
+            if(var != null){
+                DAO.removeCourse(var);
+                //DAO.removeTeacher(var);
+                //DAO.removeCourseTeacher(var);
+                request.setAttribute("risultato", "rimossa");
+            } else {
+                request.setAttribute("risultato", "errore");
             }
         }
     }

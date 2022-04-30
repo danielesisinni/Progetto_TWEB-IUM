@@ -287,13 +287,14 @@ public class DAO{
 
     public static void removeCourse(String nome) {
         Connection conn1 = null;
-
+        String a = "RIMOSSO";
+        System.out.println(nome);
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("delete from corso where titolo = '" + nome + "'");
+            st.execute("update corso set stato = '" + a + "' where titolo = '" + nome + "'");
             System.out.println("Course removed!");
 
 
@@ -351,13 +352,13 @@ public class DAO{
 
     public static void removeTeacher(String nome) {
         Connection conn1 = null;
-
+        String a = "RIMOSSO";
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("delete from docente where nome = '" + nome + "'");
+            st.execute("update docente set stato = '" + a + "' where nome = '" + nome + "'");
             System.out.println("Teacher removed!");
 
         } catch (SQLException e) {
@@ -402,16 +403,16 @@ public class DAO{
         }
     }
 
-    public static void removeCourseTeacher(String corso, String docente) {
+    public static void removeCourseTeacher(String var) {
         Connection conn1 = null;
-
+        String a = "RIMOSSO";
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
 
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("delete from corsodocente where corso = '" + corso + "' and docente = '" + docente + "'");
+            st.execute("update corsodocente set stato = '" + a + "' where titolo = '" + var + "'");
             System.out.println("Courseteacher removed!");
 
         } catch (SQLException e) {
@@ -765,8 +766,7 @@ public class DAO{
     public static ArrayList<Corso> CourseFree() {
         Connection conn1 = null;
         ArrayList<Corso> out = new ArrayList<>();
-        String confermata = "CONFERMATA";
-
+        String c2 = "CONFERMATA";
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
             if (conn1 != null) {
@@ -774,9 +774,40 @@ public class DAO{
             }
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT TITOLO FROM corso MINUS SELECT CORSO FROM prenotazione p WHERE p.STATUS = '" + confermata + "' ");
+            ResultSet rs = st.executeQuery("SELECT TITOLO FROM Corso c WHERE NOT EXISTS (SELECT CORSO FROM Prenotazione p WHERE c.TITOLO = p.CORSO AND p.STATUS = '" + c2 + "')");
             while (rs.next()) {
-                Corso p = new Corso(rs.getInt("ID"),rs.getString("TITOLO"));
+                Corso p = new Corso(0,rs.getString("TITOLO"));
+                out.add(p);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+        return out;
+    }
+
+    public static ArrayList<Docente> TeacherFree() {
+        Connection conn1 = null;
+        ArrayList<Docente> out = new ArrayList<>();
+        String c1 = "CONFERMATA";
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database test");
+            }
+
+            Statement st = conn1.createStatement();
+            ResultSet rs = st.executeQuery("SELECT NOME FROM Docente d WHERE NOT EXISTS (SELECT DOCENTE FROM Prenotazione p WHERE d.NOME = p.DOCENTE AND p.STATUS = '" + c1 + "')");
+            while (rs.next()) {
+                Docente p = new Docente(0,rs.getString("NOME"));
                 out.add(p);
             }
         } catch (SQLException e) {
