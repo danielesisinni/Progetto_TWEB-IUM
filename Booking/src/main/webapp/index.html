@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="css/stileindex.css">
 
 </head>
+
 <body>
     <div id="components">
         <span v-if="loginHome"><br><br><br><br><br>
@@ -49,12 +50,6 @@
                                     <button v-on:click="ServletControllerPost('login', '')" class="btn login_btn">Autentica </button>
                                 </div>
 
-                                <template v-if="checkA">
-                                    <span class="badge badge-success">Successo</span>
-                                </template>
-                                <template v-if="check">
-                                    <span class="badge badge-success">Successo</span>
-                                </template>
                                 <template v-if="checkE">
                                     <span class="badge badge-danger">Errore nel login</span>
                                 </template>
@@ -70,7 +65,6 @@
         <span v-if="creazionehome"><br>
             <testa title="BENVENUTO. CREA IL TUO ACCOUNT"></testa>
             <br><br><br>
-            <button class="btn btn-info" v-on:click="transit('loginHome')">Annulla creazione</button>
             <div class="container h-100">
                 <div class="d-flex justify-content-center h-100">
                     <div class="user_card">
@@ -102,11 +96,9 @@
                                 <div class="d-flex justify-content-center mt-3 login_container">
                                     <button v-on:click="ServletControllerPost('crea', '')" class="btn login_btn">Crea account </button>
                                 </div>
-
-                                <template v-if="checkC">
-                                    <p>Cliente Benvenuto!</p>
-                                    <p><span class="badge badge-success">Successo</span> Account creato</p>
-                                </template>
+                                <div class="d-flex justify-content-center mt-3 login_container">
+                                    <button v-on:click="transit('loginHome')" class="btn login_btn">Annulla creazione</button>
+                                </div>
                                 <template v-if="errore2">
                                     <span class="badge badge-danger">Errore nei dati, ricontrolla e riprova. Grazie</span>
                                 </template>
@@ -117,7 +109,7 @@
             </div>
         </span>
 
-        <span v-if="homeCliente">
+        <span v-if="homeCliente && role === 'Cliente'">
             <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="https://www.unito.it/">UniTO</a>
@@ -142,8 +134,6 @@
                     <a class="btn btn-warning" type="button" v-on:click="transit('logout')">Logout</a>
                 </div>
             </nav>
-
-            <logout v-if="logout"></logout>
 
             <!--HOME CLIENTE-->
             <home v-if="checkCl" v-on:transit-inner-prenotazioni="transit('mieprenotazioni')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')"></home>
@@ -201,7 +191,7 @@
 
         </span>
 
-        <span v-if="homeOspite">
+        <span v-if="homeOspite && role === 'Ospite'">
             <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="https://www.unito.it/">UniTO</a>
@@ -220,8 +210,6 @@
                     <a class="btn btn-warning" type="button" v-on:click="transit('logout')">Logout</a>
                 </div>
             </nav>
-
-            <logout v-if="logout"></logout>
 
             <home v-if="checkO"  v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-prenotazioni="transit('alert')"></home>
 
@@ -258,7 +246,7 @@
             </div>
         </span>
 
-        <span v-if="homeAmministratore">
+        <span v-if="homeAmministratore && role === 'Amministratore'">
             <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="https://www.unito.it/">UniTO</a>
@@ -294,7 +282,6 @@
                     <a class="btn btn-warning" type="button" v-on:click="transit('logout')">Logout</a>
                 </div>
             </nav>
-            <logout v-if="logout"></logout>
             <!--HOME AMMINISTRATORE-->
 
             <home v-if="checkAH" v-on:transit-inner-prenotazioni="transit('mieprenotazioni')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')"></home>
@@ -303,7 +290,7 @@
             <div class="container">
                <hr>
                 <!--STAMPA DEI CORSI E DOCENTI-->
-                <div v-if="stampaCD">
+                <span v-if="stampaCD">
                     <table>
                         <thead>
                             <tr><td><i><b>CORSO</b></i></td><td><i><b>DOCENTE</b></i></td></tr>
@@ -314,10 +301,10 @@
                             </template>
                         </tbody>
                     </table>
-                </div>
+                </span>
 
                 <!--STAMPA DELLE RIPETIZIONI-->
-                <div v-if="stampaR">
+                <span v-if="stampaR">
                     <table>
                         <thead>
                             <tr><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>
@@ -328,10 +315,10 @@
                             </template>
                         </tbody>
                     </table>
-                </div>
+                </span>
 
                 <!--STAMPA DELLE PRENOTAZIONI-->
-                <div v-if="stampaPr">
+                <span v-if="stampaPr">
                     <table>
                         <thead>
                             <tr><td><i><b>UTENTE</b></i></td><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td></tr>
@@ -342,10 +329,10 @@
                             </template>
                         </tbody>
                     </table>
-                </div>
+                </span>
 
                 <!--STAMPA DELLE MIE PRENOTAZIONI-->
-                <div v-if="stampaMPr">
+                <span v-if="stampaMPr">
                     <table>
                         <thead>
                             <tr><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>
@@ -356,49 +343,54 @@
                             </template>
                         </tbody>
                     </table>
-                </div>
+                </span>
 
-                <!--FORMA DELLA AGGIUNTA DI CORSI E DOCENTI-->
-                <article v-if="gestioneCD" >
+                <!--AGGIUNTA DI CORSI E DOCENTI-->
+                <span v-if="gestioneCD">
                     <h4>Aggiunta di corsi e docenti affiliati</h4>
                     <p>-Hai la possibilit&aacute; di aggiungere un nuovo corso, un nuovo docente e creare la loro affiliazione.</p>
                     <br>
                     <div class="form-group">
-                        <label for="aggiungiCorso">Aggiungi il corso:
+                        <label for="aggiungiCorso">Aggiungi il corso:&nbsp&nbsp&nbsp&nbsp
                             <input v-model="courses" id="aggiungiCorso" type="text"  placeholder="Nome" required>
-                        </label>
-                        <hr>
+                        </label><br>
                         <label for="aggiungiDocente">Aggiungi il docente:
                             <input v-model="teacher" id="aggiungiDocente" type="text" placeholder="Nome e Cognome" required>
                         </label>
-                        <br><br>
+                        <br>
                         <div class="d-grid gap-2">
                             <button class="btn btn-primary" v-on:click="ServletControllerPost('Corsi_Docenti', 'Aggiunta')">Conferma dati</button>
                         </div>
                     </div>
-
                     <hr>
                     <h4>Rimozione di corsi e docenti</h4>
                     <p>-Hai la possibilit&aacute; di rimuovere un docente o un corso con le loro affiliazioni. Solo se non compaiono in nessuna prenotazioni attiva.</p>
-                    <label>Seleziona docente da rimuovere&nbsp
-                        <select v-model="docElim">
-                            <option v-for="co_do in printD">{{co_do.nome}} {{co_do.cognome}}</option>
-                        </select>
-                    </label>
-                    <br>
-                    <label>Selezione corso da rimuovere&nbsp&nbsp&nbsp&nbsp&nbsp
-                        <select v-model="corsElim">
-                            <option v-for="co_do in printC">{{co_do.titolo}}</option>
-                        </select>
-                    </label>
-                    <br>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary" v-on:click="ServletControllerPost('Corsi_Docenti', 'Rimozione')">Conferma</button>
-                    </div>
-                </article>
+                    <p>Seleziona il docente e il corso da rimuovere.</p>
+                    <table class="tabellaDocenti">
+                        <thead>
+                            <tr><td><i><b>DOCENTI</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>
+                        </thead>
+                        <tbody>
+                            <template v-for="docente in printD">
+                                <tr><td>{{docente.nome}}</td><td><button class="btn btn-primary" v-on:click="ServletControllerPost('Corsi_Docenti', docente.nome)">Elimina</button></td></tr>
+                            </template>
+                        </tbody>
+                    </table>
 
-                <!--FORMA DELLA AGGIUNTA DELLE RIPETIZIONI-->
-                <article v-if="gestioneR">
+                    <table class="tabellaCorsi">
+                        <thead>
+                            <tr><td><i><b>CORSO</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>
+                        </thead>
+                        <tbody>
+                            <template v-for="corso in printC">
+                                <tr><td>{{corso.titolo}}</td><td><button class="btn btn-primary" v-on:click="ServletControllerPost('Corsi_Docenti', corso.titolo)">Elimina</button></td></tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </span>
+
+                <!--AGGIUNTA DELLE RIPETIZIONI-->
+                <span v-if="gestioneR">
                     <h4>Aggiunta di nuove ripetizioni</h4>
                     <p>-Scegli il docente, il corso, la data e l'ora della ripetizione.</p>
                     <br>
@@ -422,14 +414,12 @@
                                 <option>Venerdi</option>
                             </select>
                         </label>
-
                         <label>Ora
                             <select v-model="hour">
-                                <option>15:00</option>
-                                <option>16:00</option>
-                                <option>17:00</option>
-                                <option>18:00</option>
-                                <option>19:00</option>
+                                <option>15:00/16:00</option>
+                                <option>16:00/17:00</option>
+                                <option>17:00/18:00</option>
+                                <option>18:00/19:00</option>
                             </select>
                         </label>
                             <br>
@@ -446,11 +436,22 @@
                                 <option v-for="ripetizioni in printR">{{ripetizioni.codice}}</option>
                             </select>
                         </label>
+
+                    <table>
+                        <thead>
+                            <tr><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>
+                        </thead>
+                        <tbody>
+                            <template v-for="ripetizioni in printR">
+                                <tr><td>{{ripetizioni.codice}}</td><td>{{ripetizioni.docente}}</td><td>{{ripetizioni.corso}}</td><td>{{ripetizioni.giorno}}</td><td>{{ripetizioni.ora}}</td><td><span class="badge bg-warning text-dark">{{ripetizioni.status}}</span></td><td><button class="btn btn-info" v-on:click="ServletControllerPost('Prenota', ripetizioni.codice)">Prenota</button></td></tr>
+                            </template>
+                        </tbody>
+                    </table>
                         <br>
                         <div class="d-grid gap-2">
                             <button class="btn btn-primary" v-on:click="ServletControllerPost('Ripetizioni', 'Rimozione')">Conferma</button>
                         </div>
-                    </article>
+                    </span>
 
                 <!--STAMPA DELL'ERRORE O SUCCESSO-->
                 <template v-if="errore2" >
@@ -466,10 +467,6 @@
 
     <script>
         //VueLogin
-        Vue.component('testa',{
-            props: ['title'],
-            template:'<header><h3 class="text-center">{{ title }}</h3><br></header>',
-        })
         Vue.component('centro-login',{
             template:'<article class="d-flex justify-content-center links">' +
                     '     <p>Non hai ancora un account? <button type="button" class="btn btn-outline-dark" style="background: #c0392b" v-on:click="creazioneInner"> Crea account</button>' +
@@ -486,12 +483,6 @@
             }
         })
 
-        Vue.component('logout',{
-            template:'<article class="container">' +
-                '           <span class="badge bg-warning text-dark">Attenzione:</span>\n' +
-                '           <p> Logout effettuato con successo. Stai tornando al login</p>' +
-                '     </article>',
-        })
         //home di ospite/cliente/amministratore
         Vue.component('home',{
             template:
@@ -524,12 +515,11 @@
         var app = new Vue ({
             el: '#components',
             data: {
-                /*SEZIONE LOGIN*/               loginHome: true, em: null, acc: null, pass: null, role: 'Ospite', check: false, checkA: false, checkE: false,
+                /*SEZIONE LOGIN*/               loginHome: true, em: null, acc: null, pass: null, role: 'Amministratore', checkE: false,
                 /*SEZIONE HOME AMMINISTRATORE*/ homeAmministratore: false, logout: false, errore2: false, successo: false, checkAH: false, gestioneCD: false, gestioneR: false, printPr: [], stampaPr: false, courses: null, teacher: null, docElim: null, corsElim: null, day: null, hour: null, prenElim: null,
                 /*SEZIONE HOME OSPITE*/         homeOspite: false, checkO: false,
                 /*SEZIONE HOME CLIENTE*/        homeCliente: false, checkCl: false, printCD: [], printC: [], printD: [], printR: [], printMPr: [], stampaCD: false, stampaD: false, stampaR: false, stampaMPr: false,
-                /*SEZIONE CREAZIONE*/           creazionehome: false, checkC: false, print: '',
-
+                /*SEZIONE CREAZIONE*/           creazionehome: false,
                 link: 'ServletController'
             },
             methods: {
@@ -539,47 +529,25 @@
                     $.post(this.link, {email: this.em, account: this.acc, password: this.pass, action: flag, action2: flag2, corsi: this.courses, nome: this.teacher, cognome: this.var2, giorno: this.day, ora: this.hour, docEli: this.docElim, corEli: this.corsElim, prenEli: this.prenElim}, function (data) {
                         //Sezione Servlet Login
                         switch (flag){
-                            case "login":
-                            case "crea":
-                            case "ospite":
+                            case "login": case "crea": case "ospite":
                                 switch (data) {
                                     case 'sono amministratore':
-                                        self.role = 'Amministratore'; self.checkA = true; self.checkE = false; self.check = false;
-                                        setTimeout(() => {
-                                            self.transit("amministratoreHome");
-                                        }, 2300);
-                                        break;
+                                        self.role = 'Amministratore'; self.checkE = false; self.transit("amministratoreHome"); break;
                                     case 'sono cliente':
-                                        self.role = 'Cliente'; self.check = true; self.checkA = false; self.checkE = false;
-                                        setTimeout(() => {
-                                            self.transit("clienteHome");
-                                        }, 2300);
-                                        break;
+                                        self.role = 'Cliente'; self.checkE = false; self.transit("clienteHome"); break;
                                     case 'ospite':
-                                        self.role = 'Ospite'; self.transit("ospiteHome");
-                                        break;
+                                        self.role = 'Ospite'; self.transit("ospiteHome"); break;
                                     case 'crea':
-                                        self.checkC = true; self.em = null; self.acc = null; self.pass = null; self.errore2 = false;
-                                        setTimeout(() => {
-                                            self.transit('loginHome');
-                                        }, 2000);
-                                        break;
+                                        self.em = self.acc = self.pass = null; self.errore2 = false; alert('Successo: Account creato'); self.transit('loginHome'); break;
                                     case 'errore':
-                                        self.check = false; self.checkA = false; self.checkE = true;
-                                        break;
+                                        self.checkE = true; break;
                                     case 'errore2':
-                                        self.errore2 = true;
-                                        break;
-
+                                        self.errore2 = true; break;
                                 }
                                 break;
                             //Sezione Servlet/Logout
                             case "logout":
-                                self.logout = true; self.em = null; self.pass = null;
-                                setTimeout(() => {
-                                    self.transit("loginHome");
-                                }, 2300);
-                                break;
+                                self.em = self.pass = null; alert('Attenzione: Logout effettuato con successo. Stai tornando al login'); self.transit("loginHome"); break;
                             case "Corsi_Docenti":
                                 if(data === "errore"){
                                     self.successo = false; self.errore2 = true;
@@ -587,31 +555,25 @@
                                     self.errore2 = false; self.successo = true;
                                     setTimeout(() => {
                                         self.transit('amministratoreHome');
-                                    }, 2000);
-                                }
-                                break;
+                                    }, 1500);
+                                } break;
                             case "Ripetizioni":
                                 if(data === "errore"){
                                     self.successo = false; self.errore2 = true;
                                 }else if(data === "aggiunta") {
-                                    self.errore2 = false;
-                                    self.successo = true;
+                                    self.errore2 = false; self.successo = true;
                                     setTimeout(() => {
                                         self.transit('amministratoreHome');
-                                    }, 2000);
-                                }
-                                break;
+                                    }, 1500);
+                                } break;
                             case "Prenota":
                                 if(data === "errore"){
                                     self.successo = false; self.errore2 = true;
                                 }else if(data === "aggiunta"){
-                                    self.errore2 = false; self.stampaPr = false; self.transit('ripetizioni');
-                                }
-                                break;
-                            case "Riprenota":
-                            case "Disdetta":
-                                self.stampaMPr = false; self.transit('mieprenotazioni');
-                                break;
+                                    self.errore2 = self.stampaPr = false; self.transit('ripetizioni');
+                                } break;
+                            case "Riprenota": case "Disdetta":
+                                self.stampaMPr = false; self.transit('mieprenotazioni'); break;
                         }
                     })
                 },
@@ -647,33 +609,33 @@
                 transit: function (flag) {
                     switch (flag){
                         case "creazione":
-                            this.loginHome = false; this.creazionehome = true; this.errore2 = false; this.checkC = false; break;
+                            this.creazionehome = true; this.loginHome = this.errore2 = this.checkC = false; break;
                         case "ospiteHome":
-                            this.loginHome = false; this.homeOspite = true; this.checkO = true; this.stampaD = false; this.stampaR = false; this.stampaCD = false; break;
+                            this.homeOspite = this.checkO = true; this.loginHome = this.stampaD = this.stampaR = this.stampaCD = false; break;
                         case "logout":
                             this.ServletControllerPost("logout", ''); break;
                         case "loginHome":
-                            this.loginHome = true; this.homeAmministratore = false; this.creazionehome = false; this.homeOspite = false; this.homeCliente = false; this.logout = false; this.check = false; this.checkA = false; this.checkO = false; this.errore2 = false; break;
+                            this.loginHome = true; this.homeAmministratore = this.creazionehome = this.homeOspite = this.homeCliente = this.logout = this.checkO = this.errore2 = false; break;
                         case "amministratoreHome":
-                            this.loginHome = false; this.homeAmministratore = true; this.checkAH = true; this.stampaPr = false; this.stampaD = false; this.stampaMPr = false; this.stampaR = false; this.stampaCD = false; this.gestioneCD = false; this.gestioneR = false; this.errore2 = false; this.successo = false; break;
+                             this.homeAmministratore = this.checkAH = true; this.loginHome = this.stampaPr = this.stampaD = this.stampaMPr = this.stampaR = this.stampaCD = this.gestioneCD = this.gestioneR = this.errore2 = this.successo = false; break;
                         case "clienteHome":
-                            this.loginHome = false; this.homeCliente = true; this.checkCl = true; this.stampaMPr = false; this.stampaD = false; this.stampaR = false; this.stampaCD = false; break;
+                             this.homeCliente = this.checkCl = true; this.loginHome = this.stampaMPr = this.stampaD = this.stampaR = this.stampaCD = false; break;
                         case "gestioneCD":
-                            this.checkAH = false; this.gestioneCD = true; this.gestioneR = false; this.stampaPr = false; this.corsi = null; this.teacher = null; this.var2 = null; this.errore2 = false; this.successo = false; this.ServletControllerGet("Corsi"); this.ServletControllerGet("Docenti"); break;
+                            this.gestioneCD = true; this.stampaCD = this.checkAH = this.gestioneR = this.errore2 = this.stampaMPr = this.stampaR = this.stampaPr = this.successo = false; this.corsi = this.teacher = this.var2 = null; this.ServletControllerGet("Corsi"); this.ServletControllerGet("Docenti"); break;
                         case "gestioneR":
-                            this.checkAH = false; this.gestioneR = true; this.gestioneCD = false; this.stampaPr = false; this.corsi = null; this.teacher = null; this.errore2 = false; this.successo = false; this.ServletControllerGet("Corsi"); this.ServletControllerGet("Docenti"); this.ServletControllerGet("Ripetizioni"); break;
+                            this.gestioneR = true; this.checkAH = this.stampaCD = this.gestioneCD = this.stampaMPr = this.stampaR = this.stampaPr = this.errore2 = this.successo = false; this.corsi = this.teacher = null; this.ServletControllerGet("Corsi"); this.ServletControllerGet("Docenti"); this.ServletControllerGet("Ripetizioni"); break;
                         case "aggiungiPr":
-                            this.checkAH = false; this.corsi = null; this.teacher = null; this.var2 = null; this.errore2 = false; this.successo = false; break;
+                            this.checkAH = this.errore2 = this.successo = false; this.corsi = this.teacher = this.var2 = null; break;
                         case "corsi_docenti":
-                            this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaCD = true; this.ServletControllerGet("Corsi_Docenti"); break;
+                            this.stampaCD = true; this.checkCl = this.checkAH = this.checkO = false; this.ServletControllerGet("Corsi_Docenti"); break;
                         case "docenti":
-                            this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaD = true; this.ServletControllerGet("Docenti"); break;
+                            this.stampaD = true; this.checkCl = this.checkAH = this.checkO = false; this.ServletControllerGet("Docenti"); break;
                         case "ripetizioni":
-                            this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaPr = false; this.stampaR = true; this.stampaMPr = false; this.gestioneCD = false; this.gestioneR = false; this.ServletControllerGet("Ripetizioni"); break;
+                            this.stampaR = true; this.checkCl = this.checkAH = this.checkO = this.stampaPr = this.stampaMPr = this.gestioneCD = this.gestioneR = false; this.ServletControllerGet("Ripetizioni"); break;
                         case "prenotazioni":
-                            this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaPr = true; this.gestioneR = false; this.gestioneCD = false; this.stampaMPr = false; this.stampaR = false; this.gestioneCD = false; this.gestioneR = false; this.ServletControllerGet("Prenotazioni"); break;
+                            this.stampaPr = true; this.checkCl = this.checkAH = this.checkO = this.stampaCD = this.stampaMPr = this.gestioneR = this.gestioneCD = this.stampaMPr = this.stampaR = this.gestioneCD = this.gestioneR = false; this.ServletControllerGet("Prenotazioni"); break;
                         case "mieprenotazioni":
-                            this.checkCl = false; this.checkAH = false; this.checkO = false; this.stampaPr = false; this.stampaMPr = true; this.stampaR = false; this.gestioneCD = false; this.gestioneR = false; this.ServletControllerGet("MiePrenotazioni"); break;
+                            this.stampaMPr = true; this.checkCl = this.checkAH = this.checkO = this.stampaPr = this.stampaR = this.gestioneCD = this.gestioneR = false; this.ServletControllerGet("MiePrenotazioni"); break;
                         case "alert":
                             alert('Non hai prenotazioni. Sei un ospite!');
                     }

@@ -29,7 +29,7 @@ public class CorsiDocentiServlet extends HttpServlet {
                     request.setAttribute("risultato", s);
                     break;
                 case "Corsi":
-                    ArrayList<Corso> corsi = DAO.Course();
+                    ArrayList<Corso> corsi = DAO.CourseFree();
                     String s1 = gson.toJson(corsi);
                     request.setAttribute("risultato", s1);
                     break;

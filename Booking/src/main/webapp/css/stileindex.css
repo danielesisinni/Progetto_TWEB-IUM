@@ -1,34 +1,47 @@
-#components {
+ table {
+     width: 75%;
+     border-collapse: collapse;
+     border: 5px solid;
+     text-align: center;
+     margin: 0 auto;
+     color: black;
+ }
+
+ thead {
+     border: 5px solid;
+     text-align: center;
+     align-content: center;
+ }
+
+ td, th {
+     border: 1px solid #000000;
+     padding: 8px;
+     color: black;
+ }
+
+ .titolo{
+     font-weight: bold;
+ }
+
+.gestioneCD{
+    float: left;
+    width: 60%;
 }
-    table {
-        width: 75%;
-        border-collapse: collapse;
-        border: 5px solid;
-        text-align: center;
-        margin: 0 auto;
-        color: lightblue;
-    }
+.tabellaDocenti{
+    width: 50%;
+    float: left;
+}
 
-    thead {
-        border: 5px solid;
-        text-align: center;
-        align-content: center;
-    }
-
-    td, th {
-        border: 1px solid #ddd;
-        padding: 8px;
-        color: black;
-    }
-
-
-
+ .tabellaCorsi{
+     width: 50%;
+     float: right;
+ }
 body,
 html{
     margin: 0;
     padding: 0;
     height: 100%;
-    background: #a0acde !important;
+    background: #a0acde;
 }
 .user_card {
     height: 400px;

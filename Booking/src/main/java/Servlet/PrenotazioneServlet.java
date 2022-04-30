@@ -54,7 +54,7 @@ public class PrenotazioneServlet extends HttpServlet {
             }
             if(status.equals("DISPONIBILE")){
                 if (docente != null && corso != null && giorno != null && ora != null) {
-                    status = "EFFETTUATA";
+                    status = "CONFERMATA";
                     DAO.insertBooking(utente, codice, docente, corso, giorno, ora, status);
                     request.setAttribute("risultato", "aggiunta");
                 }

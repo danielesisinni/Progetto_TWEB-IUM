@@ -531,7 +531,7 @@ public class DAO{
             if(action.equals("Disdetta")){
                 stat = "RIMOSSA";
             }else {
-                stat = "EFFETTUATA";
+                stat = "CONFERMATA";
             }
             //Execute insert query
             Statement st = conn1.createStatement();
@@ -745,6 +745,38 @@ public class DAO{
             ResultSet rs = st.executeQuery("SELECT * FROM ripetizione WHERE CODICE = '"+ cod + "'");
             while (rs.next()) {
                 Ripetizione p = new Ripetizione(rs.getString("CODICE"), rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
+                out.add(p);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+        return out;
+    }
+
+    public static ArrayList<Corso> CourseFree() {
+        Connection conn1 = null;
+        ArrayList<Corso> out = new ArrayList<>();
+        String confermata = "CONFERMATA";
+
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database test");
+            }
+
+            Statement st = conn1.createStatement();
+            ResultSet rs = st.executeQuery("SELECT TITOLO FROM corso MINUS SELECT CORSO FROM prenotazione p WHERE p.STATUS = '" + confermata + "' ");
+            while (rs.next()) {
+                Corso p = new Corso(rs.getInt("ID"),rs.getString("TITOLO"));
                 out.add(p);
             }
         } catch (SQLException e) {
