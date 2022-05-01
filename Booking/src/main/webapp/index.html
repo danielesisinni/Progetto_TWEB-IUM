@@ -143,18 +143,7 @@
             <div class="container">
                <hr>
                 <!--STAMPA DEI CORSI E DOCENTI-->
-                <div v-if="stampaCD">
-                    <table>
-                        <thead>
-                            <tr><td><i><b>CORSO</b></i></td><td><i><b>DOCENTE</b></i></td></tr>
-                        </thead>
-                        <tbody>
-                            <template v-for="co_do in printCD">
-                                <tr><td>{{co_do.corso}}</td><td>{{co_do.docente}}</td></tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </div>
+                <coursesteacher v-if="stampaCD" link="ServletController" ></coursesteacher>
 
                 <!--STAMPA DELLE MIE PRENOTAZIONI-->
                 <div v-if="stampaMPr">
@@ -171,18 +160,7 @@
                 </div>
 
                 <!--STAMPA DELLE RIPETIZIONI-->
-                <div v-if="stampaR">
-                    <table>
-                        <thead>
-                            <tr><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>
-                        </thead>
-                        <tbody>
-                            <template v-for="ripetizioni in printR">
-                                <tr><td>{{ripetizioni.codice}}</td><td>{{ripetizioni.docente}}</td><td>{{ripetizioni.corso}}</td><td>{{ripetizioni.giorno}}</td><td>{{ripetizioni.ora}}</td><td><span class="badge bg-warning text-dark">{{ripetizioni.status}}</span></td><td><button class="btn btn-info" v-on:click="ServletControllerPost('Prenota', ripetizioni.codice)">Prenota</button></td></tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </div>
+                <repetition v-if="stampaR" link="ServletController" ></repetition>
 
                 <template v-if="errore2" class="container">
                         <span class="badge badge-danger">Ti sei già prenotato per questa lezione.</span>
@@ -216,18 +194,7 @@
             <!--SEZIONE STAMPA DEI DATI-->
             <div class="container">
                <hr>
-                <div v-if="stampaCD">
-                    <table>
-                        <thead>
-                            <tr><td><i><b>CORSO</b></i></td><td><i><b>DOCENTE</b></i></td></tr>
-                        </thead>
-                        <tbody>
-                            <template v-for="co_do in printCD">
-                                <tr><td>{{co_do.corso}}</td><td>{{co_do.docente}}</td></tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </div>
+                <coursesteacher v-if="stampaCD" link="ServletController"></coursesteacher>
 
                 <div v-if="stampaR">
                     <h4>Per prenotare le lezioni devi avere un account. Registrati e prenota!</h4>
@@ -274,7 +241,7 @@
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" >
                             <button class="dropdown-item"  v-on:click="transit('prenotazioni')">Le prenotazioni registrate</button><br>
                             <button class="dropdown-item" v-on:click="transit('gestioneCD')">Gestione di corsi e docenti</button><br>
-                            <button class="dropdown-item" v-on:click="transit('gestioneR')">Gestione delle ripetizioni</button>
+                            <button class="dropdown-item" v-on:click="transit('gestioneR')">Gestione delle ripetizioni</button><br>
                             <button class="dropdown-item" v-on:click="transit('storico')">Storico</button>
                         </div>
                     </div>
@@ -291,32 +258,10 @@
             <div class="container">
                <hr>
                 <!--STAMPA DEI CORSI E DOCENTI-->
-                <span v-if="stampaCD">
-                    <table>
-                        <thead>
-                            <tr><td><i><b>CORSO</b></i></td><td><i><b>DOCENTE</b></i></td></tr>
-                        </thead>
-                        <tbody>
-                            <template v-for="co_do in printCD">
-                                <tr><td>{{co_do.corso}}</td><td>{{co_do.docente}}</td></tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </span>
+                <coursesteacher v-if="stampaCD" link="ServletController"></coursesteacher>
 
                 <!--STAMPA DELLE RIPETIZIONI-->
-                <span v-if="stampaR">
-                    <table>
-                        <thead>
-                            <tr><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>
-                        </thead>
-                        <tbody>
-                            <template v-for="ripetizioni in printR">
-                                <tr><td>{{ripetizioni.codice}}</td><td>{{ripetizioni.docente}}</td><td>{{ripetizioni.corso}}</td><td>{{ripetizioni.giorno}}</td><td>{{ripetizioni.ora}}</td><td><span class="badge bg-warning text-dark">{{ripetizioni.status}}</span></td><td><button class="btn btn-info" v-on:click="ServletControllerPost('Prenota', ripetizioni.codice)">Prenota</button></td></tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </span>
+                <repetition v-if="stampaR" link="ServletController"></repetition>
 
                 <!--STAMPA DELLE PRENOTAZIONI-->
                 <span v-if="stampaPr">
@@ -373,7 +318,7 @@
                         </thead>
                         <tbody>
                             <template v-for="docente in printD">
-                                <tr><td>{{docente.nome}}</td><td><button class="btn btn-primary" v-on:click="ServletControllerPost('Corsi_Docenti', docente.nome)">Elimina</button></td></tr>
+                                <tr><td>{{docente.nome}}</td><td><button class="badge rounded-pill bg-danger" v-on:click="ServletControllerPost('Corsi_Docenti', docente.nome)">RIMUOVI</button></td></tr>
                             </template>
                         </tbody>
                     </table>
@@ -384,7 +329,7 @@
                         </thead>
                         <tbody>
                             <template v-for="corso in printC">
-                                <tr><td>{{corso.titolo}}</td><td><button class="btn btn-primary" v-on:click="ServletControllerPost('Corsi_Docenti', corso.titolo)">Elimina</button></td></tr>
+                                <tr><td>{{corso.titolo}}</td><td><button class="badge rounded-pill bg-danger" v-on:click="ServletControllerPost('Corsi_Docenti', corso.titolo)">RIMUOVI</button></td></tr>
                             </template>
                         </tbody>
                     </table>
@@ -454,6 +399,13 @@
                         </div>
                     </span>
 
+                <!--STAMPA STORICO-->
+                <span v-if="storico">
+                    <courses link="ServletController" storico="True"></courses>
+                    <teacher link="ServletController"></teacher>
+                    <repetitionstorico link="ServletController"></repetitionstorico>
+                </span>
+
                 <!--STAMPA DELL'ERRORE O SUCCESSO-->
                 <template v-if="errore2" >
                             <span class="badge badge-danger">Errore nell' effettuare l'operazione, ricontrolla e riprova. Grazie</span>
@@ -467,6 +419,188 @@
     </div>
 
     <script>
+        //Component stampa dei corsidocenti
+        Vue.component('coursesteacher',{
+            data: function () {
+                return{
+                    corsidocenti: [],
+                }
+            },
+            props: ['link'],
+            template: '<table>\n' +
+                '           <thead>\n' +
+                '             <tr><td><i><b>CORSO</b></i></td><td><i><b>DOCENTE</b></i></td></tr>\n' +
+                '           </thead>\n' +
+                '           <tbody>\n' +
+                '                 <template v-for="co_do in corsidocenti">\n' +
+                '           <tr v-if="co_do.stato === \'ATTIVO\'"><td>{{co_do.corso}}</td><td>{{co_do.docente}}</td></tr>\n' +
+                '            </template>\n' +
+                '           </tbody>\n' +
+                '        </table>',
+            mounted(){
+                this.getDati();
+            },
+            methods: {
+                getDati: function (){
+                    var self = this;
+                    $.get(this.link, {action: 'Corsi_Docenti',}, function (data) {
+                        self.corsidocenti = data;
+                    })
+                },
+            }
+        })
+
+        //Component stampa dei corsi
+        Vue.component('courses',{
+            data: function () {
+                return{
+                    corsii: [],
+                }
+            },
+            props: ['link', 'storico'],
+            template: '<table>\n' +
+                '            <thead>\n' +
+                '                <tr><td><i><b>CORSI</b></i></td></tr>\n' +
+                '             </thead>\n' +
+                '             <tbody>\n' +
+                '                <template v-for="corso in corsii">\n' +
+                '                   <tr><td>{{corso.titolo}} | {{corso.stato}}</td></tr>\n' +
+                '                 </template>\n' +
+                '              </tbody>\n' +
+                '      </table>',
+            mounted(){
+                this.getDati();
+            },
+            methods: {
+                getDati: function (){
+                    var self = this;
+                    if(this.storico === 'True'){
+                        $.get(this.link, {action: 'Corsi', action2: 'storico'}, function (data) {
+                            self.corsii = data;
+                        })
+                    }else {
+                        $.get(this.link, {action: 'Corsi',}, function (data) {
+                            self.corsii = data;
+                        })
+                    }
+                },
+            }
+        })
+
+        //Component stampa dei docenti
+        Vue.component('teacher',{
+            data: function () {
+                return{
+                    docentii: [],
+                }
+            },
+            props: ['link'],
+            template: '<table>\n' +
+                '            <thead>\n' +
+                '                <tr><td><i><b>DOCENTI</b></i></td></tr>\n' +
+                '             </thead>\n' +
+                '             <tbody>\n' +
+                '                <template v-for="docente in docentii">\n' +
+                '                   <tr><td>{{docente.nome}} | {{docente.stato}}</td></tr>\n' +
+                '                </template>\n' +
+                '              </tbody>\n' +
+                '      </table>',
+            mounted(){
+                this.getDati();
+            },
+            methods: {
+                getDati: function (){
+                    var self = this;
+                    $.get(this.link, {action: 'Docenti',}, function (data) {
+                        self.docentii = data;
+                    })
+                },
+            }
+        })
+
+        //Component stampa delle ripetizioni storico
+        Vue.component('repetitionstorico',{
+            data: function () {
+                return{
+                    ripetizionis: [],
+                }
+            },
+            props: ['link'],
+            template: '<table>\n' +
+                '            <thead>\n' +
+                '                <tr><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td></tr>\n' +
+                '            </thead>\n' +
+                '       <tbody>' +
+                '           <template v-for="ripetizioni in ripetizionis">\n' +
+                '               <tr><td>{{ripetizioni.codice}}</td><td>{{ripetizioni.docente}}</td><td>{{ripetizioni.corso}}</td><td>{{ripetizioni.giorno}}</td><td>{{ripetizioni.ora}}</td><td><span class="badge bg-warning text-dark">{{ripetizioni.status}}</span></td></tr>\n' +
+                '           </template>\n' +
+                '      </tbody>\n' +
+                '      </table>',
+            mounted(){
+                this.getDati();
+            },
+            methods: {
+                getDati: function (){
+                    var self = this;
+                    $.get(this.link, {action: 'Ripetizioni', action2: 'storico'}, function (data) {
+                        self.ripetizionis = data;
+                    })
+                },
+            }
+        })
+
+        //Component stampa delle ripetizioni
+        Vue.component('repetition',{
+            data: function () {
+                return{
+                    ripetizionii: [],
+                }
+            },
+            props: ['link'],
+            template: '<table>\n' +
+                '            <thead>\n' +
+                '                <tr><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>\n' +
+                '            </thead>\n' +
+                '       <tbody>' +
+                '           <template v-for="ripetizioni in ripetizionii">\n' +
+                '               <tr v-if="ripetizioni.status === \'DISPONIBILE\'"><td>{{ripetizioni.codice}}</td><td>{{ripetizioni.docente}}</td><td>{{ripetizioni.corso}}</td><td>{{ripetizioni.giorno}}</td><td>{{ripetizioni.ora}}</td><td><span class="badge bg-warning text-dark">{{ripetizioni.status}}</span></td><td><button class="btn btn-info" v-on:click="ServletControllerPost(\'Prenota\', ripetizioni.codice)">Prenota</button></td></tr>\n' +
+                '           </template>\n' +
+                '      </tbody>\n' +
+                '      </table>',
+            mounted(){
+                this.getDati();
+            },
+            methods: {
+                getDati: function (){
+                    var self = this;
+                    $.get(this.link, {action: 'Ripetizioni',}, function (data) {
+                        self.ripetizionii = data;
+                    })
+                },
+                ServletControllerPost: function (flag, flag2){
+                    var self = this;
+                    $.post(this.link, {action: flag, action2: flag2,}, function (data) {
+                        switch (flag){
+                            case "Prenota":
+                                if(data === "errore"){
+                                    self.transit('alert');
+                                }else if(data === "aggiunta"){
+                                    self.successo = true; self.errore2 = self.ripetizionii = false; self.transit('ripetizioni');
+                                } break;
+                        }
+                    })
+                },
+                transit: function (flag) {
+                    switch (flag){
+                        case "ripetizioni":
+                            this.ripetizionii = true; this.getDati(); break;
+                        case "alert":
+                            alert('Errore! Riprovare!'); break;
+                    }
+                },
+            }
+        })
+
         //VueLogin
         Vue.component('centro-login',{
             template:'<article class="d-flex justify-content-center links">' +
@@ -516,8 +650,8 @@
         var app = new Vue ({
             el: '#components',
             data: {
-                /*SEZIONE LOGIN*/               loginHome: true, em: null, acc: null, pass: null, role: 'Amministratore', checkE: false,
-                /*SEZIONE HOME AMMINISTRATORE*/ homeAmministratore: false, logout: false, errore2: false, successo: false, checkAH: false, gestioneCD: false, gestioneR: false, printPr: [], stampaPr: false, courses: null, teacher: null, docElim: null, corsElim: null, day: null, hour: null, prenElim: null,
+                /*SEZIONE LOGIN*/               loginHome: true, em: null, acc: null, pass: null, role: 'Ospite', checkE: false,
+                /*SEZIONE HOME AMMINISTRATORE*/ homeAmministratore: false, logout: false, errore2: false, successo: false, checkAH: false, gestioneCD: false, gestioneR: false, storico: false, printPr: [], stampaPr: false, courses: null, teacher: null, day: null, hour: null,
                 /*SEZIONE HOME OSPITE*/         homeOspite: false, checkO: false,
                 /*SEZIONE HOME CLIENTE*/        homeCliente: false, checkCl: false, printCD: [], printC: [], printD: [], printR: [], printMPr: [], stampaCD: false, stampaD: false, stampaR: false, stampaMPr: false,
                 /*SEZIONE CREAZIONE*/           creazionehome: false,
@@ -527,7 +661,7 @@
                 //ServletController, gestisce le Servlet che ci servono con la doPost e passa i data che ottiene alle chiamate
                 ServletControllerPost: function (flag, flag2){
                     var self = this;
-                    $.post(this.link, {email: this.em, account: this.acc, password: this.pass, action: flag, action2: flag2, corsi: this.courses, nome: this.teacher, cognome: this.var2, giorno: this.day, ora: this.hour, docEli: this.docElim, corEli: this.corsElim, prenEli: this.prenElim}, function (data) {
+                    $.post(this.link, {email: this.em, account: this.acc, password: this.pass, action: flag, action2: flag2, corsi: this.courses, nome: this.teacher, cognome: this.var2, giorno: this.day, ora: this.hour}, function (data) {
                         //Sezione Servlet Login
                         switch (flag){
                             case "login": case "crea": case "ospite":
@@ -551,12 +685,9 @@
                                 self.em = self.pass = null; alert('Attenzione: Logout effettuato con successo. Stai tornando al login'); self.transit("loginHome"); break;
                             case "Corsi_Docenti":
                                 if(data === "errore"){
-                                    self.successo = false; self.errore2 = true;
-                                }else if(data === "aggiunto"){
-                                    self.errore2 = false; self.successo = true;
-                                    setTimeout(() => {
-                                        self.transit('amministratoreHome');
-                                    }, 1500);
+                                    self.errore2 = true;
+                                }else if(data === "aggiunto" || data === "rimossa"){
+                                    self.errore2 = self.gestioneCD = false; self.transit('gestioneCD');
                                 } break;
                             case "Ripetizioni":
                                 if(data === "errore"){
@@ -622,7 +753,7 @@
                         case "clienteHome":
                              this.homeCliente = this.checkCl = true; this.loginHome = this.stampaMPr = this.stampaD = this.stampaR = this.stampaCD = false; break;
                         case "gestioneCD":
-                            this.gestioneCD = true; this.stampaCD = this.checkAH = this.gestioneR = this.errore2 = this.stampaMPr = this.stampaR = this.stampaPr = this.successo = false; this.corsi = this.teacher = this.var2 = null; this.ServletControllerGet("Corsi"); this.ServletControllerGet("Docenti"); break;
+                            this.gestioneCD = true; this.stampaCD = this.checkAH = this.gestioneR = this.errore2 = this.stampaMPr = this.stampaR = this.stampaPr = this.successo = false; this.courses = this.teacher = this.var2 = null; this.ServletControllerGet("Corsi"); this.ServletControllerGet("Docenti"); break;
                         case "gestioneR":
                             this.gestioneR = true; this.checkAH = this.stampaCD = this.gestioneCD = this.stampaMPr = this.stampaR = this.stampaPr = this.errore2 = this.successo = false; this.corsi = this.teacher = null; this.ServletControllerGet("Corsi"); this.ServletControllerGet("Docenti"); this.ServletControllerGet("Ripetizioni"); break;
                         case "aggiungiPr":
@@ -637,6 +768,8 @@
                             this.stampaPr = true; this.checkCl = this.checkAH = this.checkO = this.stampaCD = this.stampaMPr = this.gestioneR = this.gestioneCD = this.stampaMPr = this.stampaR = this.gestioneCD = this.gestioneR = false; this.ServletControllerGet("Prenotazioni"); break;
                         case "mieprenotazioni":
                             this.stampaMPr = true; this.checkCl = this.checkAH = this.checkO = this.stampaPr = this.stampaR = this.gestioneCD = this.gestioneR = false; this.ServletControllerGet("MiePrenotazioni"); break;
+                        case "storico":
+                            this.storico = true; this.gestioneCD = this.stampaCD = this.checkAH = this.gestioneR = this.errore2 = this.stampaMPr = this.stampaR = this.stampaPr = this.successo = false; break;
                         case "alert":
                             alert('Non hai prenotazioni. Sei un ospite!');
                     }

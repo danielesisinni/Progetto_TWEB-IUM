@@ -3,10 +3,20 @@ package DAO;
 public class Corso{
     private int id;
     private String titolo;
+    private String stato;
 
-    public Corso(int id, String titolo) {
+    public Corso(int id, String titolo, String stato) {
         this.id = id;
         this.titolo = titolo;
+        this.stato = stato;
+    }
+
+    public String getStato() {
+        return stato;
+    }
+
+    public void setStato(String stato) {
+        this.stato = stato;
     }
 
     public int getId() {
@@ -29,7 +39,8 @@ public class Corso{
     public String toString() {
         return "Corso{" +
                 "id=" + id +
-                ", titolo='" + titolo + '\'' +
+                ", titolo='" + titolo +
+                ", stato = '" + stato +'\'' +
                 '}';
     }
 }

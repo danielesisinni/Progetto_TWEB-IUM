@@ -29,9 +29,15 @@ public class CorsiDocentiServlet extends HttpServlet {
                     request.setAttribute("risultato", s);
                     break;
                 case "Corsi":
-                    ArrayList<Corso> corsi = DAO.CourseFree();
-                    String s1 = gson.toJson(corsi);
-                    request.setAttribute("risultato", s1);
+                    if(request.getParameter("action2").equals("storico")) {
+                        ArrayList<Corso> corsi = DAO.Course();
+                        String s1 = gson.toJson(corsi);
+                        request.setAttribute("risultato", s1);
+                    }else{
+                        ArrayList<Corso> corsi = DAO.CourseFree();
+                        String s1 = gson.toJson(corsi);
+                        request.setAttribute("risultato", s1);
+                    }
                     break;
                 case "Docenti":
                     ArrayList<Docente> docenti = DAO.TeacherFree();
@@ -64,8 +70,8 @@ public class CorsiDocentiServlet extends HttpServlet {
             String var = request.getParameter("action2");
             if(var != null){
                 DAO.removeCourse(var);
-                //DAO.removeTeacher(var);
-                //DAO.removeCourseTeacher(var);
+                DAO.removeTeacher(var);
+                DAO.removeCourseTeacher(var);
                 request.setAttribute("risultato", "rimossa");
             } else {
                 request.setAttribute("risultato", "errore");

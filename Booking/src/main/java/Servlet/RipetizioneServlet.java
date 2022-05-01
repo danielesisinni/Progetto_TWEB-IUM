@@ -21,10 +21,16 @@ public class RipetizioneServlet extends HttpServlet {
         HttpSession session = request.getSession();
         response.setContentType("application/json,charset=UTF-8");
         Gson gson = new Gson();
-        String account = (String) session.getAttribute("userName");
-        ArrayList<Ripetizione> ripetizione = DAO.Repetition(account);
-        String s = gson.toJson(ripetizione);
-        request.setAttribute("risultato", s);
+        if(request.getParameter("action2").equals("storico")){
+            ArrayList<Ripetizione> ripetizione = DAO.Repetition();
+            String s = gson.toJson(ripetizione);
+            request.setAttribute("risultato", s);
+        }else{
+            String account = (String) session.getAttribute("userName");
+            ArrayList<Ripetizione> ripetizione = DAO.RepetitionPersonali(account);
+            String s = gson.toJson(ripetizione);
+            request.setAttribute("risultato", s);
+        }
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

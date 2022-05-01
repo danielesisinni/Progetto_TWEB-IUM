@@ -3,10 +3,20 @@ package DAO;
 public class CorsoDocente{
     private String corso;
     private String docente;
+    private String stato;
 
-    public CorsoDocente(String corso, String docente) {
+    public CorsoDocente(String corso, String docente, String stato) {
         this.corso = corso;
         this.docente = docente;
+        this.stato = stato;
+    }
+
+    public String getStato() {
+        return stato;
+    }
+
+    public void setStato(String stato) {
+        this.stato = stato;
     }
 
     public String getCorso() {
@@ -27,6 +37,6 @@ public class CorsoDocente{
 
     @Override
     public String toString() {
-        return "[" + corso + "--" + docente + "]\b";
+        return "[" + corso + "--" + docente + "--" + stato + "]\b";
     }
 }
