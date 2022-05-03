@@ -25,6 +25,10 @@ public class RipetizioneServlet extends HttpServlet {
             ArrayList<Ripetizione> ripetizione = DAO.Repetition();
             String s = gson.toJson(ripetizione);
             request.setAttribute("risultato", s);
+        }else if(request.getParameter("action").equals("RipetizioniA")){
+            ArrayList<Ripetizione> ripetizione = DAO.RepetitionA();
+            String s = gson.toJson(ripetizione);
+            request.setAttribute("risultato", s);
         }else{
             String account = (String) session.getAttribute("userName");
             ArrayList<Ripetizione> ripetizione = DAO.RepetitionPersonali(account);
@@ -36,30 +40,31 @@ public class RipetizioneServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html,charset=UTF-8");
         HttpSession session = request.getSession();
+        String action = request.getParameter("action");
         String action2 = request.getParameter("action2");
-
-        if(session.getAttribute("userRole").equals("Amministratore") && action2.equals("")) {
-            String docente = request.getParameter("nome");
-            String corso = request.getParameter("corsi");
-            String giorno = request.getParameter("giorno");
-            String ora = request.getParameter("ora");
-            String status = "DISPONIBILE";
-            if (docente != null && corso != null && giorno != null && ora != null) {
-                if (!docente.equals("") && !corso.equals("") && !giorno.equals("") && !ora.equals("")) {
-                    DAO.insertRepetition(docente, corso, giorno, ora, status);
-                    request.setAttribute("risultato", "aggiunta");
-                } else {
-                    request.setAttribute("risultato", "errore");
+        System.out.println(action);
+        System.out.println(action2);
+        if(session.getAttribute("userName") != null && session.getAttribute("userRole").equals("Amministratore")) {
+            if (action2.equals("")) {
+                String docente = request.getParameter("nome");
+                String corso = request.getParameter("corsi");
+                String giorno = request.getParameter("giorno");
+                String ora = request.getParameter("ora");
+                String status = "DISPONIBILE";
+                if (docente != null && corso != null && giorno != null && ora != null) {
+                    if (!docente.equals("") && !corso.equals("") && !giorno.equals("") && !ora.equals("")) {
+                        DAO.insertRepetition(docente, corso, giorno, ora, status);
+                        request.setAttribute("risultato", "aggiunta");
+                    } else {
+                        request.setAttribute("risultato", "errore");
+                    }
                 }
-            }
-        }else if(session.getAttribute("userRole").equals("Amministratore") && action2.equals("Rimozione")){
-            String value = request.getParameter("prenEli");
-            if(value != null) {
-                ArrayList<Prenotazione> prenotazioni = DAO.Booking();
-                for (Prenotazione list : prenotazioni) {
-                    if (list.getCodice().equals(value)) {
+            } else if (action.equals("Rimuovi")) {
+                ArrayList<Ripetizione> ripetizioni = DAO.Repetition();
+                for (Ripetizione list : ripetizioni) {
+                    if (list.getCodice().equals(action2)) {
                         if (list.getStatus().equals("DISPONIBILE")) {
-                            DAO.removeRepetition(value);
+                            DAO.removeRepetition(action2);
                             request.setAttribute("risultato", "rimossa");
                         } else {
                             request.setAttribute("risultato", "errore");

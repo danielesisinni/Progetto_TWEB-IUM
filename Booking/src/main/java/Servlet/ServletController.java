@@ -27,6 +27,7 @@ public class ServletController extends HttpServlet {
                         response.setContentType("application/json,charset=UTF-8");
                         out.print(request.getAttribute("risultato"));
                         break;
+                    case "RipetizioniA":
                     case "Ripetizioni":
                         rd = getServletContext().getNamedDispatcher("ripetizioni");
                         rd.include(request, response);
@@ -72,6 +73,8 @@ public class ServletController extends HttpServlet {
                         rd.include(request, response);
                         out.print(request.getAttribute("risultato"));
                         break;
+                    //Rimozione delle prenotazioni
+                    case "Rimuovi":
                     case "Ripetizioni":
                         rd = getServletContext().getNamedDispatcher("ripetizioni");
                         rd.include(request, response);
@@ -82,6 +85,8 @@ public class ServletController extends HttpServlet {
                         rd.include(request, response);
                         out.print(request.getAttribute("risultato"));
                         break;
+                        //PRenotazione effettuata
+                    case "Effettuata":
                         //Disdetta delle prenotazioni
                     case "Disdetta":
                         //Prenota delle ripetizioni

@@ -95,7 +95,7 @@ public class DAO{
             }
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM corsodocente");
+            ResultSet rs = st.executeQuery("SELECT * FROM corsodocente order by docente, corso");
             while (rs.next()) {
                 CorsoDocente p = new CorsoDocente(rs.getString("CORSO"), rs.getString("DOCENTE"), rs.getString("STATO"));
                 out.add(p);
@@ -323,7 +323,6 @@ public class DAO{
     public static void removeCourse(String nome) {
         Connection conn1 = null;
         String a = "RIMOSSO";
-        System.out.println(nome);
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
@@ -562,12 +561,13 @@ public class DAO{
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
-
             String stat;
             if(action.equals("Disdetta")){
                 stat = "RIMOSSA";
-            }else {
+            }else if(action.equals("Riprenota")){
                 stat = "CONFERMATA";
+            }else{
+                stat = "EFFETTUATA";
             }
             //Execute insert query
             Statement st = conn1.createStatement();
@@ -845,6 +845,36 @@ public class DAO{
             ResultSet rs = st.executeQuery("SELECT NOME FROM Docente d WHERE NOT EXISTS (SELECT DOCENTE FROM Prenotazione p WHERE d.NOME = p.DOCENTE AND p.STATUS = '" + c1 + "') and d.stato = '"+ a1 + "' order by NOME");
             while (rs.next()) {
                 Docente p = new Docente(0,rs.getString("NOME"), "ATTIVO");
+                out.add(p);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+        return out;
+    }
+
+    public static ArrayList<Ripetizione> RepetitionA() {
+        Connection conn1 = null;
+        ArrayList<Ripetizione> out = new ArrayList<>();
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database test");
+            }
+
+            Statement st = conn1.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM ripetizione r WHERE NOT EXISTS (SELECT * FROM Prenotazione p WHERE r.CODICE = p.CODICE AND p.STATUS = 'CONFERMATA') AND r.STATUS != 'RIMOSSA' order by codice");
+            while (rs.next()) {
+                Ripetizione p = new Ripetizione(rs.getString("CODICE"),rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), "DISPONIBILE");
                 out.add(p);
             }
         } catch (SQLException e) {

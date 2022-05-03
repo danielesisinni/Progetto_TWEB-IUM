@@ -40,9 +40,15 @@ public class CorsiDocentiServlet extends HttpServlet {
                     }
                     break;
                 case "Docenti":
-                    ArrayList<Docente> docenti = DAO.TeacherFree();
-                    String s2 = gson.toJson(docenti);
-                    request.setAttribute("risultato", s2);
+                    if(request.getParameter("action2").equals("storico")) {
+                        ArrayList<Docente> docenti = DAO.Teacher();
+                        String s2 = gson.toJson(docenti);
+                        request.setAttribute("risultato", s2);
+                    }else {
+                        ArrayList<Docente> docenti = DAO.TeacherFree();
+                        String s2 = gson.toJson(docenti);
+                        request.setAttribute("risultato", s2);
+                    }
                     break;
             }
         }

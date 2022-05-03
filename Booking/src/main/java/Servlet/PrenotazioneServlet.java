@@ -39,38 +39,38 @@ public class PrenotazioneServlet extends HttpServlet {
         response.setContentType("text/html,charset=UTF-8");
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
+        if(session.getAttribute("userName") != null && (session.getAttribute("userRole").equals("Amministratore") || session.getAttribute("userRole").equals("Cliente"))) {
+            switch (action){
+                case "Prenota":
+                    String utente = (String) session.getAttribute("userName");
+                    String codice = request.getParameter("action2");
+                    String docente = null; String corso = null; String giorno = null; String ora = null; String status = null;
+                    ArrayList<Ripetizione> rip = DAO.SearchRepetition(codice);
+                    for (Ripetizione a : rip) {
+                        docente = a.getDocente();
+                        corso = a.getCorso();
+                        giorno = a.getGiorno();
+                        ora = a.getOra();
+                        status = a.getStatus();
+                    }
+                    if (status.equals("DISPONIBILE")) {
+                        if (docente != null && corso != null && giorno != null && ora != null) {
+                            status = "CONFERMATA";
+                            DAO.insertBooking(utente, codice, docente, corso, giorno, ora, status);
+                            request.setAttribute("risultato", "aggiunta");
+                        }
+                    } else {
+                        request.setAttribute("risultato", "errore");
+                    }
+                    break;
 
-        if(action.equals("Prenota") && (session.getAttribute("userRole").equals("Amministratore") || session.getAttribute("userRole").equals("Cliente"))) {
-            String utente = (String) session.getAttribute("userName");
-            String codice = request.getParameter("action2");
-            String docente = null;String corso = null;String giorno = null;String ora = null;String status = null;
-            ArrayList<Ripetizione> rip = DAO.SearchRepetition(codice);
-            for(Ripetizione a: rip){
-                docente = a.getDocente();
-                corso = a.getCorso();
-                giorno = a.getGiorno();
-                ora = a.getOra();
-                status = a.getStatus();
+                    case "Disdetta": case "Riprenota": case "Effettuata":
+                        utente = (String) session.getAttribute("userName");
+                        codice = request.getParameter("action2");
+                        DAO.updateBooking(utente, codice, action);
+                        request.setAttribute("risultato", "eseguito");
+                        break;
             }
-            if(status.equals("DISPONIBILE")){
-                if (docente != null && corso != null && giorno != null && ora != null) {
-                    status = "CONFERMATA";
-                    DAO.insertBooking(utente, codice, docente, corso, giorno, ora, status);
-                    request.setAttribute("risultato", "aggiunta");
-                }
-            }else{
-                request.setAttribute("risultato", "errore");
-            }
-        }else if(action.equals("Disdetta") && (session.getAttribute("userRole").equals("Amministratore") || session.getAttribute("userRole").equals("Cliente"))) {
-            String utente = (String) session.getAttribute("userName");
-            String codice = request.getParameter("action2");
-            DAO.updateBooking(utente, codice, action);
-            request.setAttribute("risultato", "rimossa");
-        }else if(action.equals("Riprenota") && (session.getAttribute("userRole").equals("Amministratore") || session.getAttribute("userRole").equals("Cliente"))) {
-            String utente = (String) session.getAttribute("userName");
-            String codice = request.getParameter("action2");
-            DAO.updateBooking(utente, codice, action);
-            request.setAttribute("risultato", "riaggiunta");
         }
     }
 

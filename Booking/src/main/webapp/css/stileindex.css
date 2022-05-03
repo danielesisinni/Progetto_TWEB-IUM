@@ -27,6 +27,9 @@
     float: left;
     width: 60%;
 }
+.tabellastorico{
+    width: 30%;
+}
 .tabellaDocenti{
     width: 45%;
     float: left;
@@ -35,6 +38,15 @@
  .tabellaCorsi{
      width: 45%;
      float: right;
+ }
+
+ .botton{
+     background: #a0acde;
+     border: 0;
+ }
+
+ .btn-outline-dark{
+     background: #c0392b
  }
 body,
 html{
@@ -105,11 +117,6 @@ html{
     background-color: #c0392b !important;
 }
 
-.botton{
-    background: #a0acde;
-    border: 0;
-}
-
 .dropdown-menu{
     background-color: #e3f2fd;
 }
@@ -117,3 +124,5 @@ html{
 .btn-outline-dark{
     color: white;
 }
+
+
