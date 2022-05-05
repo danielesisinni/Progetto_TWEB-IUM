@@ -6,6 +6,7 @@ import java.io.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
+import javax.servlet.http.Cookie;
 
 @WebServlet(name = "login", value = "/login")
 public class Login extends HttpServlet {
@@ -25,6 +26,8 @@ public class Login extends HttpServlet {
             if (esiste_ruolo[0].equals("true")) {
                 session.setAttribute("userName", em);
                 session.setAttribute("userRole", esiste_ruolo[1]);
+                session.setAttribute("sessionid", session.getId());
+                System.out.println(session.getAttribute("sessionid"));
                 processRequest(request, response);
             } else {
                 request.setAttribute("risultato", "errore");
@@ -49,10 +52,11 @@ public class Login extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         String flag = request.getParameter("action");
+        String acc = (String) session.getAttribute("userName");
+        String ruolo = (String) session.getAttribute("userRole");
         switch (flag) {
             case "login":
-                String acc = (String) session.getAttribute("userName");
-                String ruolo = (String) session.getAttribute("userRole");
+
                 if (ruolo.equals("Amministratore")) {
                     String jsessionID = session.getId(); // estraggo il session ID
                     System.out.println("JSessionID:" + jsessionID);
@@ -74,5 +78,13 @@ public class Login extends HttpServlet {
                 request.setAttribute("risultato", "ospite");
                 break;
         }
+        /*Cookie coockie = new Cookie("Account", acc);
+        coockie.setMaxAge(60*2);
+        response.addCookie(coockie);
+        Cookie[] arraycoockie = request.getCookies();
+        for (Cookie cookie : arraycoockie) {
+            System.out.println("Nome Cookie di Sessione: " + (cookie.getName()));
+            System.out.println("ID SESSIONE: " + (cookie.getValue()));
+        }*/
     }
 }

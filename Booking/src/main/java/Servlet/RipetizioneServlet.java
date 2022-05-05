@@ -51,10 +51,19 @@ public class RipetizioneServlet extends HttpServlet {
                 String giorno = request.getParameter("giorno");
                 String ora = request.getParameter("ora");
                 String status = "DISPONIBILE";
+                boolean flag = true;
                 if (docente != null && corso != null && giorno != null && ora != null) {
                     if (!docente.equals("") && !corso.equals("") && !giorno.equals("") && !ora.equals("")) {
-                        DAO.insertRepetition(docente, corso, giorno, ora, status);
-                        request.setAttribute("risultato", "aggiunta");
+                        ArrayList<CorsoDocente> cd = DAO.CourseTeacher();
+                        for(CorsoDocente cd2 : cd){
+                            if(cd2.getDocente().equals(docente) && cd2.getCorso().equals(corso)) {
+                                DAO.insertRepetition(docente, corso, giorno, ora, status);
+                                request.setAttribute("risultato", "aggiunta");
+                                flag = false;
+                            }
+                        }
+                        if(flag)
+                            request.setAttribute("risultato", "errore");
                     } else {
                         request.setAttribute("risultato", "errore");
                     }

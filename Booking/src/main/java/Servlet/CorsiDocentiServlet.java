@@ -34,6 +34,7 @@ public class CorsiDocentiServlet extends HttpServlet {
                         String s1 = gson.toJson(corsi);
                         request.setAttribute("risultato", s1);
                     }else{
+                        System.out.println("ok");
                         ArrayList<Corso> corsi = DAO.CourseFree();
                         String s1 = gson.toJson(corsi);
                         request.setAttribute("risultato", s1);

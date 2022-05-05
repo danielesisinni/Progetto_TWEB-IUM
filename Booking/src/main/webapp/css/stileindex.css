@@ -3,7 +3,7 @@
      border-collapse: collapse;
      border: 5px solid;
      text-align: center;
-     margin: 0 auto;
+     margin: 2px;
      color: black;
  }
 
@@ -28,7 +28,9 @@
     width: 60%;
 }
 .tabellastorico{
-    width: 30%;
+    float: left;
+    width: 22%;
+    margin: 6px;
 }
 .tabellaDocenti{
     width: 45%;
@@ -123,6 +125,10 @@ html{
 
 .btn-outline-dark{
     color: white;
+}
+footer{
+    width: 100%;
+    margin-bottom: auto;
 }
 
 

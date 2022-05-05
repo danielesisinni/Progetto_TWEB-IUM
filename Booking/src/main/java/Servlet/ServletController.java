@@ -14,8 +14,9 @@ public class ServletController extends HttpServlet {
         ServletContext ctx = getServletContext();
         HttpSession session = request.getSession();
         PrintWriter out = response.getWriter();
-        RequestDispatcher rd = ctx.getRequestDispatcher ("/index.html");
+        RequestDispatcher rd;
         String action = request.getParameter("action");
+        System.out.println(session.getId() + "  " + session.getAttribute("sessionid"));
         if(action != null) {
             if (session.getAttribute("userRole") != null) {
                 switch (action) {
@@ -60,6 +61,7 @@ public class ServletController extends HttpServlet {
         PrintWriter out = response.getWriter();
         RequestDispatcher rd = ctx.getRequestDispatcher ("/index.html");
         String action = request.getParameter("action");
+
         if(action != null) {
             if (action.equals("login") || action.equals("crea") || action.equals("ospite")) {
                 rd = getServletContext().getNamedDispatcher("login");

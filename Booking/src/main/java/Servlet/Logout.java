@@ -26,6 +26,23 @@ public class Logout extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         try {
+            Cookie loginCookie = null;
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    System.out.println(cookie.getName()+" "+ cookie.getValue());
+                    if (cookie.getName().equals(session.getAttribute("userName"))) {
+                        System.out.println("entro?");
+                        loginCookie = cookie;
+                        break;
+                    }
+                }
+            }
+            if (loginCookie != null) {
+                System.out.println("entro????");
+                loginCookie.setMaxAge(0);
+                response.addCookie(loginCookie);
+            }
             session.removeAttribute("logonSessData"); //logonSessData
             session.invalidate();
             //response.sendRedirect("index.html");

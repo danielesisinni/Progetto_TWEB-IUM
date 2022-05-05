@@ -50,7 +50,7 @@
                                     <button v-on:click="ServletControllerPost('login', '')" class="btn login_btn">Autentica </button>
                                 </div>
 
-                                <template v-if="checkE">
+                                <template v-if="errore">
                                     <span class="badge badge-danger">Errore nel login</span>
                                 </template>
                                 <br>
@@ -112,7 +112,7 @@
         <span v-if="homeCliente && role === 'Cliente'">
             <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="https://www.unito.it/">UniTO</a>
+                    <a class="navbar-brand" href="https://www.unito.it/"  target="_blank">UniTO</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -138,7 +138,6 @@
             <!--HOME CLIENTE-->
             <home v-if="checkCl" v-on:transit-inner-prenotazioni="transit('mieprenotazioni')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')"></home>
 
-
             <!--SEZIONE STAMPA E AGGIUNTA DEI DATI-->
             <div class="container">
                <hr>
@@ -146,33 +145,17 @@
                 <coursesteacher v-if="stampaCD" link="ServletController" ></coursesteacher>
 
                 <!--STAMPA DELLE MIE PRENOTAZIONI-->
-                <div v-if="stampaMPr">
-                    <table>
-                        <thead>
-                            <tr><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>
-                        </thead>
-                        <tbody>
-                            <template v-for="prenotazioni in printMPr">
-                                <tr><td>{{prenotazioni.codice}}</td><td>{{prenotazioni.docente}}</td><td>{{prenotazioni.corso}}</td><td>{{prenotazioni.giorno}}</td><td>{{prenotazioni.ora}}</td><td v-if="prenotazioni.status === 'RIMOSSA'"><span class="badge rounded-pill bg-danger">{{prenotazioni.status}}</span></td><td v-else><span class="badge badge-success">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === 'RIMOSSA'"><button class="btn btn-info" v-on:click="ServletControllerPost('Riprenota', prenotazioni.codice)">Riprenota</button></td><td v-else><button class="btn btn-danger" v-on:click="ServletControllerPost('Disdetta', prenotazioni.codice)">Disdetta</button></td></tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </div>
+                <mybooking v-if="stampaMPr" link="ServletController"></mybooking>
 
                 <!--STAMPA DELLE RIPETIZIONI-->
                 <repetition v-if="stampaR" link="ServletController" ospite="False"></repetition>
-
-                <template v-if="errore2" class="container">
-                        <span class="badge badge-danger">Ti sei già prenotato per questa lezione.</span>
-                </template>
             </div>
-
         </span>
 
         <span v-if="homeOspite && role === 'Ospite'">
             <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="https://www.unito.it/">UniTO</a>
+                    <a class="navbar-brand" href="https://www.unito.it/"  target="_blank">UniTO</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -189,6 +172,7 @@
                 </div>
             </nav>
 
+            <!-- HOME -->
             <home v-if="checkO"  v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-prenotazioni="transit('alert')"></home>
 
             <!--SEZIONE STAMPA DEI DATI-->
@@ -207,7 +191,7 @@
         <span v-if="homeAmministratore && role === 'Amministratore'">
             <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="https://www.unito.it/">UniTO</a>
+                    <a class="navbar-brand" href="https://www.unito.it/"  target="_blank">UniTO</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -241,12 +225,11 @@
                     <a class="btn btn-warning" type="button" v-on:click="transit('logout')">Logout</a>
                 </div>
             </nav>
-            <!--HOME AMMINISTRATORE-->
 
+            <!--HOME AMMINISTRATORE-->
             <home v-if="checkAH" v-on:transit-inner-prenotazioni="transit('mieprenotazioni')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')"></home>
 
             <!--SEZIONE STAMPA E AGGIUNTA DEI DATI-->
-
                <hr>
                 <!--STAMPA DEI CORSI E DOCENTI-->
                 <coursesteacher v-if="stampaCD" link="ServletController"></coursesteacher>
@@ -255,92 +238,16 @@
                 <repetition v-if="stampaR" link="ServletController" ospite="False"></repetition>
 
                 <!--STAMPA DELLE PRENOTAZIONI-->
-                <span v-if="stampaPr">
-                    <table>
-                        <thead>
-                            <tr><td><i><b>UTENTE</b></i></td><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td></tr>
-                        </thead>
-                        <tbody>
-                            <template v-for="prenotazioni in printPr">
-                                <tr><td>{{prenotazioni.utente}}</td><td>{{prenotazioni.codice}}</td><td>{{prenotazioni.docente}}</td><td>{{prenotazioni.corso}}</td><td>{{prenotazioni.giorno}}</td><td>{{prenotazioni.ora}}</td><td v-if="prenotazioni.status === 'RIMOSSA'"><span class="badge rounded-pill bg-danger">{{prenotazioni.status}}</span><td v-if="prenotazioni.status === 'EFFETTUATA'"><span class="badge bg-warning text-dark">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === 'CONFERMATA'"><span class="badge badge-success">{{prenotazioni.status}}</span></td></tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </span>
+                <booking v-if="stampaPr" link="ServletController"></booking>
 
                 <!--STAMPA DELLE MIE PRENOTAZIONI-->
-                <span v-if="stampaMPr">
-                    <table>
-                        <thead>
-                            <tr><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>
-                        </thead>
-                        <tbody>
-                            <template v-for="prenotazioni in printMPr">
-                                <tr><td>{{prenotazioni.codice}}</td><td>{{prenotazioni.docente}}</td><td>{{prenotazioni.corso}}</td><td>{{prenotazioni.giorno}}</td><td>{{prenotazioni.ora}}</td><td v-if="prenotazioni.status === 'RIMOSSA'"><span class="badge rounded-pill bg-danger">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === 'EFFETTUATA'"><span class="badge bg-warning text-dark">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === 'CONFERMATA'"><span class="badge badge-success">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === 'RIMOSSA'"><button class="btn-outline-dark" v-on:click="ServletControllerPost('Riprenota', prenotazioni.codice)">Prenota</button></td><td v-if="prenotazioni.status === 'CONFERMATA'"><button class="btn-outline-dark" v-on:click="ServletControllerPost('Disdetta', prenotazioni.codice)">Rimuovi</button> <button class="btn-outline-dark" v-on:click="ServletControllerPost('Effettuata', prenotazioni.codice)">Effettuata</button></td></tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </span>
+                <mybooking v-if="stampaMPr" link="ServletController"></mybooking>
 
                 <!--AGGIUNTA DI CORSI E DOCENTI-->
                 <admincoursesteacher v-if="gestioneCD" link="ServletController"></admincoursesteacher>
 
                 <!--AGGIUNTA DELLE RIPETIZIONI-->
-                <span v-if="gestioneR">
-                    <div class="container">
-                        <h4>Aggiunta di nuove ripetizioni</h4>
-                        <p>-Scegli il docente, il corso, la data e l'ora della ripetizione.</p>
-                        <br>
-                        <div class="form-group">
-                            <label>Docente
-                                <select v-model="teacher">
-                                    <option v-for="co_do in printD">{{co_do.nome}} {{co_do.cognome}}</option>
-                                </select>
-                            </label>
-                            <label>Corso
-                                <select v-model="courses">
-                                    <option v-for="co_do in printC">{{co_do.titolo}}</option>
-                                </select>
-                            </label>
-                            <label>Data
-                                <select v-model="day">
-                                    <option>Lunedi</option>
-                                    <option>Martedi</option>
-                                    <option>Mercoledi</option>
-                                    <option>Giovedi</option>
-                                    <option>Venerdi</option>
-                                </select>
-                            </label>
-                            <label>Ora
-                                <select v-model="hour">
-                                    <option>15:00/16:00</option>
-                                    <option>16:00/17:00</option>
-                                    <option>17:00/18:00</option>
-                                    <option>18:00/19:00</option>
-                                </select>
-                            </label>
-                                <br>
-                                <div class="d-grid gap-2">
-                                    <button class="btn btn-primary" v-on:click="ServletControllerPost('Ripetizioni', '')">Conferma dati</button>
-                                </div>
-                            </div>
-
-                            <hr>
-                            <h4>Rimozione delle ripetizioni</h4>
-                            <p>-Hai la possibilit&aacute; di rimuovere una ripetizione. Solo se non &eacute; attiva, cio&eacute; gi&aacute; prenotata da un cliente.</p>
-
-                        <table>
-                            <thead>
-                                <tr><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>
-                            </thead>
-                            <tbody>
-                                <template v-for="ripetizioni in printR">
-                                    <tr><td>{{ripetizioni.codice}}</td><td>{{ripetizioni.docente}}</td><td>{{ripetizioni.corso}}</td><td>{{ripetizioni.giorno}}</td><td>{{ripetizioni.ora}}</td><td><button class="btn btn-danger" v-on:click="ServletControllerPost('Rimuovi', ripetizioni.codice)">Rimuovi</button></td></tr>
-                                </template>
-                            </tbody>
-                        </table>
-                    </div>
-                </span>
+                <adminrepetition v-if="gestioneR" link="ServletController"></adminrepetition>
 
                 <!--STAMPA STORICO-->
                 <span v-if="storico">
@@ -348,16 +255,6 @@
                     <teacher link="ServletController" storico="True"></teacher>
                     <repetitionstorico link="ServletController"></repetitionstorico>
                 </span>
-
-                <!--STAMPA DELL'ERRORE O SUCCESSO-->
-                <template v-if="errore2" >
-                            <span class="badge badge-danger">Errore nell' effettuare l'operazione, ricontrolla e riprova. Grazie</span>
-                    </template>
-                <template v-if="successo">
-                            <span class="badge badge-success">Successo</span>
-                    </template>
-
-
         </span>
     </div>
 
@@ -400,7 +297,7 @@
                 '                            </thead>\n' +
                 '                            <tbody>\n' +
                 '                                <template v-for="docente in docenti">\n' +
-                '                                    <tr><td>{{docente.nome}}</td><td><button class="badge rounded-pill bg-danger" v-on:click="ServletControllerPost(\'Corsi_Docenti\', docente.nome)">RIMUOVI</button></td></tr>\n' +
+                '                                    <tr><td>{{docente.nome}}</td><td><button class="btn btn-danger" v-on:click="ServletControllerPost(\'Corsi_Docenti\', docente.nome)">Rimuovi</button></td></tr>\n' +
                 '                                </template>\n' +
                 '                            </tbody>\n' +
                 '                        </table>\n' +
@@ -410,7 +307,7 @@
                 '                            </thead>\n' +
                 '                            <tbody>\n' +
                 '                                <template v-for="corso in corsi">\n' +
-                '                                    <tr><td>{{corso.titolo}}</td><td><button class="badge rounded-pill bg-danger" v-on:click="ServletControllerPost(\'Corsi_Docenti\', corso.titolo)">RIMUOVI</button></td></tr>\n' +
+                '                                    <tr><td>{{corso.titolo}}</td><td><button class="btn btn-danger" v-on:click="ServletControllerPost(\'Corsi_Docenti\', corso.titolo)">Rimuovi</button></td></tr>\n' +
                 '                                </template>\n' +
                 '                            </tbody>\n' +
                 '                        </table>\n' +
@@ -436,7 +333,7 @@
                                 if(data === "errore"){
                                     self.transit('alert');
                                 }else if(data === "aggiunto" || data === "rimossa"){
-                                    self.errore2 = self.gestioneCD = false; self.transit('gestioneCD');
+                                    self.transit('gestioneCD');
                                 } break;
                         }
                     })
@@ -444,13 +341,116 @@
                 transit: function (flag) {
                     switch (flag){
                         case "gestioneCD":
-                            this.gestioneCD = true; this.storico = this.stampaCD = this.checkAH = this.gestioneR = this.errore2 = this.stampaMPr = this.stampaR = this.stampaPr = this.successo = false; this.courses = this.teacher = this.var2 = null; this.getDati(); break;
+                            this.courses = this.teacher = null; this.getDati(); break;
                         case "alert":
                             alert('Errore! Riprovare!'); break;
                     }
                 },
             }
         })
+
+        //Component gestione ripetizioni
+        Vue.component('adminrepetition',{
+            data: function () {
+                return {
+                    ripetizionii: [],
+                    corsi: [],
+                    docenti: [],
+                    courses: null,
+                    teacher: null,
+                    day: null,
+                    hour: null,
+                }
+            },
+            props: ['link'],
+            template: '<div class="container">\n' +
+                '                        <h4>Aggiunta di nuove ripetizioni</h4>\n' +
+                '                        <p>-Scegli il docente, il corso, la data e l\'ora della ripetizione.</p>\n' +
+                '                        <br>\n' +
+                '                        <div class="form-group">\n' +
+                '                            <label>Docente\n' +
+                '                                <select v-model="teacher">\n' +
+                '                                    <option v-for="co_do in docenti">{{co_do.nome}} {{co_do.cognome}}</option>\n' +
+                '                                </select>\n' +
+                '                            </label>\n' +
+                '                            <label>Corso\n' +
+                '                                <select v-model="courses">\n' +
+                '                                    <option v-for="co_do in corsi">{{co_do.titolo}}</option>\n' +
+                '                                </select>\n' +
+                '                            </label>\n' +
+                '                            <label>Data\n' +
+                '                                <select v-model="day">\n' +
+                '                                    <option>Lunedi</option>\n' +
+                '                                    <option>Martedi</option>\n' +
+                '                                    <option>Mercoledi</option>\n' +
+                '                                    <option>Giovedi</option>\n' +
+                '                                    <option>Venerdi</option>\n' +
+                '                                </select>\n' +
+                '                            </label>\n' +
+                '                            <label>Ora\n' +
+                '                                <select v-model="hour">\n' +
+                '                                    <option>15:00/16:00</option>\n' +
+                '                                    <option>16:00/17:00</option>\n' +
+                '                                    <option>17:00/18:00</option>\n' +
+                '                                    <option>18:00/19:00</option>\n' +
+                '                                </select>\n' +
+                '                            </label>\n' +
+                '                                <br>\n' +
+                '                                <div class="d-grid gap-2">\n' +
+                '                                    <button class="btn btn-primary" v-on:click="ServletControllerPost(\'Ripetizioni\', \'\')">Conferma dati</button>\n' +
+                '                                </div>\n' +
+                '                            </div>\n' +
+                '                            <hr>\n' +
+                '                            <h4>Rimozione delle ripetizioni</h4>\n' +
+                '                            <p>-Hai la possibilit&aacute; di rimuovere una ripetizione. Solo se non &eacute; attiva, cio&eacute; gi&aacute; prenotata da un cliente.</p>\n' +
+                '                        <table>\n' +
+                '                            <thead>\n' +
+                '                                <tr><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>\n' +
+                '                            </thead>\n' +
+                '                            <tbody>\n' +
+                '                                <template v-for="ripetizioni in ripetizionii">\n' +
+                '                                    <tr><td>{{ripetizioni.codice}}</td><td>{{ripetizioni.docente}}</td><td>{{ripetizioni.corso}}</td><td>{{ripetizioni.giorno}}</td><td>{{ripetizioni.ora}}</td><td><button class="btn btn-danger" v-on:click="ServletControllerPost(\'Rimuovi\', ripetizioni.codice)">Rimuovi</button></td></tr>\n' +
+                '                                </template>\n' +
+                '                            </tbody>\n' +
+                '                        </table>\n' +
+                '                    </div>',
+            mounted(){
+                this.getDati();
+            },
+            methods: {
+                getDati: function (){
+                    var self = this;
+                    $.get(this.link, {action: 'Corsi', action2: ''}, function (data) {
+                        self.corsi = data;
+                    });
+                    $.get(this.link, {action: 'Docenti', action2: ''}, function (data) {
+                        self.docenti = data;
+                    });
+                    $.get(this.link, {action: 'RipetizioniA', action2: ''}, function (data) {
+                        self.ripetizionii = data;
+                    })
+                },
+                ServletControllerPost: function (flag, flag2){
+                    var self = this;
+                    $.post(this.link, {action: flag, action2: flag2, corsi: this.courses, nome: this.teacher, giorno: this.day, ora: this.hour}, function (data) {
+                        if(data === "errore"){
+                            self.transit('alert');
+                        }else{
+                            self.transit('gestioneR');
+                        }
+                    })
+                },
+                transit: function (flag) {
+                    switch (flag){
+                        case "gestioneR":
+                            this.courses = this.teacher = this.hour = this.day = null; this.getDati(); break;
+                        case "alert":
+                            alert('Errore! Riprovare, controllare tutti i campi!'); break;
+                    }
+                },
+            }
+        })
+
         //Component stampa dei corsidocenti
         Vue.component('coursesteacher',{
             data: function () {
@@ -490,13 +490,13 @@
                 }
             },
             props: ['link', 'storico'],
-            template: '<table>\n' +
+            template: '<table class="tabellastorico">\n' +
                 '            <thead>\n' +
                 '                <tr><td><i><b>CORSI</b></i></td></tr>\n' +
                 '             </thead>\n' +
                 '             <tbody>\n' +
                 '                <template v-for="corso in corsii">\n' +
-                '                   <tr><td>{{corso.titolo}} | {{corso.stato}}</td></tr>\n' +
+                '                   <tr><td>{{corso.titolo}} | <p class="badge-info">{{corso.stato}}</p></td></tr>\n' +
                 '                 </template>\n' +
                 '              </tbody>\n' +
                 '      </table>',
@@ -527,7 +527,7 @@
                 }
             },
             props: ['link', 'storico'],
-            template: '<table>\n' +
+            template: '<table class="tabellastorico">\n' +
                 '            <thead>\n' +
                 '                <tr><td><i><b>DOCENTI</b></i></td></tr>\n' +
                 '             </thead>\n' +
@@ -564,7 +564,7 @@
                 }
             },
             props: ['link'],
-            template: '<table>\n' +
+            template: '<table class="tabellastorico">\n' +
                 '            <thead>\n' +
                 '                <tr><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td></tr>\n' +
                 '            </thead>\n' +
@@ -623,7 +623,7 @@
                                 if(data === "errore"){
                                     self.transit('alert');
                                 }else if(data === "aggiunta"){
-                                    self.successo = true; self.errore2 = self.ripetizionii = false; self.transit('ripetizioni');
+                                    self.errore2 = false; self.transit('ripetizioni');
                                 } break;
                         }
                     })
@@ -637,6 +637,77 @@
                     }
                 },
             }
+        })
+
+        //Component stampa delle prenotazioni
+        Vue.component('booking',{
+            data: function () {
+                return{
+                    prenotazionii: [],
+                }
+            },
+            props: ['link'],
+            template: '<table>\n' +
+                '           <thead>\n' +
+                '               <tr><td><i><b>UTENTE</b></i></td><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td></tr>\n' +
+                '           </thead>\n' +
+                '           <tbody>\n' +
+                '               <template v-for="prenotazioni in prenotazionii">\n' +
+                '                   <tr><td>{{prenotazioni.utente}}</td><td>{{prenotazioni.codice}}</td><td>{{prenotazioni.docente}}</td><td>{{prenotazioni.corso}}</td><td>{{prenotazioni.giorno}}</td><td>{{prenotazioni.ora}}</td><td v-if="prenotazioni.status === \'RIMOSSA\'"><span class="badge rounded-pill bg-danger">{{prenotazioni.status}}</span><td v-if="prenotazioni.status === \'EFFETTUATA\'"><span class="badge bg-warning text-dark">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === \'CONFERMATA\'"><span class="badge badge-success">{{prenotazioni.status}}</span></td></tr>\n' +
+                '               </template>\n' +
+                '           </tbody>\n' +
+                '      </table>',
+            mounted(){
+                this.getDati();
+            },
+            methods: {
+                getDati: function (){
+                    var self = this;
+                    $.get(this.link, {action: 'Prenotazioni'}, function (data) {
+                        self.prenotazionii = data;
+                    })
+                },
+            },
+        })
+
+        //Component stampa delle mie prenotazioni
+        Vue.component('mybooking',{
+            data: function () {
+                return{
+                    myprenotazioni: [],
+                }
+            },
+            props: ['link'],
+            template: '<table>\n' +
+                '           <thead>\n' +
+                '               <tr><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>\n' +
+                '           </thead>\n' +
+                '           <tbody>\n' +
+                '               <template v-for="prenotazioni in myprenotazioni">\n' +
+                '                   <tr><td>{{prenotazioni.codice}}</td><td>{{prenotazioni.docente}}</td><td>{{prenotazioni.corso}}</td><td>{{prenotazioni.giorno}}</td><td>{{prenotazioni.ora}}</td><td v-if="prenotazioni.status === \'RIMOSSA\'"><span class="badge rounded-pill bg-danger">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === \'EFFETTUATA\'"><span class="badge bg-warning text-dark">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === \'CONFERMATA\'"><span class="badge badge-success">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === \'RIMOSSA\'"><button class="btn btn-primary" v-on:click="ServletControllerPost(\'Riprenota\', prenotazioni.codice)">Prenota</button></td><td v-if="prenotazioni.status === \'CONFERMATA\'"><button class="btn btn-danger" v-on:click="ServletControllerPost(\'Disdetta\', prenotazioni.codice)">Rimuovi</button> <button class="btn btn-primary" v-on:click="ServletControllerPost(\'Effettuata\', prenotazioni.codice)">Effettuata</button></td></tr>\n' +
+                '               </template>\n' +
+                '           </tbody>\n' +
+                '      </table>',
+            mounted(){
+                this.getDati();
+            },
+            methods: {
+                getDati: function (){
+                    var self = this;
+                    $.get(this.link, {action: 'MiePrenotazioni'}, function (data) {
+                        self.myprenotazioni = data;
+                    })
+                },
+                ServletControllerPost: function (flag, flag2){
+                    var self = this;
+                    $.post(this.link, {action: flag, action2: flag2,}, function (data) {
+                                self.transit();
+                    })
+                },
+                transit: function () {
+                        this.getDati();
+                    }
+                },
         })
 
         //VueLogin
@@ -686,96 +757,39 @@
         var app = new Vue ({
             el: '#components',
             data: {
-                /*SEZIONE LOGIN*/               loginHome: true, em: null, acc: null, pass: null, role: 'Ospite', checkE: false,
-                /*SEZIONE HOME AMMINISTRATORE*/ homeAmministratore: false, logout: false, errore2: false, successo: false, checkAH: false, gestioneCD: false, gestioneR: false, storico: false, printPr: [], stampaPr: false, courses: null, teacher: null, day: null, hour: null,
+                /*SEZIONE LOGIN*/               loginHome: true, em: null, acc: null, pass: null, role: 'Ospite', errore: false,
+                /*SEZIONE HOME AMMINISTRATORE*/ homeAmministratore: false, errore2: false, checkAH: false, gestioneCD: false, gestioneR: false, storico: false, stampaPr: false,
                 /*SEZIONE HOME OSPITE*/         homeOspite: false, checkO: false,
-                /*SEZIONE HOME CLIENTE*/        homeCliente: false, checkCl: false, printCD: [], printC: [], printD: [], printR: [], printMPr: [], stampaCD: false, stampaR: false, stampaMPr: false,
+                /*SEZIONE HOME CLIENTE*/        homeCliente: false, checkCl: false, stampaCD: false, stampaR: false, stampaMPr: false,
                 /*SEZIONE CREAZIONE*/           creazionehome: false,
                 link: 'ServletController'
             },
             methods: {
-                //ServletController, gestisce le Servlet che ci servono con la doPost e passa i data che ottiene alle chiamate
+                //ServletController, gestisce le Servlet che uso per effettuare il login e logout
                 ServletControllerPost: function (flag, flag2){
                     var self = this;
-                    $.post(this.link, {email: this.em, account: this.acc, password: this.pass, action: flag, action2: flag2, corsi: this.courses, nome: this.teacher, cognome: this.var2, giorno: this.day, ora: this.hour}, function (data) {
+                    $.post(this.link, {email: this.em, account: this.acc, password: this.pass, action: flag, action2: flag2}, function (data) {
                         //Sezione Servlet Login
                         switch (flag){
                             case "login": case "crea": case "ospite":
                                 switch (data) {
                                     case 'sono amministratore':
-                                        self.role = 'Amministratore'; self.checkE = false; self.transit("amministratoreHome"); break;
+                                        self.role = 'Amministratore'; self.errore = false; self.transit("amministratoreHome"); break;
                                     case 'sono cliente':
-                                        self.role = 'Cliente'; self.checkE = false; self.transit("clienteHome"); break;
+                                        self.role = 'Cliente'; self.errore = false; self.transit("clienteHome"); break;
                                     case 'ospite':
                                         self.role = 'Ospite'; self.transit("ospiteHome"); break;
                                     case 'crea':
                                         self.em = self.acc = self.pass = null; self.errore2 = false; alert('Successo: Account creato'); self.transit('loginHome'); break;
                                     case 'errore':
-                                        self.checkE = true; break;
+                                        self.errore = true; break;
                                     case 'errore2':
                                         self.errore2 = true; break;
                                 }
                                 break;
                             //Sezione Servlet/Logout
                             case "logout":
-                                self.em = self.pass = null; alert('Attenzione: Logout effettuato con successo. Stai tornando al login'); self.transit("loginHome"); break;
-                            case "Corsi_Docenti":
-                                if(data === "errore"){
-                                    self.errore2 = true;
-                                }else if(data === "aggiunto" || data === "rimossa"){
-                                    self.errore2 = self.gestioneCD = false; self.transit('gestioneCD');
-                                } break;
-                            case "Ripetizioni":
-                                if(data === "errore"){
-                                    self.successo = false; self.errore2 = true;
-                                }else if(data === "aggiunta") {
-                                    self.errore2 = false; self.successo = true;
-                                    setTimeout(() => {
-                                        self.transit('amministratoreHome');
-                                    }, 1500);
-                                } break;
-                            case "Rimuovi":
-                                if(data === "errore"){
-                                    self.errore2 = true;
-                                }else{
-                                    self.errore2 = self.gestioneR = false; self.transit('gestioneR');
-                                } break;
-                            case "Prenota":
-                                if(data === "errore"){
-                                    self.errore2 = true;
-                                }else{
-                                    self.errore2 = self.stampaPr = false; self.transit('ripetizioni');
-                                } break;
-                            case "Riprenota": case "Disdetta": case "Effettuata" :
-                                self.stampaMPr = false; self.transit('mieprenotazioni'); break;
-                        }
-                    })
-                },
-
-                //ServletController, gestisce le Servlet che ci servono con la doGet e passa i data che ottiene alle chiamate
-                ServletControllerGet: function (flag, flag2){
-                    var self = this;
-                    $.get(this.link, {account: this.acc, password: this.pass, action: flag, action2: flag2}, function (data) {
-                        switch (flag){
-                            //Sezione Servlet/Docenti, stampa dei docenti
-                            case "Docenti":
-                                self.printD = data; break;
-                                //Sezione Servlet/Corsi
-                            case "Corsi":
-                                self.printC = data; break;
-                                //Sezione Servlet/Corsi_Docenti
-                            case "Corsi_Docenti":
-                                self.printCD = data; break;
-                                //Sezione Servlet/Ripetizioni, stampa delle ripetizioni
-                            case "Ripetizioni":
-                            case "RipetizioniA":
-                                self.printR = data; break;
-                               //Sezione Servlet/Prenotazioni, stampa delle prenotazioni personali dei clienti
-                            case "MiePrenotazioni":
-                                self.printMPr = data; break;
-                                //Sezione Servlet/Prenotazioni, stampa delle prenotazioni totali
-                            case "Prenotazioni":
-                                self.printPr = data; break;
+                                self.em = self.pass = null; alert('Attenzione: Logout effettuato. Stai tornando al login'); self.transit("loginHome"); break;
                         }
                     })
                 },
@@ -784,40 +798,44 @@
                 transit: function (flag) {
                     switch (flag){
                         case "creazione":
-                            this.creazionehome = true; this.loginHome = this.errore2 = this.checkC = false; break;
+                            this.creazionehome = true; this.loginHome = this.errore2 = false; this.em = this.pass = null; break;
                         case "ospiteHome":
                             this.homeOspite = this.checkO = true; this.loginHome = this.stampaR = this.stampaCD = false; break;
                         case "logout":
                             this.ServletControllerPost("logout", ''); break;
                         case "loginHome":
-                            this.loginHome = true; this.homeAmministratore = this.creazionehome = this.homeOspite = this.homeCliente = this.logout = this.checkO = this.errore2 = false; break;
+                            this.loginHome = true; this.homeAmministratore = this.creazionehome = this.homeOspite = this.homeCliente = this.checkO = this.errore2 = false; break;
                         case "amministratoreHome":
-                             this.homeAmministratore = this.checkAH = true; this.loginHome = this.stampaPr = this.stampaMPr = this.stampaR = this.stampaCD = this.gestioneCD = this.gestioneR = this.errore2 = this.successo = false; break;
+                             this.homeAmministratore = this.checkAH = true; this.storico = this.loginHome = this.stampaPr = this.stampaMPr = this.stampaR = this.stampaCD = this.gestioneCD = this.gestioneR = this.errore2 = false; break;
                         case "clienteHome":
                              this.homeCliente = this.checkCl = true; this.loginHome = this.stampaMPr = this.stampaR = this.stampaCD = false; break;
                         case "gestioneCD":
-                            this.gestioneCD = true; this.storico = this.stampaCD = this.checkAH = this.gestioneR = this.errore2 = this.stampaMPr = this.stampaR = this.stampaPr = this.successo = false; this.courses = this.teacher = this.var2 = null; this.ServletControllerGet("Corsi", ""); this.ServletControllerGet("Docenti", ""); break;
+                            this.gestioneCD = true; this.storico = this.stampaCD = this.checkAH = this.gestioneR = this.errore2 = this.stampaMPr = this.stampaR = this.stampaPr = false; break;
                         case "gestioneR":
-                            this.gestioneR = true; this.storico = this.checkAH = this.stampaCD = this.gestioneCD = this.stampaMPr = this.stampaR = this.stampaPr = this.errore2 = this.successo = false; this.corsi = this.teacher = null; this.ServletControllerGet("Corsi", "storico"); this.ServletControllerGet("Docenti", "storico"); this.ServletControllerGet("RipetizioniA", ""); break;
-                        case "aggiungiPr":
-                            this.checkAH = this.errore2 = this.successo = false; this.corsi = this.teacher = this.var2 = null; break;
+                            this.gestioneR = true; this.storico = this.checkAH = this.stampaCD = this.gestioneCD = this.stampaMPr = this.stampaR = this.stampaPr = this.errore2 = false; break;
                         case "corsi_docenti":
-                            this.stampaCD = true;  this.storico = this.checkCl = this.checkAH = this.checkO = false; this.ServletControllerGet("Corsi_Docenti", ""); break;
+                            this.stampaCD = true;  this.storico = this.checkCl = this.checkAH = this.checkO = false; break;
                         case "ripetizioni":
-                            this.stampaR = true; this.storico = this.checkCl = this.checkAH = this.checkO = this.stampaPr = this.stampaMPr = this.gestioneCD = this.gestioneR = false; this.ServletControllerGet("Ripetizioni", ""); break;
+                            this.stampaR = true; this.storico = this.checkCl = this.checkAH = this.checkO = this.stampaPr = this.stampaMPr = this.gestioneCD = this.gestioneR = false; break;
                         case "prenotazioni":
-                            this.stampaPr = true;  this.storico = this.checkCl = this.checkAH = this.checkO = this.stampaCD = this.stampaMPr = this.gestioneR = this.gestioneCD = this.stampaMPr = this.stampaR = this.gestioneCD = this.gestioneR = false; this.ServletControllerGet("Prenotazioni", ""); break;
+                            this.stampaPr = true;  this.storico = this.checkCl = this.checkAH = this.checkO = this.stampaCD = this.gestioneR = this.gestioneCD = this.stampaMPr = this.stampaR = false; break;
                         case "mieprenotazioni":
-                            this.stampaMPr = true; this.stampaCD = this.storico = this.checkCl = this.checkAH = this.checkO = this.stampaPr = this.stampaR = this.gestioneCD = this.gestioneR = false; this.ServletControllerGet("MiePrenotazioni", ""); break;
+                            this.stampaMPr = true; this.stampaCD = this.storico = this.checkCl = this.checkAH = this.checkO = this.stampaPr = this.stampaR = this.gestioneCD = this.gestioneR = false; break;
                         case "storico":
-                            this.storico = true; this.gestioneCD = this.stampaCD = this.checkAH = this.gestioneR = this.errore2 = this.stampaMPr = this.stampaR = this.stampaPr = this.successo = false; break;
+                            this.storico = true; this.gestioneCD = this.stampaCD = this.checkAH = this.gestioneR = this.errore2 = this.stampaMPr = this.stampaR = this.stampaPr = false; break;
                         case "alert":
                             alert('Non hai prenotazioni. Sei un ospite!');
                     }
                 },
             }
         })
+
     </script>
 </body>
+
+<footer>
+    <hr>
+    <p class="container"><i><b>Corso Interazione Uomo/Macchina 2021/2022 -- Sisinni Daniele 914874</b></i></p>
+</footer>
 </html>
 
