@@ -32,7 +32,7 @@ public class DAO{
             }
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM Corso");
+            ResultSet rs = st.executeQuery("SELECT * FROM Corso order by STATO, TITOLO");
             while (rs.next()) {
                 Corso p = new Corso(rs.getInt("ID"),rs.getString("TITOLO"), rs.getString("STATO"));
                 out.add(p);
@@ -64,7 +64,7 @@ public class DAO{
             }
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM Docente");
+            ResultSet rs = st.executeQuery("SELECT * FROM Docente order by STATO, NOME");
             while (rs.next()) {
                 Docente p = new Docente(rs.getInt("ID"), rs.getString("NOME"), rs.getString("STATO"));
                 out.add(p);
@@ -189,7 +189,7 @@ public class DAO{
 
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM Ripetizione ORDER BY giorno, ora ");
+            ResultSet rs = st.executeQuery("SELECT * FROM Ripetizione ORDER BY STATUS, giorno, ora ");
             while (rs.next()) {
                 //System.out.println("prova->" + rs.getString("UTENTE"));
                 //if(!rs.getString("UTENTE").equals(account)){
@@ -291,15 +291,14 @@ public class DAO{
 
             ArrayList<Corso> cour = Course();
             for(Corso cour2: cour){
-                if(title.equals(cour2.getTitolo()) || title.equals(""))
+                if(title.equals(""))
                     return false;
                 id = cour2.getId();
                 if(id >= max)
                     max = id;
             }
-            System.out.println("max->"+ max);
             c = new Corso(max++, title, stato);
-            System.out.println("max->"+ max);
+
             //Execute insert query
             Statement st = conn1.createStatement();
             st.execute("insert into corso (id,titolo, stato) values ('" + max++ + "', '" + title + "', '" + stato + "')");
@@ -353,11 +352,8 @@ public class DAO{
             conn1 = DriverManager.getConnection(url1, user, password);
 
             int id;
-            ArrayList<Docente> teach = Teacher();
-            for(Docente teach2: teach){
-                if(nomeDocente.equals(teach2.getNome()) || (nomeDocente.equals("")))
-                    return false;
-            }
+            if(nomeDocente.equals(""))
+                return false;
 
             do {
                 id = (int) (Math.random() * 500);
@@ -798,7 +794,7 @@ public class DAO{
         return out;
     }
 
-    public static ArrayList<Corso> CourseFree() {
+    public static ArrayList<Corso> CourseFree(String action2) {
         Connection conn1 = null;
         ArrayList<Corso> out = new ArrayList<>();
         String c2 = "CONFERMATA";
@@ -808,10 +804,13 @@ public class DAO{
             if (conn1 != null) {
                 System.out.println("Connected to the database test");
             }
-
+            ResultSet rs;
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT TITOLO FROM Corso c WHERE NOT EXISTS (SELECT CORSO FROM Prenotazione p WHERE c.TITOLO = p.CORSO AND p.STATUS = '" + c2 + "') and c.stato = '" + a2 + "' order by TITOLO");
-            while (rs.next()) {
+            if(action2.equals("Free")) {
+                rs = st.executeQuery("SELECT TITOLO FROM Corso c WHERE NOT EXISTS (SELECT CORSO FROM Prenotazione p WHERE c.TITOLO = p.CORSO AND p.STATUS = '" + c2 + "') and c.stato = '" + a2 + "' order by TITOLO");
+            }else {
+                rs = st.executeQuery("SELECT TITOLO FROM Corso c where c.stato = '" + a2 + "' order by TITOLO");
+            }while (rs.next()) {
                 Corso p = new Corso(0,rs.getString("TITOLO"), "ATTIVO");
                 out.add(p);
             }
@@ -830,7 +829,7 @@ public class DAO{
         return out;
     }
 
-    public static ArrayList<Docente> TeacherFree() {
+    public static ArrayList<Docente> TeacherFree(String action2) {
         Connection conn1 = null;
         ArrayList<Docente> out = new ArrayList<>();
         String c1 = "CONFERMATA";
@@ -840,10 +839,13 @@ public class DAO{
             if (conn1 != null) {
                 System.out.println("Connected to the database test");
             }
-
+            ResultSet rs;
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT NOME FROM Docente d WHERE NOT EXISTS (SELECT DOCENTE FROM Prenotazione p WHERE d.NOME = p.DOCENTE AND p.STATUS = '" + c1 + "') and d.stato = '"+ a1 + "' order by NOME");
-            while (rs.next()) {
+            if(action2.equals("Free")) {
+                rs = st.executeQuery("SELECT NOME FROM Docente d WHERE NOT EXISTS (SELECT DOCENTE FROM Prenotazione p WHERE d.NOME = p.DOCENTE AND p.STATUS = '" + c1 + "') and d.stato = '" + a1 + "' order by NOME");
+            }else {
+                rs = st.executeQuery("SELECT NOME FROM Docente d WHERE d.stato = '" + a1 + "' order by NOME");
+            }while (rs.next()) {
                 Docente p = new Docente(0,rs.getString("NOME"), "ATTIVO");
                 out.add(p);
             }

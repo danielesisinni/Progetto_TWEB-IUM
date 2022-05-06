@@ -3,7 +3,7 @@
      border-collapse: collapse;
      border: 5px solid;
      text-align: center;
-     margin: 2px;
+     margin: 0 auto;
      color: black;
  }
 
@@ -47,6 +47,29 @@
      border: 0;
  }
 
+ footer{
+     position:absolute;
+     bottom:0;
+     left:0;
+     width:100%;
+ }
+
+ .blocco{
+     margin: 20px;
+     float: left;
+     width: 37%;
+ }
+
+ .blocco2{
+     margin: 20px;
+     float: right;
+     width: 55%;
+ }
+
+ .foot{
+     margin: 10px;
+     float: left;
+ }
  .btn-outline-dark{
      background: #c0392b
  }
@@ -126,9 +149,6 @@ html{
 .btn-outline-dark{
     color: white;
 }
-footer{
-    width: 100%;
-    margin-bottom: auto;
-}
+
 
 

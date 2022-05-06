@@ -134,7 +134,7 @@
                     <a class="btn btn-warning" type="button" v-on:click="transit('logout')">Logout</a>
                 </div>
             </nav>
-
+            <hr>
             <!--HOME CLIENTE-->
             <home v-if="checkCl" v-on:transit-inner-prenotazioni="transit('mieprenotazioni')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')"></home>
 
@@ -171,7 +171,7 @@
                     <a class="btn btn-warning" type="button" v-on:click="transit('logout')">Logout</a>
                 </div>
             </nav>
-
+            <hr>
             <!-- HOME -->
             <home v-if="checkO"  v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')" v-on:transit-inner-prenotazioni="transit('alert')"></home>
 
@@ -208,7 +208,6 @@
                             </li>
                         </ul>
                     </div>
-
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Men&uacute; amministratore
@@ -225,36 +224,35 @@
                     <a class="btn btn-warning" type="button" v-on:click="transit('logout')">Logout</a>
                 </div>
             </nav>
-
+            <hr>
             <!--HOME AMMINISTRATORE-->
             <home v-if="checkAH" v-on:transit-inner-prenotazioni="transit('mieprenotazioni')" v-on:transit-inner-corsi_docenti="transit('corsi_docenti')" v-on:transit-inner-ripetizioni="transit('ripetizioni')"></home>
 
             <!--SEZIONE STAMPA E AGGIUNTA DEI DATI-->
-               <hr>
-                <!--STAMPA DEI CORSI E DOCENTI-->
-                <coursesteacher v-if="stampaCD" link="ServletController"></coursesteacher>
+            <!--STAMPA DEI CORSI E DOCENTI-->
+            <coursesteacher v-if="stampaCD" link="ServletController"></coursesteacher>
 
-                <!--STAMPA DELLE RIPETIZIONI-->
-                <repetition v-if="stampaR" link="ServletController" ospite="False"></repetition>
+            <!--STAMPA DELLE RIPETIZIONI-->
+            <repetition v-if="stampaR" link="ServletController" ospite="False"></repetition>
 
-                <!--STAMPA DELLE PRENOTAZIONI-->
-                <booking v-if="stampaPr" link="ServletController"></booking>
+            <!--STAMPA DELLE PRENOTAZIONI-->
+            <booking v-if="stampaPr" link="ServletController"></booking>
 
-                <!--STAMPA DELLE MIE PRENOTAZIONI-->
-                <mybooking v-if="stampaMPr" link="ServletController"></mybooking>
+            <!--STAMPA DELLE MIE PRENOTAZIONI-->
+            <mybooking v-if="stampaMPr" link="ServletController"></mybooking>
 
-                <!--AGGIUNTA DI CORSI E DOCENTI-->
-                <admincoursesteacher v-if="gestioneCD" link="ServletController"></admincoursesteacher>
+            <!--AGGIUNTA DI CORSI E DOCENTI-->
+            <admincoursesteacher v-if="gestioneCD" link="ServletController"></admincoursesteacher>
 
-                <!--AGGIUNTA DELLE RIPETIZIONI-->
-                <adminrepetition v-if="gestioneR" link="ServletController"></adminrepetition>
+            <!--AGGIUNTA DELLE RIPETIZIONI-->
+            <adminrepetition v-if="gestioneR" link="ServletController"></adminrepetition>
 
-                <!--STAMPA STORICO-->
-                <span v-if="storico">
-                    <courses link="ServletController" storico="True"></courses>
-                    <teacher link="ServletController" storico="True"></teacher>
-                    <repetitionstorico link="ServletController"></repetitionstorico>
-                </span>
+            <!--STAMPA STORICO-->
+            <span v-if="storico">
+                <courses link="ServletController" storico="True"></courses>
+                <teacher link="ServletController" storico="True"></teacher>
+                <repetitionstorico link="ServletController"></repetitionstorico>
+            </span>
         </span>
     </div>
 
@@ -271,10 +269,10 @@
                 }
             },
             props: ['link'],
-            template: '         <div class="container">\n' +
+            template: '         <div>\n' +
+                '                   <div class="blocco">\n'+
                 '                      <h4>Aggiunta di corsi e docenti affiliati</h4>\n' +
                 '                        <p>-Hai la possibilit&aacute; di aggiungere un nuovo corso, un nuovo docente e creare la loro affiliazione.</p>\n' +
-                '                        <br>\n' +
                 '                        <div class="form-group">\n' +
                 '                            <label for="aggiungiCorso">Aggiungi il corso:&nbsp&nbsp&nbsp&nbsp\n' +
                 '                                <input v-model="courses" id="aggiungiCorso" type="text"  placeholder="Nome" required>\n' +
@@ -286,8 +284,9 @@
                 '                            <div class="d-grid gap-2">\n' +
                 '                                <button class="btn btn-primary" v-on:click="ServletControllerPost(\'Corsi_Docenti\', \'Aggiunta\')">Conferma dati</button>\n' +
                 '                            </div>\n' +
-                '                        </div>\n' +
-                '                        <hr>\n' +
+                '                         </div>\n' +
+                '                    </div>'+
+                '                       <div class="blocco2">\n'+
                 '                        <h4>Rimozione di corsi e docenti</h4>\n' +
                 '                        <p>-Hai la possibilit&aacute; di rimuovere un docente o un corso con le loro affiliazioni. Solo se non compaiono in nessuna prenotazioni attiva.</p>\n' +
                 '                        <p>Seleziona il docente e il corso da rimuovere.</p>\n' +
@@ -311,6 +310,7 @@
                 '                                </template>\n' +
                 '                            </tbody>\n' +
                 '                        </table>\n' +
+                '                       </div>\n'+
                 '                    </div>',
             mounted(){
                 this.getDati();
@@ -318,10 +318,10 @@
             methods: {
                 getDati: function (){
                     var self = this;
-                    $.get(this.link, {action: 'Corsi', action2: ''}, function (data) {
+                    $.get(this.link, {action: 'Corsi', action2: 'Free'}, function (data) {
                         self.corsi = data;
                     });
-                    $.get(this.link, {action: 'Docenti', action2: ''}, function (data) {
+                    $.get(this.link, {action: 'Docenti', action2: 'Free'}, function (data) {
                         self.docenti = data;
                     })
                 },
@@ -363,22 +363,22 @@
                 }
             },
             props: ['link'],
-            template: '<div class="container">\n' +
+            template: '<div>\n' +
+                '                     <div class="blocco">\n' +
                 '                        <h4>Aggiunta di nuove ripetizioni</h4>\n' +
                 '                        <p>-Scegli il docente, il corso, la data e l\'ora della ripetizione.</p>\n' +
-                '                        <br>\n' +
                 '                        <div class="form-group">\n' +
                 '                            <label>Docente\n' +
                 '                                <select v-model="teacher">\n' +
                 '                                    <option v-for="co_do in docenti">{{co_do.nome}} {{co_do.cognome}}</option>\n' +
                 '                                </select>\n' +
-                '                            </label>\n' +
-                '                            <label>Corso\n' +
+                '                            </label><br>\n' +
+                '                            <label>Corso&nbsp&nbsp&nbsp&nbsp\n' +
                 '                                <select v-model="courses">\n' +
                 '                                    <option v-for="co_do in corsi">{{co_do.titolo}}</option>\n' +
                 '                                </select>\n' +
-                '                            </label>\n' +
-                '                            <label>Data\n' +
+                '                            </label><br>\n' +
+                '                            <label>Data&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp\n' +
                 '                                <select v-model="day">\n' +
                 '                                    <option>Lunedi</option>\n' +
                 '                                    <option>Martedi</option>\n' +
@@ -386,8 +386,8 @@
                 '                                    <option>Giovedi</option>\n' +
                 '                                    <option>Venerdi</option>\n' +
                 '                                </select>\n' +
-                '                            </label>\n' +
-                '                            <label>Ora\n' +
+                '                            </label><br>\n' +
+                '                            <label>Ora&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp\n' +
                 '                                <select v-model="hour">\n' +
                 '                                    <option>15:00/16:00</option>\n' +
                 '                                    <option>16:00/17:00</option>\n' +
@@ -400,7 +400,8 @@
                 '                                    <button class="btn btn-primary" v-on:click="ServletControllerPost(\'Ripetizioni\', \'\')">Conferma dati</button>\n' +
                 '                                </div>\n' +
                 '                            </div>\n' +
-                '                            <hr>\n' +
+                '                            </div>\n' +
+                '                        <div class="blocco2">\n' +
                 '                            <h4>Rimozione delle ripetizioni</h4>\n' +
                 '                            <p>-Hai la possibilit&aacute; di rimuovere una ripetizione. Solo se non &eacute; attiva, cio&eacute; gi&aacute; prenotata da un cliente.</p>\n' +
                 '                        <table>\n' +
@@ -413,6 +414,7 @@
                 '                                </template>\n' +
                 '                            </tbody>\n' +
                 '                        </table>\n' +
+                '                       </div>' +
                 '                    </div>',
             mounted(){
                 this.getDati();
@@ -492,11 +494,11 @@
             props: ['link', 'storico'],
             template: '<table class="tabellastorico">\n' +
                 '            <thead>\n' +
-                '                <tr><td><i><b>CORSI</b></i></td></tr>\n' +
+                '                <tr><td><i><b>CORSI</b></i></td><td><i><b>STATO</b></i></td></tr>\n' +
                 '             </thead>\n' +
                 '             <tbody>\n' +
                 '                <template v-for="corso in corsii">\n' +
-                '                   <tr><td>{{corso.titolo}} | <p class="badge-info">{{corso.stato}}</p></td></tr>\n' +
+                '                   <tr><td>{{corso.titolo}}</td><td><span class="badge bg-light text-dark">{{corso.stato}}</span></td></tr>\n' +
                 '                 </template>\n' +
                 '              </tbody>\n' +
                 '      </table>',
@@ -529,11 +531,11 @@
             props: ['link', 'storico'],
             template: '<table class="tabellastorico">\n' +
                 '            <thead>\n' +
-                '                <tr><td><i><b>DOCENTI</b></i></td></tr>\n' +
+                '                <tr><td><i><b>DOCENTI</b></i></td><td><i><b>STATO</b></i></td></tr>\n' +
                 '             </thead>\n' +
                 '             <tbody>\n' +
                 '                <template v-for="docente in docentii">\n' +
-                '                   <tr><td>{{docente.nome}} | {{docente.stato}}</td></tr>\n' +
+                '                   <tr><td>{{docente.nome}}</td><td><span class="badge bg-light text-dark">{{docente.stato}}</span></td></tr>\n' +
                 '                </template>\n' +
                 '              </tbody>\n' +
                 '      </table>',
@@ -732,7 +734,7 @@
             template:
                 '<article class="container">' +
                 '    <br><br>' +
-                '        <h5>Scegli l&rsquo;opzione che desideri</h5>\n' +
+                '        <h5>Scegli l&rsquo;opzione che desideri.</h5>\n' +
                 '            <br>\n' +
                 '            <button class="botton" v-on:click="transitCorsi_Docenti"><img src="img/lista.png" width="280" height="280" alt><br> Visualizza corsi e docenti</button>\n' + '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'+
                 '            <button class="botton" v-on:click="transitRipetizioni"><img src="img/prenotazionecortisonici2020-1.png" width="280" height="280" alt><br>Prenota le tue lezioni</button>\n' + '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'+
@@ -835,7 +837,8 @@
 
 <footer>
     <hr>
-    <p class="container"><i><b>Corso Interazione Uomo/Macchina 2021/2022 -- Sisinni Daniele 914874</b></i></p>
+    <p class="foot"><i><b>Corso Interazione Uomo/Macchina 2021/2022</b></i></p>
+    <p class="foot"><i><b>Sisinni Daniele 914874</b></i></p>
 </footer>
 </html>
 

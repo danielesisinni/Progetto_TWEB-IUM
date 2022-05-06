@@ -20,7 +20,7 @@ public class CorsiDocentiServlet extends HttpServlet {
         response.setContentType("application/json,charset=UTF-8");
         Gson gson = new Gson();
         String action = request.getParameter("action");
-
+        String action2 = request.getParameter("action2");
         if (action != null){
             switch (action){
                 case "Corsi_Docenti":
@@ -34,8 +34,7 @@ public class CorsiDocentiServlet extends HttpServlet {
                         String s1 = gson.toJson(corsi);
                         request.setAttribute("risultato", s1);
                     }else{
-                        System.out.println("ok");
-                        ArrayList<Corso> corsi = DAO.CourseFree();
+                        ArrayList<Corso> corsi = DAO.CourseFree(action2);
                         String s1 = gson.toJson(corsi);
                         request.setAttribute("risultato", s1);
                     }
@@ -46,7 +45,7 @@ public class CorsiDocentiServlet extends HttpServlet {
                         String s2 = gson.toJson(docenti);
                         request.setAttribute("risultato", s2);
                     }else {
-                        ArrayList<Docente> docenti = DAO.TeacherFree();
+                        ArrayList<Docente> docenti = DAO.TeacherFree(action2);
                         String s2 = gson.toJson(docenti);
                         request.setAttribute("risultato", s2);
                     }
