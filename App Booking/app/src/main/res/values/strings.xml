@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Booking</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <!-- Login Activity -->
+    <string name="activity_login_input_email_hint">Email</string>
+    <string name="activity_login_input_password_hint">Password</string>
+    <string name="activity_login_login_button_hint">Accedi</string>
+    <string name="activity_login_text_intro_hint">Booking UniTo</string>
+    <string name="activity_login_input_email_error_empty">Questo campo non può essere vuoto</string>
+    <string name="activity_login_input_email_error_invalid">Inserisci una email valida</string>
+    <string name="activity_login_input_password_error">Questo campo non può essere vuoto</string>
+</resources>
