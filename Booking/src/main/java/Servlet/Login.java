@@ -19,7 +19,7 @@ public class Login extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         String flag = request.getParameter("action");
-        if(flag.equals("login")){
+        if(flag.equals("login") || flag.equals("android")){
             String em = request.getParameter("email");
             String pass = request.getParameter("password");
             String[] esiste_ruolo = DAO.verificaUtenti(em, pass);
@@ -28,6 +28,7 @@ public class Login extends HttpServlet {
                 session.setAttribute("userRole", esiste_ruolo[1]);
                 session.setAttribute("sessionid", session.getId());
                 System.out.println(session.getAttribute("sessionid"));
+                request.setAttribute("risultato", "loginandroid");
                 processRequest(request, response);
             } else {
                 request.setAttribute("risultato", "errore");
@@ -45,7 +46,6 @@ public class Login extends HttpServlet {
         }else if(flag.equals("ospite")){
             processRequest(request, response);
         }
-
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -56,7 +56,6 @@ public class Login extends HttpServlet {
         String ruolo = (String) session.getAttribute("userRole");
         switch (flag) {
             case "login":
-
                 if (ruolo.equals("Amministratore")) {
                     String jsessionID = session.getId(); // estraggo il session ID
                     System.out.println("JSessionID:" + jsessionID);

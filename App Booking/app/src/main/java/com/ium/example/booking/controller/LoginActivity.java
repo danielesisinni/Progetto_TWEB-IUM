@@ -6,9 +6,8 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
-
-import androidx.annotation.Nullable;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -21,118 +20,98 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputEditText;
+import com.ium.example.booking.MainActivity;
 import com.ium.example.booking.R;
-
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.motion.widget.ViewTransitionController;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class LoginActivity extends AppCompatActivity {
-    //@BindView(R.id.activity_login_input_email)
-    TextInputEditText emailValue;
-
-    //@BindView(R.id.activity_login_input_password)
-    TextInputEditText passwordValue;
-
-    //@BindView(R.id.activity_login_button)
+    EditText emailValue;
+    EditText passwordValue;
     Button loginButton;
+    RequestQueue requestQueue;
 
-    public static String servletURL = "http://10.0.2.2:8080/demo_war_exploded/ServletController";
-    String URL = "http://localhost:8080/demo_war_exploded/ServletController";
-
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        emailValue = findViewById(R.id.activity_login_input_email);
+        passwordValue = findViewById(R.id.activity_login_input_password);
+        loginButton = findViewById(R.id.activity_login_button);
+        loginButton.setOnClickListener(this::onLoginClick);
+        CookieManager cookieManager = new CookieManager();
+        CookieHandler.setDefault(cookieManager);
     }
 
     public void onLoginClick(View view) {
+        if(view.getId() == R.id.activity_login_button) {
+            String email = emailValue.getText().toString();
+            String password = passwordValue.getText().toString();
 
-        String email = emailValue.getText().toString();
-        String password = passwordValue.getText().toString();
+            if (email.isEmpty()) {
+                emailValue.setError(getString(R.string.activity_login_input_email_error_empty));
+                emailValue.requestFocus();
+                return;
+            }
 
-        if (email.isEmpty()) {
-            emailValue.setError(getString(R.string.activity_login_input_email_error_empty));
-            emailValue.requestFocus();
-            return;
-        }
+            /*if (!Patterns.EMAIL_ADDRESS.matcher(email).find()) {
+                emailValue.setError(getString(R.string.activity_login_input_email_error_invalid));
+                emailValue.requestFocus();
+                return;
+            }*/
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).find()) {
-            emailValue.setError(getString(R.string.activity_login_input_email_error_invalid));
-            emailValue.requestFocus();
-            return;
-        }
+            if (password.isEmpty()) {
+                passwordValue.setError(getString(R.string.activity_login_input_email_error_empty));
+                passwordValue.requestFocus();
+                return;
+            }
 
-        if (password.isEmpty()) {
-            passwordValue.setError(getString(R.string.activity_login_input_email_error_empty));
-            passwordValue.requestFocus();
-            return;
-        }
-
-
-        try {
-            RequestQueue requestQueue = Volley.newRequestQueue(this);
-            JSONObject jsonBody = new JSONObject();
-            jsonBody.put("Title", "Android Volley Demo");
-            jsonBody.put("Author", "BNK");
-            final String requestBody = jsonBody.toString();
-
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.i("VOLLEY", response);
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("VOLLEY", error.toString());
-                }
-            }) {
-                @Override
-                public String getBodyContentType() {
-                    return "application/json; charset=utf-8";
-                }
-
-                @Override
-                public byte[] getBody() throws AuthFailureError {
-                    try {
-                        return requestBody == null ? null : requestBody.getBytes("utf-8");
-                    } catch (UnsupportedEncodingException uee) {
-                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
-                        return null;
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, MyURL.servletURL, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("Response", response);
+                        if(response.equals("Login effettuato")){
+                            azione();
+                        }else {
+                            emailValue.setError(getString(R.string.activity_login_input_email_error_invalid));
+                            emailValue.requestFocus();
+                            passwordValue.setError(getString(R.string.activity_login_input_password_error_invalid));
+                            passwordValue.requestFocus();
+                            return;
+                        }
                     }
-                }
-
-                @Override
-                protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                    String responseString = "";
-                    if (response != null) {
-                        responseString = String.valueOf(response.statusCode);
-                        // can get more details such as response.headers
-                    }
-                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_LONG).show();
+                        }
+                    }) {
+                //Aggiungo i parametri alla richiesta
+                protected Map<String, String> getParams() throws AuthFailureError{
+                    Map<String, String> params = new HashMap<>();
+                    params.put("action", "android");
+                    params.put("email", email);
+                    params.put("password", password);
+                    return params;
                 }
             };
-
+            requestQueue = Volley.newRequestQueue(LoginActivity.this);
             requestQueue.add(stringRequest);
-        } catch (JSONException e) {
-            e.printStackTrace();
+
         }
-
-
-        Intent intent = new Intent();
-        disableView(true);
     }
 
-    private void disableView(boolean bool) {
-        runOnUiThread(() -> {
-            emailValue.setEnabled(!bool);
-            passwordValue.setEnabled(!bool);
-            loginButton.setEnabled(!bool);
-        });
+    private void azione(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }

@@ -11,5 +11,6 @@
     <string name="activity_login_text_intro_hint">Booking UniTo</string>
     <string name="activity_login_input_email_error_empty">Questo campo non può essere vuoto</string>
     <string name="activity_login_input_email_error_invalid">Inserisci una email valida</string>
+    <string name="activity_login_input_password_error_invalid">Inserisci una password valida</string>
     <string name="activity_login_input_password_error">Questo campo non può essere vuoto</string>
 </resources>

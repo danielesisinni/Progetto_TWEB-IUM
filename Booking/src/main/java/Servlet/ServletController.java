@@ -1,5 +1,7 @@
 package Servlet;
 
+import com.google.gson.JsonObject;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
@@ -25,7 +27,6 @@ public class ServletController extends HttpServlet {
                     case "Docenti":
                         rd = getServletContext().getNamedDispatcher("corsi_docenti");
                         rd.include(request, response);
-                        response.setContentType("application/json,charset=UTF-8");
                         out.print(request.getAttribute("risultato"));
                         break;
                     case "RipetizioniA":
@@ -67,6 +68,13 @@ public class ServletController extends HttpServlet {
                 rd = getServletContext().getNamedDispatcher("login");
                 rd.include(request, response);
                 out.print(request.getAttribute("risultato"));
+            }
+            //Android
+            if (action.equals("android")) {
+                rd = getServletContext().getNamedDispatcher("login");
+                rd.include(request, response);
+                if(request.getAttribute("risultato").equals("loginandroid"))
+                    out.print("Login effettuato");
             }
             if (session.getAttribute("userRole") != null){
                 switch (action) {
