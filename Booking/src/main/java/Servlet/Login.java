@@ -19,12 +19,16 @@ public class Login extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         String flag = request.getParameter("action");
-        if(flag.equals("login") || flag.equals("android")){
-            String em = request.getParameter("email");
+        if(flag.equals("login") || flag.equals("androidL")){
+            String emailUser = request.getParameter("email");
             String pass = request.getParameter("password");
-            String[] esiste_ruolo = DAO.verificaUtenti(em, pass);
+            String[] esiste_ruolo = DAO.verificaUtenti(emailUser, pass);
             if (esiste_ruolo[0].equals("true")) {
-                session.setAttribute("userName", em);
+                /*Cookie coockie = new Cookie("emailUser", acc);
+				coockie.setMaxAge(60*2);
+				cookie.setPath("/");
+				response.addCookie(coockie);*/
+				session.setAttribute("userName", emailUser);
                 session.setAttribute("userRole", esiste_ruolo[1]);
                 session.setAttribute("sessionid", session.getId());
                 System.out.println(session.getAttribute("sessionid"));
@@ -84,6 +88,9 @@ public class Login extends HttpServlet {
         for (Cookie cookie : arraycoockie) {
             System.out.println("Nome Cookie di Sessione: " + (cookie.getName()));
             System.out.println("ID SESSIONE: " + (cookie.getValue()));
-        }*/
+        }
+		
+		session = session.getSession(false);
+		*/
     }
 }

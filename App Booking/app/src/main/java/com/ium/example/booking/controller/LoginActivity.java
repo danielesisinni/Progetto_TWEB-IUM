@@ -63,12 +63,6 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            /*if (!Patterns.EMAIL_ADDRESS.matcher(email).find()) {
-                emailValue.setError(getString(R.string.activity_login_input_email_error_invalid));
-                emailValue.requestFocus();
-                return;
-            }*/
-
             if (password.isEmpty()) {
                 passwordValue.setError(getString(R.string.activity_login_input_email_error_empty));
                 passwordValue.requestFocus();
@@ -80,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Log.i("Response", response);
                         if(response.equals("Login effettuato")){
-                            azione();
+                            azione(email);
                         }else {
                             emailValue.setError(getString(R.string.activity_login_input_email_error_invalid));
                             emailValue.requestFocus();
@@ -98,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                 //Aggiungo i parametri alla richiesta
                 protected Map<String, String> getParams() throws AuthFailureError{
                     Map<String, String> params = new HashMap<>();
-                    params.put("action", "android");
+                    params.put("action", "androidL");
                     params.put("email", email);
                     params.put("password", password);
                     return params;
@@ -110,8 +104,9 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void azione(){
+    private void azione(String email){
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("account", email);
         startActivity(intent);
     }
 }
