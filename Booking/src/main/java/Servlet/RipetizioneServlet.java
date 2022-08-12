@@ -25,7 +25,7 @@ public class RipetizioneServlet extends HttpServlet {
             ArrayList<Ripetizione> ripetizione = DAO.Repetition();
             String s = gson.toJson(ripetizione);
             request.setAttribute("risultato", s);
-        }else if(request.getParameter("action").equals("RipetizioniA")){
+        }else if(request.getParameter("action").equals("RipetizioniA") || request.getParameter("action").equals("androidR")){
             ArrayList<Ripetizione> ripetizione = DAO.RepetitionA();
             String s = gson.toJson(ripetizione);
             request.setAttribute("risultato", s);
@@ -42,8 +42,6 @@ public class RipetizioneServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
         String action2 = request.getParameter("action2");
-        System.out.println(action);
-        System.out.println(action2);
         if(session.getAttribute("userName") != null && session.getAttribute("userRole").equals("Amministratore")) {
             if (action2.equals("")) {
                 String docente = request.getParameter("nome");
@@ -82,6 +80,9 @@ public class RipetizioneServlet extends HttpServlet {
                 }
             }
         }
+        //ANDROID
+        if(action.equals("androidR"))
+            doGet(request, response);
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)

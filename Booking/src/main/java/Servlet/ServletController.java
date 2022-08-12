@@ -112,8 +112,16 @@ public class ServletController extends HttpServlet {
                         rd = getServletContext().getNamedDispatcher("logout");
                         rd.include(request, response);
                         break;
+
+                    //ANDROID
+                    case "androidR":
+                        rd = getServletContext().getNamedDispatcher("ripetizioni");
+                        rd.include(request, response);
+                        response.setContentType("application/json,charset=UTF-8");
+                        System.out.print(request.getAttribute("risultato"));
+                        out.print(request.getAttribute("risultato"));
+                        break;
                     case "androidP":
-                        System.out.println("Post androidP");
                         rd = getServletContext().getNamedDispatcher("prenotazioni");
                         rd.include(request, response);
                         response.setContentType("application/json,charset=UTF-8");
