@@ -26,8 +26,8 @@ public class PrenotazioneServlet extends HttpServlet {
 
         if(action.equals("MiePrenotazioni") || action.equals("androidP")){
             ArrayList<Prenotazione> prenotazione = DAO.MyBooking(acc);
-            //String s = gson.toJson(prenotazione);
-            request.setAttribute("risultato", prenotazione);
+            String s = gson.toJson(prenotazione);
+            request.setAttribute("risultato", s);
         }else {
             ArrayList<Prenotazione> prenotazione = DAO.Booking();
             String s = gson.toJson(prenotazione);
@@ -70,6 +70,7 @@ public class PrenotazioneServlet extends HttpServlet {
                         request.setAttribute("risultato", "eseguito");
                         break;
 
+                        //ANDROID
                 case "androidP":
                     doGet(request, response);
                     break;

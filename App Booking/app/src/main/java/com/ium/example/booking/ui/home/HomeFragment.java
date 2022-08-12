@@ -1,24 +1,19 @@
 package com.ium.example.booking.ui.home;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.AuthFailureError;
@@ -31,10 +26,13 @@ import com.android.volley.toolbox.Volley;
 import com.ium.example.booking.R;
 import com.ium.example.booking.controller.MyURL;
 import com.ium.example.booking.databinding.FragmentHomeBinding;
-import com.ium.example.booking.MainActivity;
-import java.net.CookieHandler;
-import java.net.CookieManager;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,13 +48,13 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
+        /*final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
                 @Override
                 public void onChanged(@Nullable String s) {
                     textView.setText(s);
                 }
-        });
+        });*/
 
         System.out.println("Forse ci sono");
         start();
@@ -73,14 +71,19 @@ public class HomeFragment extends Fragment {
     public void start(){
         String email = getActivity().getIntent().getExtras().getString("account");
         System.out.println(email);
-        //TextView account = (TextView) getView().findViewById(R.id.accountValue);
+        //TextView account = getView().findViewById(R.id.accountValue);
+        //account.setText(email);
 
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, MyURL.servletURL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.i("Response", response);
-                stampa(response);
+                Log.d("Response", response);
+                try {
+                    stampa(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -91,7 +94,8 @@ public class HomeFragment extends Fragment {
             //Aggiungo i parametri alla richiesta
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("action", "androidP");
+                params.put("action", "androidR");
+                params.put("action2", "android");
                 return params;
             }
         };
@@ -99,14 +103,32 @@ public class HomeFragment extends Fragment {
         requestQueue.add(stringRequest);
     }
 
-    public void stampa(String response){
-        /*String[] nameproducts = new String[] { "Product1", "Product2", "Product3" };
-        final ArrayList<String> listp = new ArrayList<>();
-        for (int i = 0; i < nameproducts.length; ++i) {
-            listp.add(nameproducts[i]);
-        }*/
-        final ListView listarip = (ListView) getView().findViewById(R.id.listaprenot);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, Collections.singletonList(response));
-        listarip.setAdapter(adapter);
+    public void stampa(String response) throws JSONException {
+        JSONArray jsonArray = new JSONArray(response);
+        JSONObject jsonObject = jsonArray.getJSONObject(0);
+        ArrayList<String> output = new ArrayList<>();
+
+        for (int position = 0; position < jsonArray.length(); position++) {
+            JSONObject row = jsonArray.getJSONObject(position);
+
+            String docente = row.getString("docente");
+            String corso = row.getString("corso");
+            String giorno = row.getString("giorno");
+            String ore = row.getString("ora");
+            System.out.println(position);
+            output.add(" - " + docente + "\n - " + corso + "\n - " + giorno + "\n - " + ore);
+            System.out.println(output);
+        }
+        ArrayAdapter<String> adapterlist = new ArrayAdapter<String>(getActivity(), R.layout.row, output);
+        ListView listview = getView().findViewById(R.id.listview);
+
+        listview.setAdapter(adapterlist);
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String itemValue = (String) listview.getItemAtPosition(position);
+                Toast.makeText(getActivity(), "Position : " + position + "ListItem :" +itemValue, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
