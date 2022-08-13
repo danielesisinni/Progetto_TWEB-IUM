@@ -27,6 +27,7 @@ public class ServletController extends HttpServlet {
                     case "Docenti":
                         rd = getServletContext().getNamedDispatcher("corsi_docenti");
                         rd.include(request, response);
+                        response.setContentType("application/json,charset=UTF-8");
                         out.print(request.getAttribute("risultato"));
                         break;
                     case "RipetizioniA":
@@ -37,6 +38,7 @@ public class ServletController extends HttpServlet {
                         out.print(request.getAttribute("risultato"));
                         break;
                     case "Prenotazioni":
+                    case "androidP":
                     case "MiePrenotazioni":
                         rd = getServletContext().getNamedDispatcher("prenotazioni");
                         rd.include(request, response);

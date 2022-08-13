@@ -457,7 +457,7 @@
         Vue.component('coursesteacher',{
             data: function () {
                 return{
-                    corsidocenti: [],
+                    corsidocenti: [10],
                 }
             },
             props: ['link'],
@@ -477,7 +477,7 @@
             methods: {
                 getDati: function (){
                     var self = this;
-                    $.get(this.link, {action: 'Corsi_Docenti',}, function (data) {
+                    $.get(this.link, {action: 'Corsi_Docenti'}, function (data) {
                         self.corsidocenti = data;
                     })
                 },
@@ -513,7 +513,7 @@
                             self.corsii = data;
                         })
                     }else {
-                        $.get(this.link, {action: 'Corsi',}, function (data) {
+                        $.get(this.link, {action: 'Corsi'}, function (data) {
                             self.corsii = data;
                         })
                     }
@@ -615,6 +615,7 @@
                     var self = this;
                     $.get(this.link, {action: 'Ripetizioni', action2:'stampa'}, function (data) {
                         self.ripetizionii = data;
+                        alert(self.ripetizionii);
                     })
                 },
                 ServletControllerPost: function (flag, flag2){
@@ -743,9 +744,6 @@
             methods: {
                 transitPrenotazioni: function () {
                     this.$emit('transit-inner-prenotazioni');
-                },
-                transitDocenti: function () {
-                    this.$emit('transit-inner-docenti');
                 },
                 transitRipetizioni: function () {
                     this.$emit('transit-inner-ripetizioni');
