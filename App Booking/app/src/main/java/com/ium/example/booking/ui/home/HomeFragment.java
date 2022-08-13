@@ -70,7 +70,7 @@ public class HomeFragment extends Fragment {
     @SuppressLint("SetTextI18n")
     public void start(){
         String email = getActivity().getIntent().getExtras().getString("account");
-        System.out.println(email);
+        System.out.println("Home " + email);
         //TextView account = getView().findViewById(R.id.accountValue);
         //account.setText(email);
 
@@ -116,7 +116,7 @@ public class HomeFragment extends Fragment {
             String giorno = row.getString("giorno");
             String ore = row.getString("ora");
             System.out.println(position);
-            output.add(" - " + docente + "\n - " + corso + "\n - " + giorno + "\n - " + ore);
+            output.add(" - " + corso + "\n - " + docente + "\n - " + giorno + "\n - " + ore);
             System.out.println(output);
         }
         ArrayAdapter<String> adapterlist = new ArrayAdapter<String>(getActivity(), R.layout.row, output);
@@ -127,7 +127,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String itemValue = (String) listview.getItemAtPosition(position);
-                Toast.makeText(getActivity(), "Position : " + position + "ListItem :" +itemValue, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Hai effettuato la prenotazione di :\n" +itemValue, Toast.LENGTH_LONG).show();
             }
         });
     }
