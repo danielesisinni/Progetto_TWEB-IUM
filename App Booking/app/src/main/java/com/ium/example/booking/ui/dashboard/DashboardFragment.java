@@ -1,21 +1,25 @@
 package com.ium.example.booking.ui.dashboard;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.AuthFailureError;
@@ -33,8 +37,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.CookieHandler;
-import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +46,9 @@ public class DashboardFragment extends Fragment {
     private DashboardViewModel dashboardViewModel;
     private FragmentDashboardBinding binding;
     RequestQueue requestQueue;
+    private String codice;
+    private String itemValue;
+    private String status;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
@@ -74,8 +79,7 @@ public class DashboardFragment extends Fragment {
         //TextView account = getView().findViewById(R.id.accountValue);
         //account.setText(email);
 
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, MyURL.servletURL, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, MyURL.URLGETP, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Response", response);
@@ -90,15 +94,7 @@ public class DashboardFragment extends Fragment {
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
             }
-        }) {
-            //Aggiungo i parametri alla richiesta
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("action", "androidP");
-                params.put("action2", "android");
-                return params;
-            }
-        };
+        });
         requestQueue = Volley.newRequestQueue(getActivity());
         requestQueue.add(stringRequest);
     }
@@ -116,7 +112,6 @@ public class DashboardFragment extends Fragment {
             String giorno = row.getString("giorno");
             String ore = row.getString("ora");
             String status = row.getString("status");
-            System.out.println(position);
             output.add(" - " + corso + "\n - " + docente + "\n - " + giorno + "\n - " + ore + "\n - " + status);
             System.out.println(output);
         }
@@ -127,9 +122,110 @@ public class DashboardFragment extends Fragment {
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String itemValue = (String) listview.getItemAtPosition(position);
-                Toast.makeText(getActivity(), "Prova :\n" +itemValue, Toast.LENGTH_LONG).show();
+                itemValue = (String) listview.getItemAtPosition(position);
+                try {
+                    JSONObject row = jsonArray.getJSONObject(position);
+                    codice = row.getString("codice");
+                    status = row.getString("status");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(codice);
+
+                // Inizializzo la mia dialog
+                Dialog dialog = new Dialog(getActivity());
+
+                // Evito la presenza della barra del titolo nella mia dialog
+                dialog.getWindow();
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+                // Carico il layout della dialog al suo interno
+                dialog.setContentView(R.layout.mydialog);
+
+                dialog.setCancelable(true);
+
+                Button effettuata = (Button) dialog.findViewById(R.id.effettuata);
+                Button disdetta = (Button) dialog.findViewById(R.id.disdetta);
+                Button riprenota = (Button) dialog.findViewById(R.id.riprenota);
+
+                if(status.equals("CONFERMATA")){
+                    effettuata.setVisibility(View.VISIBLE);
+                    disdetta.setVisibility(View.VISIBLE);
+                    dialog.show();
+                }else if(status.equals("RIMOSSA")){
+                    effettuata.setVisibility(View.VISIBLE);
+                    riprenota.setVisibility(View.VISIBLE);
+                    dialog.show();
+                }
+
+
+                effettuata.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        azione("Effettuata", codice);
+                        Toast.makeText(getActivity(), "Hai effettuato la prenotazione :\n" +itemValue, Toast.LENGTH_LONG).show();
+                        dialog.cancel();
+                        refresh();
+                    }
+                });
+
+                disdetta.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        azione("Disdetta", codice);
+                        Toast.makeText(getActivity(), "Hai disdetto la prenotazione :\n" +itemValue, Toast.LENGTH_LONG).show();
+                        dialog.cancel();
+                        refresh();
+                    }
+
+                });
+
+                riprenota.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        azione("Riprenota", codice);
+                        Toast.makeText(getActivity(), "Hai riprenotato la prenotazione :\n" +itemValue, Toast.LENGTH_LONG).show();
+                        dialog.cancel();
+                        refresh();
+                    }
+
+                });
+
             }
         });
+
+    }
+
+    public void azione(String action, String action2){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, MyURL.URLPOST, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("Response", response);
+                if (response.equals("eseguito")) {
+                }else{
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+            }
+        }) {
+            //Aggiungo i parametri alla richiesta
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("action", action);
+                params.put("action2", action2);
+                return params;
+            }
+        };
+        requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+    }
+
+    public void refresh(){
+        getActivity().finish();
+        startActivity(getActivity().getIntent());
     }
 }

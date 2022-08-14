@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().getDecorView().setBackgroundColor(0xFFa0acde);
         //setContentView(R.layout.activity_main);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);

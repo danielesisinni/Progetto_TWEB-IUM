@@ -479,7 +479,6 @@
                     var self = this;
                     $.get(this.link, {action: 'Corsi_Docenti'}, function (data) {
                         self.corsidocenti = data;
-                        alert(self.corsidocenti);
                     })
                 },
             }
@@ -616,7 +615,6 @@
                     var self = this;
                     $.get(this.link, {action: 'Ripetizioni', action2:'stampa'}, function (data) {
                         self.ripetizionii = data;
-                        alert(self.ripetizionii);
                     })
                 },
                 ServletControllerPost: function (flag, flag2){
@@ -669,7 +667,6 @@
                     var self = this;
                     $.get(this.link, {action: 'Prenotazioni'}, function (data) {
                         self.prenotazionii = data;
-                        alert(self.prenotazionii);
                     })
                 },
             },

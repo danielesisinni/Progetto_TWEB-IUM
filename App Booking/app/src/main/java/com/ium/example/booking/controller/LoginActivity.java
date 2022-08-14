@@ -1,6 +1,7 @@
 package com.ium.example.booking.controller;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -44,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getWindow().getDecorView().setBackgroundColor(0xFFa0acde);
         emailValue = findViewById(R.id.activity_login_input_email);
         passwordValue = findViewById(R.id.activity_login_input_password);
         loginButton = findViewById(R.id.activity_login_button);
@@ -69,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, MyURL.servletURL, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, MyURL.URLPOST, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.i("Response", response);

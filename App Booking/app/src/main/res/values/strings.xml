@@ -13,5 +13,6 @@
     <string name="activity_login_input_password_error_invalid">Inserisci una password valida</string>
     <string name="activity_login_input_password_error">Questo campo non può essere vuoto</string>
     <string name="come_prenotare">Per prenotare clicca sulla ripetizione desiderata!</string>
-    <string name="mie_prenotazioni">Le mie prenotazioni. Clicca su quella desiderata per confermarla o rifiutarla!</string>
+    <string name="mie_prenotazioni">Le mie prenotazioni.
+        Clicca su quella desiderata per confermarla o rifiutarla!</string>
 </resources>

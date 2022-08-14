@@ -30,6 +30,7 @@ public class ServletController extends HttpServlet {
                         response.setContentType("application/json,charset=UTF-8");
                         out.print(request.getAttribute("risultato"));
                         break;
+                    case "androidR":
                     case "RipetizioniA":
                     case "Ripetizioni":
                         rd = getServletContext().getNamedDispatcher("ripetizioni");
@@ -52,7 +53,6 @@ public class ServletController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("Post");
         processRequest(request, response);
     }
 
@@ -113,22 +113,6 @@ public class ServletController extends HttpServlet {
                     case "logout":
                         rd = getServletContext().getNamedDispatcher("logout");
                         rd.include(request, response);
-                        break;
-
-                    //ANDROID
-                    case "androidR":
-                        rd = getServletContext().getNamedDispatcher("ripetizioni");
-                        rd.include(request, response);
-                        response.setContentType("application/json,charset=UTF-8");
-                        System.out.print(request.getAttribute("risultato"));
-                        out.print(request.getAttribute("risultato"));
-                        break;
-                    case "androidP":
-                        rd = getServletContext().getNamedDispatcher("prenotazioni");
-                        rd.include(request, response);
-                        response.setContentType("application/json,charset=UTF-8");
-                        System.out.print(request.getAttribute("risultato"));
-                        out.print(request.getAttribute("risultato"));
                         break;
                 }
             }

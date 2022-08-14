@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,8 +31,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,7 +72,7 @@ public class HomeFragment extends Fragment {
         //account.setText(email);
 
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, MyURL.servletURL, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, MyURL.URLGETR, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Response", response);
@@ -90,15 +87,7 @@ public class HomeFragment extends Fragment {
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
             }
-        }) {
-            //Aggiungo i parametri alla richiesta
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("action", "androidR");
-                params.put("action2", "android");
-                return params;
-            }
-        };
+        });
         requestQueue = Volley.newRequestQueue(getActivity());
         requestQueue.add(stringRequest);
     }
@@ -117,7 +106,6 @@ public class HomeFragment extends Fragment {
             String ore = row.getString("ora");
             System.out.println(position);
             output.add(" - " + corso + "\n - " + docente + "\n - " + giorno + "\n - " + ore);
-            System.out.println(output);
         }
         ArrayAdapter<String> adapterlist = new ArrayAdapter<String>(getActivity(), R.layout.row, output);
         ListView listview = getView().findViewById(R.id.listview);
@@ -127,8 +115,49 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String itemValue = (String) listview.getItemAtPosition(position);
+                try {
+                    JSONObject row = jsonArray.getJSONObject(position);
+                    String codice = row.getString("codice");
+                    prenota(codice);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 Toast.makeText(getActivity(), "Hai effettuato la prenotazione di :\n" +itemValue, Toast.LENGTH_LONG).show();
+                refresh();
             }
         });
+    }
+
+    public void prenota(String codice){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, MyURL.URLPOST, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("Response", response);
+                if (response.equals("aggiunta")) {
+                }else{
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+            }
+        }) {
+            //Aggiungo i parametri alla richiesta
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("action", "Prenota");
+                params.put("action2", codice);
+                return params;
+            }
+        };
+        requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+    }
+
+    public void refresh(){
+        getActivity().finish();
+        startActivity(getActivity().getIntent());
     }
 }
