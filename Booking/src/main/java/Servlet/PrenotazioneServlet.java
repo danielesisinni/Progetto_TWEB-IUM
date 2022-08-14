@@ -69,11 +69,6 @@ public class PrenotazioneServlet extends HttpServlet {
                         DAO.updateBooking(utente, codice, action);
                         request.setAttribute("risultato", "eseguito");
                         break;
-
-                        //ANDROID
-                case "androidP":
-                    doGet(request, response);
-                    break;
             }
         }
     }
