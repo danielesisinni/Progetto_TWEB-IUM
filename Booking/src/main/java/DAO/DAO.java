@@ -561,7 +561,7 @@ public class DAO{
             if(action.equals("Disdetta")){
                 stat = "RIMOSSA";
             }else if(action.equals("Riprenota")){
-                stat = "CONFERMATA";
+                stat = "ATTIVA";
             }else{
                 stat = "EFFETTUATA";
             }
