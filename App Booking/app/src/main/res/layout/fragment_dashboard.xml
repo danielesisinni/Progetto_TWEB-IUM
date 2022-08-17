@@ -10,7 +10,7 @@
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="480dp"
+        android:layout_marginBottom="528dp"
         android:text="@string/mie_prenotazioni"
         android:textAlignment="center"
         android:textSize="20sp"
@@ -24,11 +24,11 @@
         android:layout_width="377dp"
         android:layout_height="367dp"
         android:layout_below="@+id/text"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:gravity="center"
         android:text="ListView"
         app:layout_constraintTop_toBottomOf="@+id/text"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="18dp" />
+        tools:layout_editor_absoluteX="16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

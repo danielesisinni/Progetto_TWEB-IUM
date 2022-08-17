@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Booking</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="app_name">Booking App</string>
+    <string name="title_home">Booking</string>
+    <string name="title_dashboard">MyBooking</string>
 
     <!-- Login Activity -->
     <string name="activity_login_input_email_hint">Email</string>

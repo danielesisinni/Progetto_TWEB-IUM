@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,8 +30,9 @@ import com.ium.example.booking.databinding.FragmentHomeBinding;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import com.ium.example.booking.MainActivity;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,15 +47,6 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        /*final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-                @Override
-                public void onChanged(@Nullable String s) {
-                    textView.setText(s);
-                }
-        });*/
-
-        System.out.println("Forse ci sono");
         start();
         return root;
     }
@@ -66,12 +59,6 @@ public class HomeFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     public void start(){
-        String email = getActivity().getIntent().getExtras().getString("account");
-        System.out.println("Home " + email);
-        //TextView account = getView().findViewById(R.id.accountValue);
-        //account.setText(email);
-
-
         StringRequest stringRequest = new StringRequest(Request.Method.GET, MyURL.URLGETR, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

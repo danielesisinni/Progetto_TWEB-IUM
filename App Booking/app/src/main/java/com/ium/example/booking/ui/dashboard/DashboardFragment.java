@@ -55,13 +55,6 @@ public class DashboardFragment extends Fragment {
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        /*final TextView textView = binding.textDashboard;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });*/
         start();
         return root;
     }
@@ -74,11 +67,6 @@ public class DashboardFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     public void start(){
-        String email = getActivity().getIntent().getExtras().getString("account");
-        System.out.println("Dashboard " + email);
-        //TextView account = getView().findViewById(R.id.accountValue);
-        //account.setText(email);
-
         StringRequest stringRequest = new StringRequest(Request.Method.GET, MyURL.URLGETP, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -148,7 +136,7 @@ public class DashboardFragment extends Fragment {
                 Button disdetta = (Button) dialog.findViewById(R.id.disdetta);
                 Button riprenota = (Button) dialog.findViewById(R.id.riprenota);
 
-                if(status.equals("CONFERMATA")){
+                if(status.equals("ATTIVA")){
                     effettuata.setVisibility(View.VISIBLE);
                     disdetta.setVisibility(View.VISIBLE);
                     dialog.show();
