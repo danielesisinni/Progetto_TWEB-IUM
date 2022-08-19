@@ -1,5 +1,6 @@
 package Servlet;
 
+import DAO.DAO;
 import com.google.gson.JsonObject;
 
 import javax.servlet.*;
@@ -7,6 +8,7 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Timestamp;
 
 @WebServlet(name = "ServletController", value = "/ServletController")
 public class ServletController extends HttpServlet {
@@ -15,9 +17,9 @@ public class ServletController extends HttpServlet {
         request.setCharacterEncoding("UTF-8"); // per essere robusti rispetto a caratteri speciali (', etc)
         ServletContext ctx = getServletContext();
         HttpSession session = request.getSession();
+        RequestDispatcher rd;
         String action = request.getParameter("action");
         PrintWriter out = response.getWriter();
-        RequestDispatcher rd;
         System.out.println(session.getId() + "  " + session.getAttribute("sessionid"));
         if(action != null) {
             if (session.getAttribute("userRole") != null) {
@@ -44,6 +46,7 @@ public class ServletController extends HttpServlet {
                         rd = getServletContext().getNamedDispatcher("prenotazioni");
                         rd.include(request, response);
                         response.setContentType("application/json,charset=UTF-8");
+                        System.out.println(request.getAttribute("risultato"));
                         out.print(request.getAttribute("risultato"));
                         break;
                 }

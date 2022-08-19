@@ -46,9 +46,13 @@ public class HomeFragment extends Fragment {
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        start();
         return root;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        start();
     }
 
     @Override
@@ -59,6 +63,10 @@ public class HomeFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     public void start(){
+        String email = getActivity().getIntent().getExtras().getString("account");
+        TextView account = getView().findViewById(R.id.accountValue);
+        account.setText("Bentornato " + email);
+
         StringRequest stringRequest = new StringRequest(Request.Method.GET, MyURL.URLGETR, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

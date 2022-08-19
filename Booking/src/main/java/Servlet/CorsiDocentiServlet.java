@@ -3,6 +3,7 @@ package Servlet;
 import DAO.*;
 import com.google.gson.Gson;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 @WebServlet(name = "corsi_docenti", value = "/corsi_docenti")
@@ -18,6 +20,15 @@ public class CorsiDocentiServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         response.setContentType("application/json,charset=UTF-8");
+        RequestDispatcher rd;
+        boolean check = DAO.logout((Timestamp) session.getAttribute("lastUpdate"));
+        if(check){
+            rd = getServletContext().getNamedDispatcher("logout");
+            rd.include(request, response);
+            return;
+        }else{
+            session.setAttribute("lastUpdate", new Timestamp(System.currentTimeMillis()));
+        }
         Gson gson = new Gson();
         String action = request.getParameter("action");
         String action2 = request.getParameter("action2");
@@ -57,6 +68,14 @@ public class CorsiDocentiServlet extends HttpServlet {
     public void doPost (HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html,charset=UTF-8");
         HttpSession session = request.getSession();
+        RequestDispatcher rd;
+        boolean check1 = DAO.logout((Timestamp) session.getAttribute("lastUpdate"));
+        if(check1){
+            rd = getServletContext().getNamedDispatcher("logout");
+            rd.include(request, response);
+        }else{
+            session.setAttribute("lastUpdate", new Timestamp(System.currentTimeMillis()));
+        }
         if (session.getAttribute("userRole").equals("Amministratore") && request.getParameter("action2").equals("Aggiunta")) {
             String nomecorso = request.getParameter("corsi");
             String docente = request.getParameter("nome");

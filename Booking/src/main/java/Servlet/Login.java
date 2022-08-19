@@ -3,6 +3,7 @@ package Servlet;
 import DAO.DAO;
 
 import java.io.*;
+import java.sql.Timestamp;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
@@ -24,15 +25,13 @@ public class Login extends HttpServlet {
             String pass = request.getParameter("password");
             String[] esiste_ruolo = DAO.verificaUtenti(emailUser, pass);
             if (esiste_ruolo[0].equals("true")) {
-                /*Cookie coockie = new Cookie("emailUser", acc);
-				coockie.setMaxAge(60*2);
-				cookie.setPath("/");
-				response.addCookie(coockie);*/
 				session.setAttribute("userName", emailUser);
                 session.setAttribute("userRole", esiste_ruolo[1]);
                 session.setAttribute("sessionid", session.getId());
-                System.out.println(session.getAttribute("sessionid"));
+                session.setAttribute("lastUpdate", new Timestamp(System.currentTimeMillis()));
+                System.out.println(session.getAttribute("lastUpdate"));
                 request.setAttribute("risultato", "loginandroid");
+
                 processRequest(request, response);
             } else {
                 request.setAttribute("risultato", "errore");
@@ -61,12 +60,8 @@ public class Login extends HttpServlet {
         switch (flag) {
             case "login":
                 if (ruolo.equals("Amministratore")) {
-                    String jsessionID = session.getId(); // estraggo il session ID
-                    System.out.println("JSessionID:" + jsessionID);
                     request.setAttribute("risultato", "sono amministratore");
                 } else {
-                    String jsessionID = session.getId(); // estraggo il session ID
-                    System.out.println("JSessionID:" + jsessionID);
                     request.setAttribute("risultato", "sono cliente");
                 }
                 break;
@@ -81,16 +76,5 @@ public class Login extends HttpServlet {
                 request.setAttribute("risultato", "ospite");
                 break;
         }
-        /*Cookie coockie = new Cookie("Account", acc);
-        coockie.setMaxAge(60*2);
-        response.addCookie(coockie);
-        Cookie[] arraycoockie = request.getCookies();
-        for (Cookie cookie : arraycoockie) {
-            System.out.println("Nome Cookie di Sessione: " + (cookie.getName()));
-            System.out.println("ID SESSIONE: " + (cookie.getValue()));
-        }
-		
-		session = session.getSession(false);
-		*/
     }
 }

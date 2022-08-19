@@ -3,6 +3,7 @@ package DAO;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 
 public class DAO{
@@ -95,9 +96,9 @@ public class DAO{
             }
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM corsodocente order by docente, corso");
+            ResultSet rs = st.executeQuery("SELECT corso.TITOLO, docente.NOME, corsodocente.STATO FROM corso, docente, corsodocente  WHERE CORSO.ID = corsodocente.CORSO AND DOCENTE.ID = corsodocente.DOCENTE order by CORSO.TITOLO, DOCENTE.NOME");
             while (rs.next()) {
-                CorsoDocente p = new CorsoDocente(rs.getString("CORSO"), rs.getString("DOCENTE"), rs.getString("STATO"));
+                CorsoDocente p = new CorsoDocente(rs.getString("TITOLO"), rs.getString("NOME"), rs.getString("STATO"));
                 out.add(p);
             }
         } catch (SQLException e) {
@@ -159,7 +160,7 @@ public class DAO{
             Statement st = conn1.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM Prenotazione ORDER BY giorno, ora");
             while (rs.next()) {
-                Prenotazione p = new Prenotazione(rs.getString("UTENTE"),rs.getString("CODICE"),rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"),rs.getString("STATUS"));
+                Prenotazione p = new Prenotazione(rs.getInt("UTENTE"),rs.getString("CODICE"),rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"),rs.getString("STATUS"));
                 out.add(p);
             }
         } catch (SQLException e) {
@@ -189,7 +190,7 @@ public class DAO{
 
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM Ripetizione ORDER BY STATUS, giorno, ora ");
+            ResultSet rs = st.executeQuery("SELECT r.codice, d.nome, c.titolo, r.giorno, r.ora, r.status FROM Ripetizione r, corso c, docente d WHERE r.docente = d.id AND c.id = d.corso ORDER BY STATUS, giorno, ora ");
             while (rs.next()) {
                 //System.out.println("prova->" + rs.getString("UTENTE"));
                 //if(!rs.getString("UTENTE").equals(account)){
@@ -221,14 +222,14 @@ public class DAO{
             if (conn1 != null) {
                 System.out.println("Connected to the database test");
             }
-
+            int matr = SearchMatricola(account);
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM Ripetizione r WHERE NOT EXISTS (SELECT * FROM Prenotazione p WHERE r.CODICE = p.CODICE AND P.UTENTE = '"+ account + "') ORDER BY giorno, ora ");
+            ResultSet rs = st.executeQuery("SELECT r.CODICE, d.NOME, c.TITOLO, r.GIORNO, r.ORA, r.STATUS FROM Ripetizione r, corso c, docente d WHERE d.id = r.DOCENTE AND c.id = r.CORSO and NOT EXISTS (SELECT  * FROM Prenotazione p WHERE r.CODICE = p.CODICE AND P.UTENTE = '"+ matr + "') ORDER BY giorno, ora");
             while (rs.next()) {
                 //System.out.println("prova->" + rs.getString("UTENTE"));
                 //if(!rs.getString("UTENTE").equals(account)){
-                    Ripetizione p = new Ripetizione(rs.getString("CODICE"), rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
+                    Ripetizione p = new Ripetizione(rs.getString("CODICE"), rs.getString("NOME"), rs.getString("TITOLO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
                     out.add(p);
                 //}
             }
@@ -530,12 +531,12 @@ public class DAO{
 
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
-
-            c = new Prenotazione(utente, codice, docente, corso, giorno, ora, status);
+            int matr = SearchMatricola(utente);
+            c = new Prenotazione(matr, codice, docente, corso, giorno, ora, status);
 
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("insert into prenotazione (utente, codice, docente, corso, giorno, ora, status) values ('" + utente + "', '" + codice + "', '" + docente + "', '" + corso + "', '" + giorno + "', '" + ora + "', '" + status + "')");
+            st.execute("insert into prenotazione (utente, codice, docente, corso, giorno, ora, status) values ('" + matr + "', '" + codice + "', '" + docente + "', '" + corso + "', '" + giorno + "', '" + ora + "', '" + status + "')");
             System.out.println("New booking added!");
 
         } catch (SQLException e) {
@@ -565,9 +566,10 @@ public class DAO{
             }else{
                 stat = "EFFETTUATA";
             }
+            int matr = SearchMatricola(utente);
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("update prenotazione set status = '" + stat + "' where utente = '" + utente + "' and codice = '" + codice + "'");
+            st.execute("update prenotazione set status = '" + stat + "' where utente = '" + matr + "' and codice = '" + codice + "'");
             System.out.println("Booking update!");
 
         } catch (SQLException e) {
@@ -589,10 +591,10 @@ public class DAO{
         String e1 = "EFFETTUATA";
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
-
+            int matr = SearchMatricola(utente);
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("update prenotazione set status = '" + e1 + "' where utente = '" + utente + "' and codice = '" + codice + "'");
+            st.execute("update prenotazione set status = '" + e1 + "' where utente = '" + matr + "' and codice = '" + codice + "'");
             System.out.println("Booking removed!");
 
         } catch (SQLException e) {
@@ -742,11 +744,12 @@ public class DAO{
             if (conn1 != null) {
                 System.out.println("Connected to the database test");
             }
+            int matricola = SearchMatricola(users);
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM prenotazione WHERE UTENTE = '"+ users + "' ORDER BY giorno, ora");
+            ResultSet rs = st.executeQuery("SELECT p.CODICE, p.UTENTE, d.NOME, c.TITOLO, p.GIORNO, p.ORA, p.STATUS FROM prenotazione p, corso c, docente d WHERE c.ID = p.CORSO AND d.ID = p.DOCENTE AND p.UTENTE = '"+ matricola + "' ORDER BY giorno, ora");
             while (rs.next()) {
-                Prenotazione p = new Prenotazione(rs.getString("UTENTE"), rs.getString("CODICE"),rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
+                Prenotazione p = new Prenotazione(rs.getInt("UTENTE"), rs.getString("CODICE"),rs.getString("NOME"), rs.getString("TITOLO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
                 out.add(p);
             }
         } catch (SQLException e) {
@@ -792,6 +795,40 @@ public class DAO{
             }
         }
         return out;
+    }
+
+    public static int SearchMatricola(String email) throws SQLException {
+        Connection conn1 = null;
+        ResultSet rs = null;
+        ArrayList<Utenti> out = new ArrayList<>();
+        int matr = 0;
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database test");
+            }
+
+            Statement st = conn1.createStatement();
+            rs = st.executeQuery("SELECT * FROM utenti WHERE EMAIL = '"+ email + "'");
+
+            while (rs.next()) {
+                Utenti p = new Utenti(rs.getInt("MATRICOLA"), rs.getString("EMAIL"), rs.getString("ACCOUNT"), rs.getString("PASSWORD"), rs.getString("RUOLO"));
+                out.add(p);
+                matr = rs.getInt("MATRICOLA");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+        return matr;
     }
 
     public static ArrayList<Corso> CourseFree(String action2) {
@@ -874,9 +911,9 @@ public class DAO{
             }
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM ripetizione r WHERE NOT EXISTS (SELECT * FROM Prenotazione p WHERE r.CODICE = p.CODICE AND p.STATUS = 'CONFERMATA') AND r.STATUS != 'RIMOSSA' order by codice");
+            ResultSet rs = st.executeQuery("SELECT r.codice, d.nome, c.titolo, r.giorno, r.ora, r.status FROM ripetizione r, corso c, docente d WHERE c.id = r.corso AND d.id = r.docente AND r.STATUS != 'RIMOSSA' AND NOT EXISTS (SELECT * FROM Prenotazione p WHERE r.CODICE = p.CODICE AND p.STATUS = 'ATTIVA') order by codice");
             while (rs.next()) {
-                Ripetizione p = new Ripetizione(rs.getString("CODICE"),rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), "DISPONIBILE");
+                Ripetizione p = new Ripetizione(rs.getString("CODICE"),rs.getString("NOME"), rs.getString("TITOLO"), rs.getString("GIORNO"), rs.getString("ORA"), "DISPONIBILE");
                 out.add(p);
             }
         } catch (SQLException e) {
@@ -892,6 +929,15 @@ public class DAO{
             }
         }
         return out;
+    }
+
+    public static boolean logout(Timestamp lastUpdate){
+        if ((new Timestamp(System.currentTimeMillis())).after(new Timestamp(lastUpdate.getTime()  + TimeUnit.MINUTES.toMillis(2)))) {
+           return true;
+        }
+        else {
+            return false;
+        }
     }
 }
 

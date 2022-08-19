@@ -4,6 +4,7 @@ import DAO.DAO;
 import DAO.*;
 import com.google.gson.Gson;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 @WebServlet(name = "ripetizioni", value = "/ripetizioni")
@@ -19,6 +21,14 @@ public class RipetizioneServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
+        RequestDispatcher rd;
+        boolean check = DAO.logout((Timestamp) session.getAttribute("lastUpdate"));
+        if(check){
+            rd = getServletContext().getNamedDispatcher("logout");
+            rd.include(request, response);
+        }else{
+            session.setAttribute("lastUpdate", new Timestamp(System.currentTimeMillis()));
+        }
         response.setContentType("application/json,charset=UTF-8");
         Gson gson = new Gson();
         if(request.getParameter("action2").equals("storico")){
@@ -40,6 +50,14 @@ public class RipetizioneServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html,charset=UTF-8");
         HttpSession session = request.getSession();
+        RequestDispatcher rd;
+        boolean check = DAO.logout((Timestamp) session.getAttribute("lastUpdate"));
+        if(check){
+            rd = getServletContext().getNamedDispatcher("logout");
+            rd.include(request, response);
+        }else{
+            session.setAttribute("lastUpdate", new Timestamp(System.currentTimeMillis()));
+        }
         String action = request.getParameter("action");
         String action2 = request.getParameter("action2");
         if(session.getAttribute("userName") != null && session.getAttribute("userRole").equals("Amministratore")) {

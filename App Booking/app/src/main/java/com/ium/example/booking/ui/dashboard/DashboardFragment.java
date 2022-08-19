@@ -100,7 +100,7 @@ public class DashboardFragment extends Fragment {
             String giorno = row.getString("giorno");
             String ore = row.getString("ora");
             String status = row.getString("status");
-            output.add(" - " + corso + "\n - " + docente + "\n - " + giorno + "\n - " + ore + "\n - " + status);
+            output.add("●" + corso + "\n  " + docente + "\n  " + giorno + "\n  " + ore + "\n  " + status);
             System.out.println(output);
         }
         ArrayAdapter<String> adapterlist = new ArrayAdapter<String>(getActivity(), R.layout.row, output);

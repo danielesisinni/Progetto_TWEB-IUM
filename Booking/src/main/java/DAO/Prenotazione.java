@@ -1,7 +1,7 @@
 package DAO;
 
 public class Prenotazione {
-    private String utente;
+    private int utente;
     private String codice;
     private String docente;
     private String corso;
@@ -9,7 +9,7 @@ public class Prenotazione {
     private String ora;
     private String status;
 
-    public Prenotazione(String utente, String codice, String docente, String corso, String giorno, String ora, String status) {
+    public Prenotazione(int utente, String codice, String docente, String corso, String giorno, String ora, String status) {
         this.utente = utente;
         this.codice = codice;
         this.docente = docente;
@@ -27,7 +27,7 @@ public class Prenotazione {
         this.codice = codice;
     }
 
-    public String getUtente() {
+    public int getUtente() {
         return utente;
     }
 
@@ -51,7 +51,7 @@ public class Prenotazione {
         return status;
     }
 
-    public void setUtente(String utente) {
+    public void setUtente(int utente) {
         this.utente = utente;
     }
 

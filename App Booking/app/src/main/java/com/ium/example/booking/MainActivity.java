@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
-        String email = getIntent().getExtras().getString("account");
+        /*String email = getIntent().getExtras().getString("account");
         TextView account = findViewById(R.id.accountValue);
-        account.setText("Bentornato " + email);
+        account.setText("Bentornato " + email);*/
     }
 }

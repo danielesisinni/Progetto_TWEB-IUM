@@ -142,13 +142,13 @@
             <div class="container">
                <hr>
                 <!--STAMPA DEI CORSI E DOCENTI-->
-                <coursesteacher v-if="stampaCD" link="ServletController" ></coursesteacher>
+                <coursesteacher v-if="stampaCD" link="ServletController" v-on:transit-inner-logout="transit('logout2')"></coursesteacher>
 
                 <!--STAMPA DELLE MIE PRENOTAZIONI-->
-                <mybooking v-if="stampaMPr" link="ServletController"></mybooking>
+                <mybooking v-if="stampaMPr" link="ServletController" v-on:transit-inner-logout="transit('logout2')"></mybooking>
 
                 <!--STAMPA DELLE RIPETIZIONI-->
-                <repetition v-if="stampaR" link="ServletController" ospite="False"></repetition>
+                <repetition v-if="stampaR" link="ServletController" ospite="False" v-on:transit-inner-logout="transit('logout2')"></repetition>
             </div>
         </span>
 
@@ -178,12 +178,12 @@
             <!--SEZIONE STAMPA DEI DATI-->
             <div class="container">
                <hr>
-                <coursesteacher v-if="stampaCD" link="ServletController"></coursesteacher>
+                <coursesteacher v-if="stampaCD" link="ServletController" v-on:transit-inner-logout="transit('logout2')"></coursesteacher>
 
                 <div v-if="stampaR">
                     <h4>Per prenotare le lezioni devi avere un account. Registrati e prenota!</h4>
                     <br>
-                    <repetition link="ServletController" ospite="True"></repetition>
+                    <repetition link="ServletController" ospite="True" v-on:transit-inner-logout="transit('logout2')"></repetition>
                 </div>
             </div>
         </span>
@@ -230,28 +230,28 @@
 
             <!--SEZIONE STAMPA E AGGIUNTA DEI DATI-->
             <!--STAMPA DEI CORSI E DOCENTI-->
-            <coursesteacher v-if="stampaCD" link="ServletController"></coursesteacher>
+            <coursesteacher v-if="stampaCD" link="ServletController" v-on:transit-inner-logout="transit('logout2')"></coursesteacher>
 
             <!--STAMPA DELLE RIPETIZIONI-->
-            <repetition v-if="stampaR" link="ServletController" ospite="False"></repetition>
+            <repetition v-if="stampaR" link="ServletController" ospite="False" v-on:transit-inner-logout="transit('logout2')"></repetition>
 
             <!--STAMPA DELLE PRENOTAZIONI-->
-            <booking v-if="stampaPr" link="ServletController"></booking>
+            <booking v-if="stampaPr" link="ServletController" v-on:transit-inner-logout="transit('logout2')"></booking>
 
             <!--STAMPA DELLE MIE PRENOTAZIONI-->
-            <mybooking v-if="stampaMPr" link="ServletController"></mybooking>
+            <mybooking v-if="stampaMPr" link="ServletController" v-on:transit-inner-logout="transit('logout2')"></mybooking>
 
             <!--AGGIUNTA DI CORSI E DOCENTI-->
-            <admincoursesteacher v-if="gestioneCD" link="ServletController"></admincoursesteacher>
+            <admincoursesteacher v-if="gestioneCD" link="ServletController" v-on:transit-inner-logout="transit('logout2')"></admincoursesteacher>
 
             <!--AGGIUNTA DELLE RIPETIZIONI-->
-            <adminrepetition v-if="gestioneR" link="ServletController"></adminrepetition>
+            <adminrepetition v-if="gestioneR" link="ServletController" v-on:transit-inner-logout="transit('logout2')"></adminrepetition>
 
             <!--STAMPA STORICO-->
             <span v-if="storico">
-                <courses link="ServletController" storico="True"></courses>
-                <teacher link="ServletController" storico="True"></teacher>
-                <repetitionstorico link="ServletController"></repetitionstorico>
+                <courses link="ServletController" storico="True" v-on:transit-inner-logout="transit('logout2')"></courses>
+                <teacher link="ServletController" storico="True" v-on:transit-inner-logout="transit('logout2')"></teacher>
+                <repetitionstorico link="ServletController" v-on:transit-inner-logout="transit('logout2')"></repetitionstorico>
             </span>
         </span>
     </div>
@@ -319,9 +319,13 @@
                 getDati: function (){
                     var self = this;
                     $.get(this.link, {action: 'Corsi', action2: 'Free'}, function (data) {
+                        if(data === 0)
+                            self.transit("logout");
                         self.corsi = data;
                     });
                     $.get(this.link, {action: 'Docenti', action2: 'Free'}, function (data) {
+                        if(data === 0)
+                            self.transit("logout");
                         self.docenti = data;
                     })
                 },
@@ -334,7 +338,11 @@
                                     self.transit('alert');
                                 }else if(data === "aggiunto" || data === "rimossa"){
                                     self.transit('gestioneCD');
-                                } break;
+                                }else if(data === 0) {
+                                    self.transit('logout');
+                                }
+                                break;
+
                         }
                     })
                 },
@@ -344,6 +352,8 @@
                             this.courses = this.teacher = null; this.getDati(); break;
                         case "alert":
                             alert('Errore! Riprovare!'); break;
+                        case "logout":
+                            this.$emit('transit-inner-logout'); break;
                     }
                 },
             }
@@ -423,20 +433,28 @@
                 getDati: function (){
                     var self = this;
                     $.get(this.link, {action: 'Corsi', action2: ''}, function (data) {
+                        if(data === 0)
+                            self.transit("logout");
                         self.corsi = data;
                     });
                     $.get(this.link, {action: 'Docenti', action2: ''}, function (data) {
+                        if(data === 0)
+                            self.transit("logout");
                         self.docenti = data;
                     });
                     $.get(this.link, {action: 'RipetizioniA', action2: ''}, function (data) {
+                        if(data === 0)
+                            self.transit("logout");
                         self.ripetizionii = data;
                     })
                 },
                 ServletControllerPost: function (flag, flag2){
                     var self = this;
                     $.post(this.link, {action: flag, action2: flag2, corsi: this.courses, nome: this.teacher, giorno: this.day, ora: this.hour}, function (data) {
-                        if(data === "errore"){
+                        if(data === "errore") {
                             self.transit('alert');
+                        }else if(data === 0){
+                            self.transit("logout");
                         }else{
                             self.transit('gestioneR');
                         }
@@ -448,6 +466,8 @@
                             this.courses = this.teacher = this.hour = this.day = null; this.getDati(); break;
                         case "alert":
                             alert('Errore! Riprovare, controllare tutti i campi!'); break;
+                        case "logout":
+                            this.$emit('transit-inner-logout'); break;
                     }
                 },
             }
@@ -478,9 +498,14 @@
                 getDati: function (){
                     var self = this;
                     $.get(this.link, {action: 'Corsi_Docenti'}, function (data) {
+                        if(data === 0)
+                            self.transit();
                         self.corsidocenti = data;
                     })
                 },
+                transit: function () {
+                    this.$emit('transit-inner-logout');
+                }
             }
         })
 
@@ -510,14 +535,21 @@
                     var self = this;
                     if(this.storico === 'True'){
                         $.get(this.link, {action: 'Corsi', action2: 'storico'}, function (data) {
+                            if(data === 0)
+                                self.transit();
                             self.corsii = data;
                         })
                     }else {
                         $.get(this.link, {action: 'Corsi'}, function (data) {
+                            if(data === 0)
+                                self.transit();
                             self.corsii = data;
                         })
                     }
                 },
+                transit: function () {
+                    this.$emit('transit-inner-logout');
+                }
             }
         })
 
@@ -547,13 +579,20 @@
                     var self = this;
                     if(this.storico === 'True'){
                         $.get(this.link, {action: 'Docenti', action2: 'storico'}, function (data) {
+                            if(data === 0)
+                                self.transit();
                             self.docentii = data;
                         })
                     }else{
                         $.get(this.link, {action: 'Docenti',}, function (data) {
+                            if(data === 0)
+                                self.transit();
                             self.docentii = data;
                         })
                     }
+                },
+                transit: function () {
+                    this.$emit('transit-inner-logout');
                 },
             }
         })
@@ -583,8 +622,13 @@
                 getDati: function (){
                     var self = this;
                     $.get(this.link, {action: 'Ripetizioni', action2: 'storico'}, function (data) {
+                        if(data === 0)
+                            self.transit();
                         self.ripetizionis = data;
                     })
+                },
+                transit: function () {
+                    this.$emit('transit-inner-logout');
                 },
             }
         })
@@ -614,19 +658,23 @@
                 getDati: function (){
                     var self = this;
                     $.get(this.link, {action: 'Ripetizioni', action2:'stampa'}, function (data) {
+                        if(data === 0)
+                            self.transit("logout");
                         self.ripetizionii = data;
                     })
                 },
                 ServletControllerPost: function (flag, flag2){
                     var self = this;
-                    $.post(this.link, {action: flag, action2: flag2,}, function (data) {
+                    $.post(this.link, {action: flag, action2: flag2}, function (data) {
                         switch (flag){
                             case "Prenota":
                                 if(data === "errore"){
                                     self.transit('alert');
                                 }else if(data === "aggiunta"){
                                     self.errore2 = false; self.transit('ripetizioni');
-                                } break;
+                                }else if(data === 0) {
+                                    self.transit("logout");break;
+                                }
                         }
                     })
                 },
@@ -636,6 +684,8 @@
                             this.ripetizionii = true; this.getDati(); break;
                         case "alert":
                             alert('Errore! Riprovare!'); break;
+                        case "logout":
+                            this.$emit('transit-inner-logout'); break;
                     }
                 },
             }
@@ -655,7 +705,7 @@
                 '           </thead>\n' +
                 '           <tbody>\n' +
                 '               <template v-for="prenotazioni in prenotazionii">\n' +
-                '                   <tr><td>{{prenotazioni.utente}}</td><td>{{prenotazioni.codice}}</td><td>{{prenotazioni.docente}}</td><td>{{prenotazioni.corso}}</td><td>{{prenotazioni.giorno}}</td><td>{{prenotazioni.ora}}</td><td v-if="prenotazioni.status === \'RIMOSSA\'"><span class="badge rounded-pill bg-danger">{{prenotazioni.status}}</span><td v-if="prenotazioni.status === \'EFFETTUATA\'"><span class="badge bg-warning text-dark">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === \'CONFERMATA\'"><span class="badge badge-success">{{prenotazioni.status}}</span></td></tr>\n' +
+                '                   <tr><td>{{prenotazioni.utente}}</td><td>{{prenotazioni.codice}}</td><td>{{prenotazioni.docente}}</td><td>{{prenotazioni.corso}}</td><td>{{prenotazioni.giorno}}</td><td>{{prenotazioni.ora}}</td><td v-if="prenotazioni.status === \'RIMOSSA\'"><span class="badge rounded-pill bg-danger">{{prenotazioni.status}}</span><td v-if="prenotazioni.status === \'EFFETTUATA\'"><span class="badge bg-warning text-dark">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === \'ATTIVA\'"><span class="badge badge-success">{{prenotazioni.status}}</span></td></tr>\n' +
                 '               </template>\n' +
                 '           </tbody>\n' +
                 '      </table>',
@@ -666,8 +716,13 @@
                 getDati: function (){
                     var self = this;
                     $.get(this.link, {action: 'Prenotazioni'}, function (data) {
-                        self.prenotazionii = data;
+                            if(data === 0)
+                                self.transit();
+                            self.prenotazionii = data;
                     })
+                },
+                transit: function () {
+                    this.$emit('transit-inner-logout');
                 },
             },
         })
@@ -686,7 +741,7 @@
                 '           </thead>\n' +
                 '           <tbody>\n' +
                 '               <template v-for="prenotazioni in myprenotazioni">\n' +
-                '                   <tr><td>{{prenotazioni.codice}}</td><td>{{prenotazioni.docente}}</td><td>{{prenotazioni.corso}}</td><td>{{prenotazioni.giorno}}</td><td>{{prenotazioni.ora}}</td><td v-if="prenotazioni.status === \'RIMOSSA\'"><span class="badge rounded-pill bg-danger">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === \'EFFETTUATA\'"><span class="badge bg-warning text-dark">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === \'CONFERMATA\'"><span class="badge badge-success">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === \'RIMOSSA\'"><button class="btn btn-primary" v-on:click="ServletControllerPost(\'Riprenota\', prenotazioni.codice)">Prenota</button></td><td v-if="prenotazioni.status === \'CONFERMATA\'"><button class="btn btn-danger" v-on:click="ServletControllerPost(\'Disdetta\', prenotazioni.codice)">Rimuovi</button> <button class="btn btn-primary" v-on:click="ServletControllerPost(\'Effettuata\', prenotazioni.codice)">Effettuata</button></td></tr>\n' +
+                '                   <tr><td>{{prenotazioni.codice}}</td><td>{{prenotazioni.docente}}</td><td>{{prenotazioni.corso}}</td><td>{{prenotazioni.giorno}}</td><td>{{prenotazioni.ora}}</td><td v-if="prenotazioni.status === \'RIMOSSA\'"><span class="badge rounded-pill bg-danger">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === \'EFFETTUATA\'"><span class="badge bg-warning text-dark">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === \'ATTIVA\'"><span class="badge badge-success">{{prenotazioni.status}}</span></td><td v-if="prenotazioni.status === \'RIMOSSA\'"><button class="btn btn-primary" v-on:click="ServletControllerPost(\'Riprenota\', prenotazioni.codice)">Prenota</button></td><td v-if="prenotazioni.status === \'ATTIVA\'"><button class="btn btn-danger" v-on:click="ServletControllerPost(\'Disdetta\', prenotazioni.codice)">Rimuovi</button><br><br><button class="btn btn-primary" v-on:click="ServletControllerPost(\'Effettuata\', prenotazioni.codice)">Effettuata</button></td></tr>\n' +
                 '               </template>\n' +
                 '           </tbody>\n' +
                 '      </table>',
@@ -697,19 +752,28 @@
                 getDati: function (){
                     var self = this;
                     $.get(this.link, {action: 'MiePrenotazioni'}, function (data) {
+                        if(data === 0)
+                            self.transit("logout");
                         self.myprenotazioni = data;
                     })
                 },
                 ServletControllerPost: function (flag, flag2){
                     var self = this;
                     $.post(this.link, {action: flag, action2: flag2,}, function (data) {
-                                self.transit();
+                        if(data === 0)
+                            self.transit("logout");
+                        self.transit("dati");
                     })
                 },
-                transit: function () {
-                        this.getDati();
+                transit: function (flag) {
+                    switch (flag){
+                        case "dati":
+                            this.getDati();break;
+                        case "logout":
+                            this.$emit('transit-inner-logout'); break;
                     }
                 },
+            },
         })
 
         //VueLogin
@@ -802,6 +866,8 @@
                             this.homeOspite = this.checkO = true; this.loginHome = this.stampaR = this.stampaCD = false; break;
                         case "logout":
                             this.ServletControllerPost("logout", ''); break;
+                        case "logout2":
+                            this.em = this.pass = null; alert('Attenzione: Sessione scaduta. Stai tornando al login'); this.transit("loginHome"); break;
                         case "loginHome":
                             this.loginHome = true; this.homeAmministratore = this.creazionehome = this.homeOspite = this.homeCliente = this.checkO = this.errore2 = false; break;
                         case "amministratoreHome":

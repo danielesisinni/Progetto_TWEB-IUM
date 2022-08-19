@@ -5,25 +5,32 @@ import DAO.Prenotazione;
 import DAO.Ripetizione;
 import com.google.gson.Gson;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 @WebServlet(name = "prenotazioni", value = "/prenotazioni")
 public class PrenotazioneServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
+        RequestDispatcher rd;
+        boolean check = DAO.logout((Timestamp) session.getAttribute("lastUpdate"));
+        if(check){
+            rd = getServletContext().getNamedDispatcher("logout");
+            rd.include(request, response);
+        }else{
+            session.setAttribute("lastUpdate", new Timestamp(System.currentTimeMillis()));
+        }
         String action = request.getParameter("action");
         response.setContentType("application/json,charset=UTF-8");
         Gson gson = new Gson();
         String acc = (String) session.getAttribute("userName");
-
         if(action.equals("MiePrenotazioni") || action.equals("androidP")){
             ArrayList<Prenotazione> prenotazione = DAO.MyBooking(acc);
             String s = gson.toJson(prenotazione);
@@ -38,6 +45,15 @@ public class PrenotazioneServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html,charset=UTF-8");
         HttpSession session = request.getSession();
+        RequestDispatcher rd;
+        boolean check = DAO.logout((Timestamp) session.getAttribute("lastUpdate"));
+        if(check){
+            rd = getServletContext().getNamedDispatcher("logout");
+            rd.include(request, response);
+        }else{
+            session.setAttribute("lastUpdate", new Timestamp(System.currentTimeMillis()));
+        }
+
         String action = request.getParameter("action");
         if(session.getAttribute("userName") != null && (session.getAttribute("userRole").equals("Amministratore") || session.getAttribute("userRole").equals("Cliente"))) {
             switch (action){

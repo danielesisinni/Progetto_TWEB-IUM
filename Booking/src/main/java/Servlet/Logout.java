@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
@@ -26,25 +27,9 @@ public class Logout extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         try {
-            Cookie loginCookie = null;
-            Cookie[] cookies = request.getCookies();
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    System.out.println(cookie.getName()+" "+ cookie.getValue());
-                    if (cookie.getName().equals(session.getAttribute("userName"))) {
-                        System.out.println("entro?");
-                        loginCookie = cookie;
-                        break;
-                    }
-                }
-            }
-            if (loginCookie != null) {
-                System.out.println("entro????");
-                loginCookie.setMaxAge(0);
-                response.addCookie(loginCookie);
-            }
             session.removeAttribute("logonSessData"); //logonSessData
             session.invalidate();
+            request.setAttribute("risultato", 0);
             //response.sendRedirect("index.html");
         } catch (Exception sqle) {
             System.out.println("error UserValidateServlet message : " + sqle.getMessage());
