@@ -26,10 +26,13 @@ public class Logout extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        PrintWriter out = response.getWriter();
+        System.out.println("Logout");
         try {
             session.removeAttribute("logonSessData"); //logonSessData
             session.invalidate();
             request.setAttribute("risultato", 0);
+            out.print(request.getAttribute("risultato"));
             //response.sendRedirect("index.html");
         } catch (Exception sqle) {
             System.out.println("error UserValidateServlet message : " + sqle.getMessage());

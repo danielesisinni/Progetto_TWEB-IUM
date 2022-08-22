@@ -73,6 +73,7 @@ public class CorsiDocentiServlet extends HttpServlet {
         if(check1){
             rd = getServletContext().getNamedDispatcher("logout");
             rd.include(request, response);
+            return;
         }else{
             session.setAttribute("lastUpdate", new Timestamp(System.currentTimeMillis()));
         }
@@ -80,17 +81,22 @@ public class CorsiDocentiServlet extends HttpServlet {
             String nomecorso = request.getParameter("corsi");
             String docente = request.getParameter("nome");
             if(nomecorso != null && docente != null){
-                boolean check = DAO.insertCourse(nomecorso);
-                boolean check2 = DAO.insertTeacher(docente);
-                if(check && check2){
-                    DAO.insertCourseTeacher(nomecorso, docente);
+                String check = DAO.insertCourse(nomecorso);
+                String check2 = DAO.insertTeacher(docente);
+                if(!check.equals("-1") && !check2.equals("-1")){
+                    DAO.insertCourseTeacher(check, check2, false);
                     request.setAttribute("risultato", "aggiunto");
-                } else if(check || check2){
+                } else if(!check.equals("-1") || !check2.equals("-1")){
                     request.setAttribute("risultato", "aggiunto");
                 } else{
                     request.setAttribute("risultato", "errore");
                 }
             }
+        }else if (session.getAttribute("userRole").equals("Amministratore") && request.getParameter("action2").equals("Affliare")) {
+            String corso = request.getParameter("corsii");
+            String docente = request.getParameter("nomee");
+            DAO.insertCourseTeacher(corso, docente, true);
+            request.setAttribute("risultato", "aggiunto");
         }else if (session.getAttribute("userRole").equals("Amministratore")) {
             String var = request.getParameter("action2");
             if(var != null){

@@ -20,7 +20,6 @@ public class ServletController extends HttpServlet {
         RequestDispatcher rd;
         String action = request.getParameter("action");
         PrintWriter out = response.getWriter();
-        System.out.println(session.getId() + "  " + session.getAttribute("sessionid"));
         if(action != null) {
             if (session.getAttribute("userRole") != null) {
                 switch (action) {
@@ -46,7 +45,6 @@ public class ServletController extends HttpServlet {
                         rd = getServletContext().getNamedDispatcher("prenotazioni");
                         rd.include(request, response);
                         response.setContentType("application/json,charset=UTF-8");
-                        System.out.println(request.getAttribute("risultato"));
                         out.print(request.getAttribute("risultato"));
                         break;
                 }

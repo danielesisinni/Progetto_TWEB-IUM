@@ -28,7 +28,7 @@
                     <div class="user_card">
                         <div class="d-flex justify-content-center">
                             <div class="brand_logo_container">
-                                <img src="https://upload.wikimedia.org/wikipedia/it/thumb/4/47/Unito-logo.svg/1200px-Unito-logo.svg.png" class="brand_logo" alt="Logo">
+                                <img src="img/logo.jpg" class="brand_logo" alt="Logo">
                             </div>
                         </div>
                         <br>
@@ -249,6 +249,7 @@
 
             <!--STAMPA STORICO-->
             <span v-if="storico">
+                <h4>Storico dei corsi, docenti e ripetizioni</h4>
                 <courses link="ServletController" storico="True" v-on:transit-inner-logout="transit('logout2')"></courses>
                 <teacher link="ServletController" storico="True" v-on:transit-inner-logout="transit('logout2')"></teacher>
                 <repetitionstorico link="ServletController" v-on:transit-inner-logout="transit('logout2')"></repetitionstorico>
@@ -264,8 +265,12 @@
                 return{
                     corsi: [],
                     docenti:[],
+                    corsii: [],
+                    docentii:[],
                     courses: null,
                     teacher: null,
+                    coursess: null,
+                    teacherr: null,
                 }
             },
             props: ['link'],
@@ -285,7 +290,25 @@
                 '                                <button class="btn btn-primary" v-on:click="ServletControllerPost(\'Corsi_Docenti\', \'Aggiunta\')">Conferma dati</button>\n' +
                 '                            </div>\n' +
                 '                         </div>\n' +
-                '                    </div>'+
+                '                         <hr>\n'+
+                '                        <h4>Affliare corsi e docenti gi&agrave; presenti.</h4>\n' +
+                '                        <div class="form-group">\n' +
+                '                            <label>Docente\n' +
+                '                                <select v-model="teacherr">\n' +
+                '                                    <option v-for="co_do in docentii">{{co_do.nome}} {{co_do.cognome}}</option>\n' +
+                '                                </select>\n' +
+                '                            </label><br>\n' +
+                '                            <label>Corso&nbsp&nbsp&nbsp&nbsp\n' +
+                '                                <select v-model="coursess">\n' +
+                '                                    <option v-for="co_do in corsii">{{co_do.titolo}}</option>\n' +
+                '                                </select>\n' +
+                '                            </label><br>\n' +
+                '                            <br>\n' +
+                '                            <div class="d-grid gap-2">\n' +
+                '                                <button class="btn btn-primary" v-on:click="ServletControllerPost(\'Corsi_Docenti\', \'Affliare\')">Conferma dati</button>\n' +
+                '                            </div>\n' +
+                '                           </div>'+
+                '                        </div>'+
                 '                       <div class="blocco2">\n'+
                 '                        <h4>Rimozione di corsi e docenti</h4>\n' +
                 '                        <p>-Hai la possibilit&aacute; di rimuovere un docente o un corso con le loro affiliazioni. Solo se non compaiono in nessuna prenotazioni attiva.</p>\n' +
@@ -318,20 +341,30 @@
             methods: {
                 getDati: function (){
                     var self = this;
-                    $.get(this.link, {action: 'Corsi', action2: 'Free'}, function (data) {
+                    $.get(this.link, {action: 'Corsi', action2: ''}, function (data) {
                         if(data === 0)
                             self.transit("logout");
                         self.corsi = data;
                     });
-                    $.get(this.link, {action: 'Docenti', action2: 'Free'}, function (data) {
+                    $.get(this.link, {action: 'Docenti', action2: ''}, function (data) {
                         if(data === 0)
                             self.transit("logout");
                         self.docenti = data;
+                    });
+                    $.get(this.link, {action: 'Corsi', action2: 'Free'}, function (data) {
+                        if(data === 0)
+                            self.transit("logout");
+                        self.corsii = data;
+                    });
+                    $.get(this.link, {action: 'Docenti', action2: 'Free'}, function (data) {
+                        if(data === 0)
+                            self.transit("logout");
+                        self.docentii = data;
                     })
                 },
                 ServletControllerPost: function (flag, flag2){
                     var self = this;
-                    $.post(this.link, {action: flag, action2: flag2, corsi: this.courses, nome: this.teacher}, function (data) {
+                    $.post(this.link, {action: flag, action2: flag2, corsi: this.courses, nome: this.teacher, corsii: this.coursess, nomee: this.teacherr}, function (data) {
                         switch (flag){
                             case "Corsi_Docenti":
                                 if(data === "errore"){
@@ -498,8 +531,9 @@
                 getDati: function (){
                     var self = this;
                     $.get(this.link, {action: 'Corsi_Docenti'}, function (data) {
-                        if(data === 0)
+                        if(data === 0) {
                             self.transit();
+                        }
                         self.corsidocenti = data;
                     })
                 },
@@ -523,7 +557,7 @@
                 '             </thead>\n' +
                 '             <tbody>\n' +
                 '                <template v-for="corso in corsii">\n' +
-                '                   <tr><td>{{corso.titolo}}</td><td><span class="badge bg-light text-dark">{{corso.stato}}</span></td></tr>\n' +
+                '                   <tr><td>{{corso.titolo}}</td><td v-if="corso.stato === \'RIMOSSO\'"><span class="badge rounded-pill bg-warning">{{corso.stato}}</span></td><td v-else><span class="badge bg-light text-dark">{{corso.stato}}</span></td></tr>\n' +
                 '                 </template>\n' +
                 '              </tbody>\n' +
                 '      </table>',
@@ -567,7 +601,7 @@
                 '             </thead>\n' +
                 '             <tbody>\n' +
                 '                <template v-for="docente in docentii">\n' +
-                '                   <tr><td>{{docente.nome}}</td><td><span class="badge bg-light text-dark">{{docente.stato}}</span></td></tr>\n' +
+                '                   <tr><td>{{docente.nome}}</td><td v-if="docente.stato === \'RIMOSSO\'"><span class="badge rounded-pill bg-warning">{{docente.stato}}</span></td><td v-else><span class="badge bg-light text-dark">{{docente.stato}}</span></td></tr>\n' +
                 '                </template>\n' +
                 '              </tbody>\n' +
                 '      </table>',
@@ -611,7 +645,7 @@
                 '            </thead>\n' +
                 '       <tbody>' +
                 '           <template v-for="ripetizioni in ripetizionis">\n' +
-                '               <tr><td>{{ripetizioni.codice}}</td><td>{{ripetizioni.docente}}</td><td>{{ripetizioni.corso}}</td><td>{{ripetizioni.giorno}}</td><td>{{ripetizioni.ora}}</td><td><span class="badge bg-light text-dark">{{ripetizioni.status}}</span></td></tr>\n' +
+                '               <tr><td>{{ripetizioni.codice}}</td><td>{{ripetizioni.docente}}</td><td>{{ripetizioni.corso}}</td><td>{{ripetizioni.giorno}}</td><td>{{ripetizioni.ora}}</td><td v-if="ripetizioni.status === \'RIMOSSA\'"><span class="badge rounded-pill bg-warning">{{ripetizioni.status}}</span></td><td v-else><span class="badge bg-light text-dark">{{ripetizioni.status}}</span></td></tr>\n' +
                 '           </template>\n' +
                 '      </tbody>\n' +
                 '      </table>',
@@ -658,6 +692,7 @@
                 getDati: function (){
                     var self = this;
                     $.get(this.link, {action: 'Ripetizioni', action2:'stampa'}, function (data) {
+                        alert(data);
                         if(data === 0)
                             self.transit("logout");
                         self.ripetizionii = data;
@@ -701,7 +736,7 @@
             props: ['link'],
             template: '<table>\n' +
                 '           <thead>\n' +
-                '               <tr><td><i><b>UTENTE</b></i></td><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td></tr>\n' +
+                '               <tr><td><i><b>MATR.UTENTE</b></i></td><td><i><b>CODICE</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>CORSO</b></i></td><td><i><b>GIORNO</b></i></td><td><i><b>ORE</b></i></td><td><i><b>STATUS</b></i></td></tr>\n' +
                 '           </thead>\n' +
                 '           <tbody>\n' +
                 '               <template v-for="prenotazioni in prenotazionii">\n' +
@@ -881,7 +916,7 @@
                         case "corsi_docenti":
                             this.stampaCD = true;  this.storico = this.checkCl = this.checkAH = this.checkO = false; break;
                         case "ripetizioni":
-                            this.stampaR = true; this.storico = this.checkCl = this.checkAH = this.checkO = this.stampaPr = this.stampaMPr = this.gestioneCD = this.gestioneR = false; break;
+                            this.stampaR = true; this.stampaCD = false; this.storico = this.checkCl = this.checkAH = this.checkO = this.stampaPr = this.stampaMPr = this.gestioneCD = this.gestioneR = false; break;
                         case "prenotazioni":
                             this.stampaPr = true;  this.storico = this.checkCl = this.checkAH = this.checkO = this.stampaCD = this.gestioneR = this.gestioneCD = this.stampaMPr = this.stampaR = false; break;
                         case "mieprenotazioni":
@@ -896,12 +931,13 @@
         })
 
     </script>
+    <div id="push"> </div>
+    <footer id="footer">
+        <p class="foot"><i><b>Corso Interazione Uomo/Macchina 2021/2022</b></i></p>
+        <p class="foot"><i><b>Sisinni Daniele 914874</b></i></p>
+    </footer>
 </body>
 
-<footer>
-    <hr>
-    <p class="foot"><i><b>Corso Interazione Uomo/Macchina 2021/2022</b></i></p>
-    <p class="foot"><i><b>Sisinni Daniele 914874</b></i></p>
-</footer>
+
 </html>
 

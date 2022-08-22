@@ -1,5 +1,6 @@
 package DAO;
 
+import javax.print.Doc;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -96,7 +97,7 @@ public class DAO{
             }
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT corso.TITOLO, docente.NOME, corsodocente.STATO FROM corso, docente, corsodocente  WHERE CORSO.ID = corsodocente.CORSO AND DOCENTE.ID = corsodocente.DOCENTE order by CORSO.TITOLO, DOCENTE.NOME");
+            ResultSet rs = st.executeQuery("SELECT c.TITOLO, d.NOME, cd.STATO FROM corso c, docente d, corsodocente cd WHERE c.ID = cd.CORSO AND d.ID = cd.DOCENTE");
             while (rs.next()) {
                 CorsoDocente p = new CorsoDocente(rs.getString("TITOLO"), rs.getString("NOME"), rs.getString("STATO"));
                 out.add(p);
@@ -158,9 +159,9 @@ public class DAO{
             }
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM Prenotazione ORDER BY giorno, ora");
+            ResultSet rs = st.executeQuery("SELECT p.utente, p.codice, d.nome, c.titolo, p.giorno, p.ora, p.status FROM Prenotazione p, corso c, docente d WHERE p.docente = d.id AND p.corso = c.id ORDER BY giorno, ora");
             while (rs.next()) {
-                Prenotazione p = new Prenotazione(rs.getInt("UTENTE"),rs.getString("CODICE"),rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"),rs.getString("STATUS"));
+                Prenotazione p = new Prenotazione(rs.getInt("UTENTE"),rs.getString("CODICE"),rs.getString("NOME"), rs.getString("TITOLO"), rs.getString("GIORNO"), rs.getString("ORA"),rs.getString("STATUS"));
                 out.add(p);
             }
         } catch (SQLException e) {
@@ -190,11 +191,11 @@ public class DAO{
 
 
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT r.codice, d.nome, c.titolo, r.giorno, r.ora, r.status FROM Ripetizione r, corso c, docente d WHERE r.docente = d.id AND c.id = d.corso ORDER BY STATUS, giorno, ora ");
+            ResultSet rs = st.executeQuery("SELECT r.codice, d.nome, c.titolo, r.giorno, r.ora, r.status FROM Ripetizione r, corso c, docente d WHERE r.docente = d.id AND c.id = r.corso ORDER BY STATUS, giorno, ora ");
             while (rs.next()) {
                 //System.out.println("prova->" + rs.getString("UTENTE"));
                 //if(!rs.getString("UTENTE").equals(account)){
-                Ripetizione p = new Ripetizione(rs.getString("CODICE"), rs.getString("DOCENTE"), rs.getString("CORSO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
+                Ripetizione p = new Ripetizione(rs.getString("CODICE"), rs.getString("NOME"), rs.getString("TITOLO"), rs.getString("GIORNO"), rs.getString("ORA"), rs.getString("STATUS"));
                 out.add(p);
                 //}
             }
@@ -223,7 +224,6 @@ public class DAO{
                 System.out.println("Connected to the database test");
             }
             int matr = SearchMatricola(account);
-
             Statement st = conn1.createStatement();
             ResultSet rs = st.executeQuery("SELECT r.CODICE, d.NOME, c.TITOLO, r.GIORNO, r.ORA, r.STATUS FROM Ripetizione r, corso c, docente d WHERE d.id = r.DOCENTE AND c.id = r.CORSO and NOT EXISTS (SELECT  * FROM Prenotazione p WHERE r.CODICE = p.CODICE AND P.UTENTE = '"+ matr + "') ORDER BY giorno, ora");
             while (rs.next()) {
@@ -264,6 +264,9 @@ public class DAO{
 
             Ripetizione r = new Ripetizione(codice, docente, corso, giorno, ora, status);
 
+            docente = searchTeacher(docente);
+            corso = searchCourse(corso);
+
             Statement st = conn1.createStatement();
             st.execute("insert into ripetizione (codice, docente, corso, giorno, ora, status) values ('" + codice + "', '" + docente + "', '" + corso + "', '" + giorno + "', '" + ora + "', '" + status + "')");
             System.out.println("New repetition added!");
@@ -280,30 +283,33 @@ public class DAO{
         }
     }
 
-    public static boolean insertCourse(String title) {
+    public static String insertCourse(String title) {
         Connection conn1 = null;
-        Corso c = null;
+        ArrayList<Corso> c = null;
         String stato = "ATTIVO";
+        int id = -1;
+        int max = id;
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
-
-            int id = 0;
-            int max = id;
-
+            c = Course();
+            for(Corso cc: c){
+                if(cc.getTitolo().equals(title))
+                    return "-1";
+            }
             ArrayList<Corso> cour = Course();
             for(Corso cour2: cour){
                 if(title.equals(""))
-                    return false;
+                    return "-1";
                 id = cour2.getId();
                 if(id >= max)
                     max = id;
             }
-            c = new Corso(max++, title, stato);
 
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("insert into corso (id,titolo, stato) values ('" + max++ + "', '" + title + "', '" + stato + "')");
-            System.out.println("New course added!");
+            max++;
+            st.execute("insert into corso (id,titolo, stato) values ('" + max + "', '" + title + "', '" + stato + "')");
+            System.out.println("New course added! ");
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -317,7 +323,7 @@ public class DAO{
                 }
             }
         }
-        return true;
+        return String.valueOf(max);
     }
 
     public static void removeCourse(String nome) {
@@ -346,15 +352,15 @@ public class DAO{
         }
     }
 
-    public static boolean insertTeacher(String nomeDocente) {
+    public static String insertTeacher(String nomeDocente) {
         Connection conn1 = null;
         String stato = "ATTIVO";
+        int id = -1;
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
 
-            int id;
             if(nomeDocente.equals(""))
-                return false;
+                return "-1";
 
             do {
                 id = (int) (Math.random() * 500);
@@ -378,7 +384,7 @@ public class DAO{
                 }
             }
         }
-        return true;
+        return String.valueOf(id);
     }
 
     public static void removeTeacher(String nome) {
@@ -406,15 +412,15 @@ public class DAO{
         }
     }
 
-    public static void insertCourseTeacher(String course, String docente) {
+    public static void insertCourseTeacher(String course, String docente, boolean check) {
         Connection conn1 = null;
-        CorsoDocente c = null;
         String stato = "ATTIVO";
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
-
-            c = new CorsoDocente(course, docente, stato);
-
+            if(check){
+                course = searchCourse(course);
+                docente = searchTeacher(docente);
+            }
             //Execute insert query
             Statement st = conn1.createStatement();
             st.execute("insert into corsodocente (corso, docente, stato) values ('" + course + "', '" + docente + "', '" + stato + "')");
@@ -432,6 +438,28 @@ public class DAO{
                 }
             }
         }
+    }
+
+    public static String searchCourse(String course) {
+        ArrayList<Corso> out = Course();
+        String tmp = "";
+        for(Corso c: out){
+            if(c.getTitolo().equals(course)){
+                return String.valueOf(c.getId());
+            }
+        }
+        return tmp;
+    }
+
+    public static String searchTeacher(String teacher) {
+        ArrayList<Docente> out = Teacher();
+        String tmp = "";
+        for(Docente d: out){
+            if(d.getNome().equals(teacher)){
+                return String.valueOf(d.getIddocente());
+            }
+        }
+        return tmp;
     }
 
     public static void removeCourseTeacher(String var) {

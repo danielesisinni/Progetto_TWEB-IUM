@@ -35,14 +35,6 @@ public class Docente {
         this.nome = nome;
     }
 
-    public int getIdDocente() {
-        return iddocente;
-    }
-
-    public void setIdDocente(int iddocente) {
-        this.iddocente = iddocente;
-    }
-
     @Override
     public String toString() {
         return "Docente{" +

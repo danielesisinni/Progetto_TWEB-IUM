@@ -26,6 +26,7 @@ public class RipetizioneServlet extends HttpServlet {
         if(check){
             rd = getServletContext().getNamedDispatcher("logout");
             rd.include(request, response);
+            return;
         }else{
             session.setAttribute("lastUpdate", new Timestamp(System.currentTimeMillis()));
         }
@@ -55,6 +56,7 @@ public class RipetizioneServlet extends HttpServlet {
         if(check){
             rd = getServletContext().getNamedDispatcher("logout");
             rd.include(request, response);
+            return;
         }else{
             session.setAttribute("lastUpdate", new Timestamp(System.currentTimeMillis()));
         }
