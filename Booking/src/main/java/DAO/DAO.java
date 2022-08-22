@@ -960,10 +960,9 @@ public class DAO{
     }
 
     public static boolean logout(Timestamp lastUpdate){
-        if ((new Timestamp(System.currentTimeMillis())).after(new Timestamp(lastUpdate.getTime()  + TimeUnit.MINUTES.toMillis(2)))) {
+        if ((new Timestamp(System.currentTimeMillis())).after(new Timestamp(lastUpdate.getTime()  + TimeUnit.MINUTES.toMillis(1)))) {
            return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
