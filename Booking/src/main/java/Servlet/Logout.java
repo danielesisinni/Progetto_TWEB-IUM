@@ -27,10 +27,12 @@ public class Logout extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         PrintWriter out = response.getWriter();
-        System.out.println("Logout");
+        System.out.println("Logout:");
         try {
             session.removeAttribute("logonSessData"); //logonSessData
             session.invalidate();
+            String jsessionID = session.getId(); // estraggo il session ID
+            System.out.println("JSessionID: " + jsessionID);
             request.setAttribute("risultato", 0);
             //response.sendRedirect("index.html");
         } catch (Exception sqle) {

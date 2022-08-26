@@ -62,8 +62,12 @@ public class Login extends HttpServlet {
         switch (flag) {
             case "login":
                 if (ruolo.equals("Amministratore")) {
+                    String jsessionID = session.getId(); // estraggo il session ID
+                    System.out.println("Login:\nJSessionID: " + jsessionID);
                     request.setAttribute("risultato", "sono amministratore");
                 } else {
+                    String jsessionID = session.getId(); // estraggo il session ID
+                    System.out.println("Login:\nJSessionID: " + jsessionID);
                     request.setAttribute("risultato", "sono cliente");
                 }
                 break;
@@ -73,7 +77,7 @@ public class Login extends HttpServlet {
             case "ospite":
                 DAO.registerDriver();
                 String jsessionID = session.getId(); // estraggo il session ID
-                System.out.println("JSessionID:" + jsessionID);
+                System.out.println("Login:\nJSessionID: " + jsessionID);
                 session.setAttribute("userRole", "Ospite");
                 request.setAttribute("risultato", "ospite");
                 break;

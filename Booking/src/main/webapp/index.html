@@ -23,54 +23,12 @@
 <body>
     <div id="components">
         <span v-if="loginHome"><br><br><br><br><br>
-            <login link="ServletController" v-on:creazione-inner="transit('creazione')" v-on:ospite-inner="ServletControllerPost('ospite', '')" v-on:transit-inner-cliente="transit('clienteHome')" v-on:transit-inner-amministratore="transit('amministratoreHome')"></login>
+            <login link="ServletController" v-on:creazione-inner="transit('creazione')" v-on:ospite-inner="transit('ospiteHome')" v-on:transit-inner-cliente="transit('clienteHome')" v-on:transit-inner-amministratore="transit('amministratoreHome')"></login>
         </span>
 
         <span v-if="creazionehome"><br>
-            <testa title="BENVENUTO. CREA IL TUO ACCOUNT"></testa>
             <br><br><br>
-            <div class="container h-100">
-                <div class="d-flex justify-content-center h-100">
-                    <div class="user_card">
-                        <div class="d-flex justify-content-center">
-                            <div class="brand_logo_container">
-                                <img src="https://upload.wikimedia.org/wikipedia/it/thumb/4/47/Unito-logo.svg/1200px-Unito-logo.svg.png" class="brand_logo" alt="Logo">
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-center form_container">
-                            <article class="form-group">
-                                <div class="input-group mb-3">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    </div>
-                                    <input v-model="em" type="text" class="form-control input_user" placeholder="Email">
-                                </div>
-                                <div class="input-group mb-3">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    </div>
-                                        <input v-model="acc" type="text" class="form-control input_user" placeholder="Account">
-                                </div>
-                                <div class="input-group mb-2">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="fas fa-key"></i></span>
-                                    </div>
-                                        <input v-model="pass" type="password" class="form-control input_pass" placeholder="Password">
-                                </div>
-                                <div class="d-flex justify-content-center mt-3 login_container">
-                                    <button v-on:click="ServletControllerPost('crea', '')" class="btn login_btn">Crea account </button>
-                                </div>
-                                <div class="d-flex justify-content-center mt-3 login_container">
-                                    <button v-on:click="transit('loginHome')" class="btn login_btn">Annulla creazione</button>
-                                </div>
-                                <template v-if="errore2">
-                                    <span class="badge badge-danger">Errore nei dati, ricontrolla e riprova. Grazie</span>
-                                </template>
-                            </article>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <creazione link="ServletController" v-on:transit-inner-login="transit('loginHome')"></creazione>
         </span>
 
         <span v-if="homeCliente && role === 'Cliente'">
@@ -264,8 +222,8 @@
                 '                                </template>\n' +
                 '                                <br>\n' +
                 '                                   <article class="d-flex justify-content-center links">' +
-                '                                   <p>Non hai ancora un account? <button type="button" class="btn btn-outline-dark" v-on:click="creazioneInner"> Crea account</button>' +
-                '                                   <br><br>Oppure entra come ospite&nbsp&nbsp&nbsp&nbsp<button type="button" class="btn btn-outline-dark" v-on:click="ospiteInner">Entra </button></p>' +
+                '                                   <p>Non hai ancora un account? <button type="button" class="btn btn-outline-dark" v-on:click="transit(\'creazione\')"> Crea account</button>' +
+                '                                   <br><br>Oppure entra come ospite&nbsp&nbsp&nbsp&nbsp<button type="button" class="btn btn-outline-dark" v-on:click="ServletControllerPost(\'ospite\')">Entra </button></p>' +
                 '                                   </article>'+
                 '                            </article>\n' +
                 '                        </div>\n' +
@@ -276,29 +234,108 @@
                 ServletControllerPost: function (flag){
                     var self = this;
                     $.post(this.link, {action: flag, email: this.em, password: this.pass}, function (data) {
-                        switch (data) {
-                            case 'sono amministratore':
-                                self.errore = false; self.transit("amministratoreHome"); break;
-                            case 'sono cliente':
-                                self.errore = false; self.transit("clienteHome"); break;
-                            case 'errore':
-                                self.errore = true; break;
+                        switch (flag){
+                            case 'login':
+                                switch (data) {
+                                    case 'sono amministratore':
+                                        self.errore = false; self.transit("amministratoreHome"); break;
+                                    case 'sono cliente':
+                                        self.errore = false; self.transit("clienteHome"); break;
+                                    case 'errore':
+                                        self.errore = true; break;
+                                }
+                                break;
+                            case 'ospite':
+                                self.transit("ospiteHome"); break;
                         }
-                    })
-                },
-                creazioneInner: function (){
-                    this.$emit('creazione-inner');
-                },
 
-                ospiteInner: function (){
-                    this.$emit('ospite-inner');
+                    })
                 },
                 transit: function (flag) {
                     switch (flag){
+                        case "creazione":
+                            this.$emit('creazione-inner'); break;
+                        case "ospiteHome":
+                            this.$emit('ospite-inner'); break;
                         case "amministratoreHome":
                             this.$emit('transit-inner-amministratore'); break;
                         case "clienteHome":
-                            this.$emit('transit-inner-cliente', this.em, this.pass); break;
+                            this.$emit('transit-inner-cliente'); break;
+                    }
+                },
+            }
+        })
+
+        //Component creazione
+        Vue.component('creazione',{
+            data: function () {
+                return{
+                    em: null,
+                    acc: null,
+                    pass: null,
+                    errore2: false,
+                }
+            },
+            props: ['link'],
+            template:
+                '            <div class="container h-100">\n' +
+                '                <div class="d-flex justify-content-center h-100">\n' +
+                '                    <div class="user_card">\n' +
+                '                        <div class="d-flex justify-content-center">\n' +
+                '                            <div class="brand_logo_container">\n' +
+                '                                <img src="https://upload.wikimedia.org/wikipedia/it/thumb/4/47/Unito-logo.svg/1200px-Unito-logo.svg.png" class="brand_logo" alt="Logo">\n' +
+                '                            </div>\n' +
+                '                        </div>\n' +
+                '                        <div class="d-flex justify-content-center form_container">\n' +
+                '                            <article class="form-group">\n' +
+                '                                <div class="input-group mb-3">\n' +
+                '                                    <div class="input-group-append">\n' +
+                '                                        <span class="input-group-text"><i class="fas fa-user"></i></span>\n' +
+                '                                    </div>\n' +
+                '                                    <input v-model="em" type="text" class="form-control input_user" placeholder="Email">\n' +
+                '                                </div>\n' +
+                '                                <div class="input-group mb-3">\n' +
+                '                                    <div class="input-group-append">\n' +
+                '                                        <span class="input-group-text"><i class="fas fa-user"></i></span>\n' +
+                '                                    </div>\n' +
+                '                                        <input v-model="acc" type="text" class="form-control input_user" placeholder="Account">\n' +
+                '                                </div>\n' +
+                '                                <div class="input-group mb-2">\n' +
+                '                                    <div class="input-group-append">\n' +
+                '                                        <span class="input-group-text"><i class="fas fa-key"></i></span>\n' +
+                '                                    </div>\n' +
+                '                                        <input v-model="pass" type="password" class="form-control input_pass" placeholder="Password">\n' +
+                '                                </div>\n' +
+                '                                <div class="d-flex justify-content-center mt-3 login_container">\n' +
+                '                                    <button v-on:click="ServletControllerPost(\'crea\')" class="btn login_btn">Crea account </button>\n' +
+                '                                </div>\n' +
+                '                                <div class="d-flex justify-content-center mt-3 login_container">\n' +
+                '                                    <button v-on:click="transit(\'loginHome\')" class="btn login_btn">Annulla creazione</button>\n' +
+                '                                </div>\n' +
+                '                                <template v-if="errore2">\n' +
+                '                                    <span class="badge badge-danger">Errore nei dati, ricontrolla e riprova. Grazie</span>\n' +
+                '                                </template>\n' +
+                '                            </article>\n' +
+                '                        </div>\n' +
+                '                    </div>\n' +
+                '                </div>\n' +
+                '            </div>',
+            methods: {
+                ServletControllerPost: function (flag){
+                    var self = this;
+                    $.post(this.link, {action: flag, email: this.em, account: this.acc, password: this.pass}, function (data) {
+                        switch (data) {
+                            case 'crea':
+                                self.em = self.acc = self.pass = null; self.errore2 = false; alert('Successo: Account creato'); self.transit('loginHome'); break;
+                            case 'errore2':
+                                self.errore2 = true; break;
+                        }
+                    })
+                },
+                transit: function (flag) {
+                    switch (flag){
+                        case "loginHome":
+                            this.$emit('transit-inner-login'); break;
                     }
                 },
             }
@@ -908,26 +945,11 @@
                 link: 'ServletController'
             },
             methods: {
-                //ServletController, gestisce le Servlet che uso per effettuare il login e logout
-                ServletControllerPost: function (flag, flag2){
+                //ServletController, gestisce le Servlet che uso per effettuare il logout
+                ServletControllerPost: function (flag){
                     var self = this;
-                    $.post(this.link, {email: this.em, account: this.acc, password: this.pass, action: flag, action2: flag2}, function (data) {
-                        //Sezione Servlet Login
-                        switch (flag){
-                            case "crea": case "ospite":
-                                switch (data) {
-                                    case 'ospite':
-                                        self.role = 'Ospite'; self.transit("ospiteHome"); break;
-                                    case 'crea':
-                                        self.em = self.acc = self.pass = null; self.errore2 = false; alert('Successo: Account creato'); self.transit('loginHome'); break;
-                                    case 'errore2':
-                                        self.errore2 = true; break;
-                                }
-                                break;
-                            //Sezione Servlet/Logout
-                            case "logout":
-                                self.em = self.pass = null; alert('Attenzione: Logout effettuato. Stai tornando al login'); self.transit("loginHome"); break;
-                        }
+                    $.post(this.link, {action: flag}, function (data) {
+                        self.em = self.pass = null; alert('Attenzione: Logout effettuato. Stai tornando al login'); self.transit("loginHome");
                     })
                 },
 
@@ -937,7 +959,7 @@
                         case "creazione":
                             this.creazionehome = true; this.loginHome = this.errore2 = false; this.em = this.pass = null; break;
                         case "ospiteHome":
-                            this.homeOspite = this.checkO = true; this.loginHome = this.stampaR = this.stampaCD = false; break;
+                            this.role = 'Ospite'; this.homeOspite = this.checkO = true; this.loginHome = this.stampaR = this.stampaCD = false; break;
                         case "logout":
                             this.ServletControllerPost("logout", ''); break;
                         case "logout2":
