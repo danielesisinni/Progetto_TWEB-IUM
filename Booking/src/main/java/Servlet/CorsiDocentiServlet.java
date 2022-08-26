@@ -35,9 +35,15 @@ public class CorsiDocentiServlet extends HttpServlet {
         if (action != null){
             switch (action){
                 case "Corsi_Docenti":
-                    ArrayList<CorsoDocente> corsi_docenti = DAO.CourseTeacher();
-                    String s = gson.toJson(corsi_docenti);
-                    request.setAttribute("risultato", s);
+                    if(action2.equals("Free")){
+                        ArrayList<CorsoDocente> corsi_docenti = DAO.CourseTeacherFree();
+                        String s = gson.toJson(corsi_docenti);
+                        request.setAttribute("risultato", s);
+                    }else{
+                        ArrayList<CorsoDocente> corsi_docenti = DAO.CourseTeacher();
+                        String s = gson.toJson(corsi_docenti);
+                        request.setAttribute("risultato", s);
+                    }
                     break;
                 case "Corsi":
                     if(request.getParameter("action2").equals("storico")) {
@@ -92,12 +98,18 @@ public class CorsiDocentiServlet extends HttpServlet {
                     request.setAttribute("risultato", "errore");
                 }
             }
-        }else if (session.getAttribute("userRole").equals("Amministratore") && request.getParameter("action2").equals("Affliare")) {
+        }else if (session.getAttribute("userRole").equals("Amministratore") && request.getParameter("action2").equals("Affiliare")) {
             String corso = request.getParameter("corsii");
             String docente = request.getParameter("nomee");
             DAO.insertCourseTeacher(corso, docente, true);
             request.setAttribute("risultato", "aggiunto");
-        }else if (session.getAttribute("userRole").equals("Amministratore")) {
+        }else if(session.getAttribute("userRole").equals("Amministratore") && request.getParameter("action3") != null){
+            System.out.println("ok " + request.getParameter("action2") + " " + request.getParameter("action3"));
+            String idcorso = request.getParameter("action2");
+            String iddocente = request.getParameter("action3");
+            DAO.updateCourseTeacher(idcorso, iddocente);
+            request.setAttribute("risultato", "rimossa");
+        } else if (session.getAttribute("userRole").equals("Amministratore")) {
             String var = request.getParameter("action2");
             if(var != null){
                 DAO.removeCourse(var);

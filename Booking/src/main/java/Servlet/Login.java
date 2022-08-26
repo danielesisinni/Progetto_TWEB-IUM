@@ -47,6 +47,8 @@ public class Login extends HttpServlet {
                 request.setAttribute("risultato", "errore2");
             }
         }else if(flag.equals("ospite")){
+            session.setAttribute("lastUpdate", new Timestamp(System.currentTimeMillis()));
+            System.out.println(session.getAttribute("lastUpdate"));
             processRequest(request, response);
         }
     }

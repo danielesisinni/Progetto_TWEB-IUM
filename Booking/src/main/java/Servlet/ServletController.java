@@ -16,10 +16,10 @@ public class ServletController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8"); // per essere robusti rispetto a caratteri speciali (', etc)
         ServletContext ctx = getServletContext();
+        PrintWriter out = response.getWriter();
         HttpSession session = request.getSession();
         RequestDispatcher rd;
         String action = request.getParameter("action");
-        PrintWriter out = response.getWriter();
         if(action != null) {
             if (session.getAttribute("userRole") != null) {
                 switch (action) {

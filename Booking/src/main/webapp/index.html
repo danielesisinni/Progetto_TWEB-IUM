@@ -23,43 +23,7 @@
 <body>
     <div id="components">
         <span v-if="loginHome"><br><br><br><br><br>
-            <div class="container h-100">
-                <div class="d-flex justify-content-center h-100">
-                    <div class="user_card">
-                        <div class="d-flex justify-content-center">
-                            <div class="brand_logo_container">
-                                <img src="img/logo.jpg" class="brand_logo" alt="Logo">
-                            </div>
-                        </div>
-                        <br>
-                        <div class="d-flex justify-content-center form_container">
-                            <article class="form-group">
-                                <div class="input-group mb-3">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    </div>
-                                    <input v-model="em" type="text" class="form-control input_user" placeholder="Email">
-                                </div>
-                                <div class="input-group mb-2">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="fas fa-key"></i></span>
-                                    </div>
-                                        <input v-model="pass" type="password" class="form-control input_pass" placeholder="Password">
-                                </div>
-                                <div class="d-flex justify-content-center mt-3 login_container">
-                                    <button v-on:click="ServletControllerPost('login', '')" class="btn login_btn">Autentica </button>
-                                </div>
-
-                                <template v-if="errore">
-                                    <span class="badge badge-danger">Errore nel login</span>
-                                </template>
-                                <br>
-                                <centro-login v-on:ospite-inner="ServletControllerPost('ospite', '')" v-on:creazione-inner="transit('creazione')" ></centro-login>
-                            </article>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <login link="ServletController" v-on:creazione-inner="transit('creazione')" v-on:ospite-inner="ServletControllerPost('ospite', '')" v-on:transit-inner-cliente="transit('clienteHome')" v-on:transit-inner-amministratore="transit('amministratoreHome')"></login>
         </span>
 
         <span v-if="creazionehome"><br>
@@ -259,6 +223,87 @@
 
     <script>
 
+        //Component login
+        Vue.component('login',{
+            data: function () {
+                return{
+                    em: null,
+                    pass: null,
+                    errore: false,
+                }
+            },
+            props: ['link'],
+            template: '<div class="container h-100">\n' +
+                '                <div class="d-flex justify-content-center h-100">\n' +
+                '                    <div class="user_card">\n' +
+                '                        <div class="d-flex justify-content-center">\n' +
+                '                            <div class="brand_logo_container">\n' +
+                '                                <img src="img/logo.jpg" class="brand_logo" alt="Logo">\n' +
+                '                            </div>\n' +
+                '                        </div>\n' +
+                '                        <br>\n' +
+                '                        <div class="d-flex justify-content-center form_container">\n' +
+                '                            <article class="form-group">\n' +
+                '                                <div class="input-group mb-3">\n' +
+                '                                    <div class="input-group-append">\n' +
+                '                                        <span class="input-group-text"><i class="fas fa-user"></i></span>\n' +
+                '                                    </div>\n' +
+                '                                    <input v-model="em" type="text" class="form-control input_user" placeholder="Email">\n' +
+                '                                </div>\n' +
+                '                                <div class="input-group mb-2">\n' +
+                '                                    <div class="input-group-append">\n' +
+                '                                        <span class="input-group-text"><i class="fas fa-key"></i></span>\n' +
+                '                                    </div>\n' +
+                '                                        <input v-model="pass" type="password" class="form-control input_pass" placeholder="Password">\n' +
+                '                                </div>\n' +
+                '                                <div class="d-flex justify-content-center mt-3 login_container">\n' +
+                '                                    <button v-on:click="ServletControllerPost(\'login\')" class="btn login_btn">Autentica </button>\n' +
+                '                                </div>\n' +
+                '                                <template v-if="errore">\n' +
+                '                                    <span class="badge badge-danger">Errore nel login</span>\n' +
+                '                                </template>\n' +
+                '                                <br>\n' +
+                '                                   <article class="d-flex justify-content-center links">' +
+                '                                   <p>Non hai ancora un account? <button type="button" class="btn btn-outline-dark" v-on:click="creazioneInner"> Crea account</button>' +
+                '                                   <br><br>Oppure entra come ospite&nbsp&nbsp&nbsp&nbsp<button type="button" class="btn btn-outline-dark" v-on:click="ospiteInner">Entra </button></p>' +
+                '                                   </article>'+
+                '                            </article>\n' +
+                '                        </div>\n' +
+                '                    </div>\n' +
+                '                </div>\n' +
+                '            </div>      ',
+            methods: {
+                ServletControllerPost: function (flag){
+                    var self = this;
+                    $.post(this.link, {action: flag, email: this.em, password: this.pass}, function (data) {
+                        switch (data) {
+                            case 'sono amministratore':
+                                self.errore = false; self.transit("amministratoreHome"); break;
+                            case 'sono cliente':
+                                self.errore = false; self.transit("clienteHome"); break;
+                            case 'errore':
+                                self.errore = true; break;
+                        }
+                    })
+                },
+                creazioneInner: function (){
+                    this.$emit('creazione-inner');
+                },
+
+                ospiteInner: function (){
+                    this.$emit('ospite-inner');
+                },
+                transit: function (flag) {
+                    switch (flag){
+                        case "amministratoreHome":
+                            this.$emit('transit-inner-amministratore'); break;
+                        case "clienteHome":
+                            this.$emit('transit-inner-cliente', this.em, this.pass); break;
+                    }
+                },
+            }
+        })
+
         //Component gestione corsi/docenti
         Vue.component('admincoursesteacher',{
             data: function () {
@@ -267,6 +312,7 @@
                     docenti:[],
                     corsii: [],
                     docentii:[],
+                    corsidocenti:[],
                     courses: null,
                     teacher: null,
                     coursess: null,
@@ -291,7 +337,7 @@
                 '                            </div>\n' +
                 '                         </div>\n' +
                 '                         <hr>\n'+
-                '                        <h4>Affliare corsi e docenti gi&agrave; presenti.</h4>\n' +
+                '                        <h4>Affiliare corsi e docenti gi&agrave; presenti.</h4>\n' +
                 '                        <div class="form-group">\n' +
                 '                            <label>Docente\n' +
                 '                                <select v-model="teacherr">\n' +
@@ -305,7 +351,7 @@
                 '                            </label><br>\n' +
                 '                            <br>\n' +
                 '                            <div class="d-grid gap-2">\n' +
-                '                                <button class="btn btn-primary" v-on:click="ServletControllerPost(\'Corsi_Docenti\', \'Affliare\')">Conferma dati</button>\n' +
+                '                                <button class="btn btn-primary" v-on:click="ServletControllerPost(\'Corsi_Docenti\', \'Affiliare\')">Conferma dati</button>\n' +
                 '                            </div>\n' +
                 '                           </div>'+
                 '                        </div>'+
@@ -333,6 +379,16 @@
                 '                                </template>\n' +
                 '                            </tbody>\n' +
                 '                        </table>\n' +
+                '                        <table class="tabellaCorsiDocenti">\n' +
+                '                            <thead>\n' +
+                '                                <tr><td><i><b>CORSO</b></i></td><td><i><b>DOCENTE</b></i></td><td><i><b>OPERAZIONE</b></i></td></tr>\n' +
+                '                            </thead>\n' +
+                '                            <tbody>\n' +
+                '                                <template v-for="c_d in corsidocenti">\n' +
+                '                                    <tr><td>{{c_d.corso}}</td><td>{{c_d.docente}}</td><td><button class="btn btn-danger" v-on:click="ServletControllerPost(\'Corsi_Docenti\', c_d.corso, c_d.docente)">Rimuovi</button></td></tr>\n' +
+                '                                </template>\n' +
+                '                            </tbody>\n' +
+                '                        </table>\n' +
                 '                       </div>\n'+
                 '                    </div>',
             mounted(){
@@ -341,30 +397,37 @@
             methods: {
                 getDati: function (){
                     var self = this;
+                    $.get(this.link, {action: 'Corsi_Docenti', action2: 'Free'}, function (data) {
+                        if(data === 0) {
+                            self.transit();
+                        }
+                        self.corsidocenti = data;
+                    });
                     $.get(this.link, {action: 'Corsi', action2: ''}, function (data) {
-                        if(data === 0)
-                            self.transit("logout");
-                        self.corsi = data;
-                    });
-                    $.get(this.link, {action: 'Docenti', action2: ''}, function (data) {
-                        if(data === 0)
-                            self.transit("logout");
-                        self.docenti = data;
-                    });
-                    $.get(this.link, {action: 'Corsi', action2: 'Free'}, function (data) {
                         if(data === 0)
                             self.transit("logout");
                         self.corsii = data;
                     });
-                    $.get(this.link, {action: 'Docenti', action2: 'Free'}, function (data) {
+                    $.get(this.link, {action: 'Docenti', action2: ''}, function (data) {
                         if(data === 0)
                             self.transit("logout");
                         self.docentii = data;
                     })
+
+                    $.get(this.link, {action: 'Corsi', action2: 'Free'}, function (data) {
+                        if(data === 0)
+                            self.transit("logout");
+                        self.corsi = data;
+                    });
+                    $.get(this.link, {action: 'Docenti', action2: 'Free'}, function (data) {
+                        if(data === 0)
+                            self.transit("logout");
+                        self.docenti = data;
+                    })
                 },
-                ServletControllerPost: function (flag, flag2){
+                ServletControllerPost: function (flag, flag2, flag3){
                     var self = this;
-                    $.post(this.link, {action: flag, action2: flag2, corsi: this.courses, nome: this.teacher, corsii: this.coursess, nomee: this.teacherr}, function (data) {
+                    $.post(this.link, {action: flag, action2: flag2, action3 : flag3, corsi: this.courses, nome: this.teacher, corsii: this.coursess, nomee: this.teacherr}, function (data) {
                         switch (flag){
                             case "Corsi_Docenti":
                                 if(data === "errore"){
@@ -382,7 +445,7 @@
                 transit: function (flag) {
                     switch (flag){
                         case "gestioneCD":
-                            this.courses = this.teacher = null; this.getDati(); break;
+                            this.coursess = this.teacherr = this.courses = this.teacher = null; this.getDati(); break;
                         case "alert":
                             alert('Errore! Riprovare!'); break;
                         case "logout":
@@ -510,7 +573,7 @@
         Vue.component('coursesteacher',{
             data: function () {
                 return{
-                    corsidocenti: [10],
+                    corsidocenti: [],
                 }
             },
             props: ['link'],
@@ -530,7 +593,7 @@
             methods: {
                 getDati: function (){
                     var self = this;
-                    $.get(this.link, {action: 'Corsi_Docenti'}, function (data) {
+                    $.get(this.link, {action: 'Corsi_Docenti', action2: 'all'}, function (data) {
                         if(data === 0) {
                             self.transit();
                         }
@@ -810,23 +873,6 @@
             },
         })
 
-        //VueLogin
-        Vue.component('centro-login',{
-            template:'<article class="d-flex justify-content-center links">' +
-                    '     <p>Non hai ancora un account? <button type="button" class="btn btn-outline-dark" v-on:click="creazioneInner"> Crea account</button>' +
-                    '     <br><br>Oppure entra come ospite&nbsp&nbsp&nbsp&nbsp<button type="button" class="btn btn-outline-dark" v-on:click="ospiteInner">Entra </button></p>' +
-                    '</article>',
-            methods: {
-                creazioneInner: function (){
-                    this.$emit('creazione-inner');
-                },
-
-                ospiteInner: function (){
-                    this.$emit('ospite-inner');
-                }
-            }
-        })
-
         //home di ospite/cliente/amministratore
         Vue.component('home',{
             template:
@@ -868,18 +914,12 @@
                     $.post(this.link, {email: this.em, account: this.acc, password: this.pass, action: flag, action2: flag2}, function (data) {
                         //Sezione Servlet Login
                         switch (flag){
-                            case "login": case "crea": case "ospite":
+                            case "crea": case "ospite":
                                 switch (data) {
-                                    case 'sono amministratore':
-                                        self.role = 'Amministratore'; self.errore = false; self.transit("amministratoreHome"); break;
-                                    case 'sono cliente':
-                                        self.role = 'Cliente'; self.errore = false; self.transit("clienteHome"); break;
                                     case 'ospite':
                                         self.role = 'Ospite'; self.transit("ospiteHome"); break;
                                     case 'crea':
                                         self.em = self.acc = self.pass = null; self.errore2 = false; alert('Successo: Account creato'); self.transit('loginHome'); break;
-                                    case 'errore':
-                                        self.errore = true; break;
                                     case 'errore2':
                                         self.errore2 = true; break;
                                 }
@@ -905,9 +945,9 @@
                         case "loginHome":
                             this.loginHome = true; this.homeAmministratore = this.creazionehome = this.homeOspite = this.homeCliente = this.checkO = this.errore2 = false; break;
                         case "amministratoreHome":
-                             this.homeAmministratore = this.checkAH = true; this.storico = this.loginHome = this.stampaPr = this.stampaMPr = this.stampaR = this.stampaCD = this.gestioneCD = this.gestioneR = this.errore2 = false; break;
+                            this.role = 'Amministratore'; this.homeAmministratore = this.checkAH = true; this.storico = this.loginHome = this.stampaPr = this.stampaMPr = this.stampaR = this.stampaCD = this.gestioneCD = this.gestioneR = this.errore2 = false; break;
                         case "clienteHome":
-                             this.homeCliente = this.checkCl = true; this.loginHome = this.stampaMPr = this.stampaR = this.stampaCD = false; break;
+                            this.role = 'Cliente'; this.homeCliente = this.checkCl = true; this.loginHome = this.stampaMPr = this.stampaR = this.stampaCD = false; break;
                         case "gestioneCD":
                             this.gestioneCD = true; this.storico = this.stampaCD = this.checkAH = this.gestioneR = this.errore2 = this.stampaMPr = this.stampaR = this.stampaPr = false; break;
                         case "gestioneR":
@@ -930,13 +970,12 @@
         })
 
     </script>
-    <div id="push"> </div>
+    <!--<div id="push"> </div>
     <footer id="footer">
         <p class="foot"><i><b>Corso Interazione Uomo/Macchina 2021/2022</b></i></p>
         <p class="foot"><i><b>Sisinni Daniele 914874</b></i></p>
-    </footer>
+    </footer>-->
 </body>
-
-
 </html>
+
 

@@ -462,16 +462,44 @@ public class DAO{
         return tmp;
     }
 
+    public static void updateCourseTeacher(String var, String var2) {
+        Connection conn1 = null;
+        String a = "RIMOSSO";
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            var = searchCourse(var);
+            var2 = searchTeacher(var2);
+            //Execute insert query
+            Statement st = conn1.createStatement();
+            st.execute("update corsodocente set stato = '" + a + "' where corso = '" + var + "' and docente = '" + var2 + "'");
+            System.out.println("Courseteacher updated!");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+    }
+
     public static void removeCourseTeacher(String var) {
         Connection conn1 = null;
         String a = "RIMOSSO";
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
-
+            String tmp = var;
+            var = searchCourse(var);
+            tmp = searchTeacher(tmp);
 
             //Execute insert query
             Statement st = conn1.createStatement();
-            st.execute("update corsodocente set stato = '" + a + "' where corso = '" + var + "' or docente = '" + var + "'");
+            st.execute("update corsodocente set stato = '" + a + "' where corso = '" + var + "' or docente = '" + tmp + "'");
             System.out.println("Courseteacher removed!");
 
         } catch (SQLException e) {
@@ -859,11 +887,45 @@ public class DAO{
         return matr;
     }
 
+    public static ArrayList<CorsoDocente> CourseTeacherFree() {
+        Connection conn1 = null;
+        ArrayList<CorsoDocente> out = new ArrayList<>();
+        String c2 = "CONFERMATA";
+        String a2 = "ATTIVO";
+        String a3 = "ATTIVA";
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database test");
+            }
+
+            Statement st = conn1.createStatement();
+            ResultSet rs = st.executeQuery("SELECT c.titolo, d.nome FROM corso c, docente d, corsodocente cd where cd.corso = c.id AND cd.docente = d.id and cd.STATO = '"+ a2 +"' AND NOT EXISTS (select 1 from prenotazione p where p.CORSO = cd.corso and p.docente = cd.docente and P.STATUS = '" + a3 +"') order by TITOLO");
+            while (rs.next()) {
+                CorsoDocente p = new CorsoDocente(rs.getString("TITOLO"), rs.getString("NOME"), "ATTIVO");
+                out.add(p);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+        return out;
+    }
+
     public static ArrayList<Corso> CourseFree(String action2) {
         Connection conn1 = null;
         ArrayList<Corso> out = new ArrayList<>();
         String c2 = "CONFERMATA";
         String a2 = "ATTIVO";
+        String a3 = "ATTIVA";
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
             if (conn1 != null) {
@@ -872,7 +934,7 @@ public class DAO{
             ResultSet rs;
             Statement st = conn1.createStatement();
             if(action2.equals("Free")) {
-                rs = st.executeQuery("SELECT TITOLO FROM Corso c WHERE NOT EXISTS (SELECT CORSO FROM Prenotazione p WHERE c.TITOLO = p.CORSO AND p.STATUS = '" + c2 + "') and c.stato = '" + a2 + "' order by TITOLO");
+                rs = st.executeQuery("SELECT c.titolo FROM corso c where c.STATO = '"+ a2 +"' AND NOT EXISTS (select 1 from prenotazione p where p.CORSO = c.ID and P.STATUS = '" + a3 +"') order by TITOLO");
             }else {
                 rs = st.executeQuery("SELECT TITOLO FROM Corso c where c.stato = '" + a2 + "' order by TITOLO");
             }while (rs.next()) {
@@ -899,6 +961,7 @@ public class DAO{
         ArrayList<Docente> out = new ArrayList<>();
         String c1 = "CONFERMATA";
         String a1 = "ATTIVO";
+        String a3 = "ATTIVA";
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
             if (conn1 != null) {
@@ -907,7 +970,7 @@ public class DAO{
             ResultSet rs;
             Statement st = conn1.createStatement();
             if(action2.equals("Free")) {
-                rs = st.executeQuery("SELECT NOME FROM Docente d WHERE NOT EXISTS (SELECT DOCENTE FROM Prenotazione p WHERE d.NOME = p.DOCENTE AND p.STATUS = '" + c1 + "') and d.stato = '" + a1 + "' order by NOME");
+                rs = st.executeQuery("SELECT d.nome FROM docente d where d.STATO = '" + a1 + "' AND NOT EXISTS (select 1 from prenotazione p where p.docente = d.ID and P.STATUS = '" + a3 + "') order by NOME");
             }else {
                 rs = st.executeQuery("SELECT NOME FROM Docente d WHERE d.stato = '" + a1 + "' order by NOME");
             }while (rs.next()) {
