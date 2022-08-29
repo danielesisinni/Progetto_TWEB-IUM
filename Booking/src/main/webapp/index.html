@@ -402,7 +402,7 @@
                 '                            </thead>\n' +
                 '                            <tbody>\n' +
                 '                                <template v-for="docente in docenti">\n' +
-                '                                    <tr><td>{{docente.nome}}</td><td><button class="btn btn-danger" v-on:click="ServletControllerPost(\'Corsi_Docenti\', docente.nome)">Rimuovi</button></td></tr>\n' +
+                '                                    <tr><td>{{docente.nome}}</td><td><button class="btn btn-danger" v-on:click="ServletControllerPost(\'Corsi_Docenti\', docente.nome, \'docente\')">Rimuovi</button></td></tr>\n' +
                 '                                </template>\n' +
                 '                            </tbody>\n' +
                 '                        </table>\n' +
@@ -412,7 +412,7 @@
                 '                            </thead>\n' +
                 '                            <tbody>\n' +
                 '                                <template v-for="corso in corsi">\n' +
-                '                                    <tr><td>{{corso.titolo}}</td><td><button class="btn btn-danger" v-on:click="ServletControllerPost(\'Corsi_Docenti\', corso.titolo)">Rimuovi</button></td></tr>\n' +
+                '                                    <tr><td>{{corso.titolo}}</td><td><button class="btn btn-danger" v-on:click="ServletControllerPost(\'Corsi_Docenti\', corso.titolo, \'corso\')">Rimuovi</button></td></tr>\n' +
                 '                                </template>\n' +
                 '                            </tbody>\n' +
                 '                        </table>\n' +

@@ -22,46 +22,46 @@ public class CorsiDocentiServlet extends HttpServlet {
         response.setContentType("application/json,charset=UTF-8");
         RequestDispatcher rd;
         boolean check = DAO.logout((Timestamp) session.getAttribute("lastUpdate"));
-        if(check){
+        if (check) {
             rd = getServletContext().getNamedDispatcher("logout");
             rd.include(request, response);
             return;
-        }else{
+        } else {
             session.setAttribute("lastUpdate", new Timestamp(System.currentTimeMillis()));
         }
         Gson gson = new Gson();
         String action = request.getParameter("action");
         String action2 = request.getParameter("action2");
-        if (action != null){
-            switch (action){
+        if (action != null) {
+            switch (action) {
                 case "Corsi_Docenti":
-                    if(action2.equals("Free")){
+                    if (action2.equals("Free")) {
                         ArrayList<CorsoDocente> corsi_docenti = DAO.CourseTeacherFree();
                         String s = gson.toJson(corsi_docenti);
                         request.setAttribute("risultato", s);
-                    }else{
+                    } else {
                         ArrayList<CorsoDocente> corsi_docenti = DAO.CourseTeacher();
                         String s = gson.toJson(corsi_docenti);
                         request.setAttribute("risultato", s);
                     }
                     break;
                 case "Corsi":
-                    if(request.getParameter("action2").equals("storico")) {
+                    if (request.getParameter("action2").equals("storico")) {
                         ArrayList<Corso> corsi = DAO.Course();
                         String s1 = gson.toJson(corsi);
                         request.setAttribute("risultato", s1);
-                    }else{
+                    } else {
                         ArrayList<Corso> corsi = DAO.CourseFree(action2);
                         String s1 = gson.toJson(corsi);
                         request.setAttribute("risultato", s1);
                     }
                     break;
                 case "Docenti":
-                    if(request.getParameter("action2").equals("storico")) {
+                    if (request.getParameter("action2").equals("storico")) {
                         ArrayList<Docente> docenti = DAO.Teacher();
                         String s2 = gson.toJson(docenti);
                         request.setAttribute("risultato", s2);
-                    }else {
+                    } else {
                         ArrayList<Docente> docenti = DAO.TeacherFree(action2);
                         String s2 = gson.toJson(docenti);
                         request.setAttribute("risultato", s2);
@@ -71,39 +71,39 @@ public class CorsiDocentiServlet extends HttpServlet {
         }
     }
 
-    public void doPost (HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html,charset=UTF-8");
         HttpSession session = request.getSession();
         RequestDispatcher rd;
         boolean check1 = DAO.logout((Timestamp) session.getAttribute("lastUpdate"));
-        if(check1){
+        if (check1) {
             rd = getServletContext().getNamedDispatcher("logout");
             rd.include(request, response);
             return;
-        }else{
+        } else {
             session.setAttribute("lastUpdate", new Timestamp(System.currentTimeMillis()));
         }
         if (session.getAttribute("userRole").equals("Amministratore") && request.getParameter("action2").equals("Aggiunta")) {
             String nomecorso = request.getParameter("corsi");
             String docente = request.getParameter("nome");
-            if(nomecorso != null && docente != null){
+            if (nomecorso != null && docente != null) {
                 String check = DAO.insertCourse(nomecorso);
                 String check2 = DAO.insertTeacher(docente);
-                if(!check.equals("-1") && !check2.equals("-1")){
+                if (!check.equals("-1") && !check2.equals("-1")) {
                     DAO.insertCourseTeacher(check, check2, false);
                     request.setAttribute("risultato", "aggiunto");
-                } else if(!check.equals("-1") || !check2.equals("-1")){
+                } else if (!check.equals("-1") || !check2.equals("-1")) {
                     request.setAttribute("risultato", "aggiunto");
-                } else{
+                } else {
                     request.setAttribute("risultato", "errore");
                 }
             }
-        }else if (session.getAttribute("userRole").equals("Amministratore") && request.getParameter("action2").equals("Affiliare")) {
+        } else if (session.getAttribute("userRole").equals("Amministratore") && request.getParameter("action2").equals("Affiliare")) {
             String corso = request.getParameter("corsii");
             String docente = request.getParameter("nomee");
             DAO.insertCourseTeacher(corso, docente, true);
             request.setAttribute("risultato", "aggiunto");
-        }else if(session.getAttribute("userRole").equals("Amministratore") && request.getParameter("action3") != null){
+        } else if (session.getAttribute("userRole").equals("Amministratore") && (!request.getParameter("action3").equals("corso") && !request.getParameter("action3").equals("docente"))) {
             System.out.println("ok " + request.getParameter("action2") + " " + request.getParameter("action3"));
             String idcorso = request.getParameter("action2");
             String iddocente = request.getParameter("action3");
@@ -111,14 +111,16 @@ public class CorsiDocentiServlet extends HttpServlet {
             request.setAttribute("risultato", "rimossa");
         } else if (session.getAttribute("userRole").equals("Amministratore")) {
             String var = request.getParameter("action2");
-            if(var != null){
+            String var2 = request.getParameter("action3");
+            if (var2.equals("corso")) {
                 DAO.removeCourse(var);
+            } else if (var2.equals("docente")) {
                 DAO.removeTeacher(var);
-                DAO.removeCourseTeacher(var);
-                request.setAttribute("risultato", "rimossa");
-            } else {
-                request.setAttribute("risultato", "errore");
             }
+            DAO.removeCourseTeacher(var);
+            request.setAttribute("risultato", "rimossa");
+        } else {
+            request.setAttribute("risultato", "errore");
         }
     }
 
