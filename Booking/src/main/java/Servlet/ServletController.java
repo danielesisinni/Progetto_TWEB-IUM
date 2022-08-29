@@ -73,10 +73,10 @@ public class ServletController extends HttpServlet {
                 out.print(request.getAttribute("risultato"));
             }
             //Android
-            if (action.equals("androidL")) {
+            if (action.equals("androidL") || action.equals("ospiteL")) {
                 rd = getServletContext().getNamedDispatcher("login");
                 rd.include(request, response);
-                if(request.getAttribute("risultato").equals("loginandroid"))
+                if(session.getAttribute("app").equals("android"))
                     out.print("Login effettuato");
             }
             if (session.getAttribute("userRole") != null){

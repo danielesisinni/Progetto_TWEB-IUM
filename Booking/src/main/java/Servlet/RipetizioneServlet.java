@@ -23,7 +23,7 @@ public class RipetizioneServlet extends HttpServlet {
         HttpSession session = request.getSession();
         RequestDispatcher rd;
         boolean check = DAO.logout((Timestamp) session.getAttribute("lastUpdate"));
-        if(check){
+        if(check && session.getAttribute("app").equals("web")){
             rd = getServletContext().getNamedDispatcher("logout");
             rd.include(request, response);
             return;
@@ -53,7 +53,7 @@ public class RipetizioneServlet extends HttpServlet {
         HttpSession session = request.getSession();
         RequestDispatcher rd;
         boolean check = DAO.logout((Timestamp) session.getAttribute("lastUpdate"));
-        if(check){
+        if(check && session.getAttribute("app").equals("web")){
             rd = getServletContext().getNamedDispatcher("logout");
             rd.include(request, response);
             return;

@@ -22,7 +22,7 @@ public class CorsiDocentiServlet extends HttpServlet {
         response.setContentType("application/json,charset=UTF-8");
         RequestDispatcher rd;
         boolean check = DAO.logout((Timestamp) session.getAttribute("lastUpdate"));
-        if (check) {
+        if (check && session.getAttribute("app").equals("web")) {
             rd = getServletContext().getNamedDispatcher("logout");
             rd.include(request, response);
             return;
@@ -76,7 +76,7 @@ public class CorsiDocentiServlet extends HttpServlet {
         HttpSession session = request.getSession();
         RequestDispatcher rd;
         boolean check1 = DAO.logout((Timestamp) session.getAttribute("lastUpdate"));
-        if (check1) {
+        if (check1 && session.getAttribute("app").equals("web")) {
             rd = getServletContext().getNamedDispatcher("logout");
             rd.include(request, response);
             return;

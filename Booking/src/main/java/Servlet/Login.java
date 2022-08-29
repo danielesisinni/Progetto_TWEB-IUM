@@ -30,8 +30,6 @@ public class Login extends HttpServlet {
                 session.setAttribute("sessionid", session.getId());
                 session.setAttribute("lastUpdate", new Timestamp(System.currentTimeMillis()));
                 System.out.println(session.getAttribute("lastUpdate"));
-                request.setAttribute("risultato", "loginandroid");
-
                 processRequest(request, response);
             } else {
                 request.setAttribute("risultato", "errore");
@@ -46,9 +44,9 @@ public class Login extends HttpServlet {
             }else{
                 request.setAttribute("risultato", "errore2");
             }
-        }else if(flag.equals("ospite")){
+        }else if(flag.equals("ospite") || flag.equals("ospiteL")){
             session.setAttribute("lastUpdate", new Timestamp(System.currentTimeMillis()));
-            System.out.println(session.getAttribute("lastUpdate"));
+            System.out.println(session.getAttribute("lastUpdate")  +" guest");
             processRequest(request, response);
         }
     }
@@ -60,25 +58,41 @@ public class Login extends HttpServlet {
         String acc = (String) session.getAttribute("userName");
         String ruolo = (String) session.getAttribute("userRole");
         switch (flag) {
+            //Android
+            case "androidL":
+                String jsessionID = session.getId(); // estraggo il session ID
+                session.setAttribute("app", "android");
+                System.out.println("Login:\nJSessionID: " + jsessionID);
+                break;
+            case "ospiteL":
+                DAO.registerDriver();
+                String jsessionID2 = session.getId(); // estraggo il session ID
+                System.out.println("Login:\nJSessionID: " + jsessionID2);
+                session.setAttribute("userRole", "Ospite");
+                session.setAttribute("app", "android");
+                break;
+            //WEB
             case "login":
                 if (ruolo.equals("Amministratore")) {
-                    String jsessionID = session.getId(); // estraggo il session ID
-                    System.out.println("Login:\nJSessionID: " + jsessionID);
+                    String jsessionID3 = session.getId(); // estraggo il session ID
+                    System.out.println("Login:\nJSessionID: " + jsessionID3);
                     request.setAttribute("risultato", "sono amministratore");
                 } else {
-                    String jsessionID = session.getId(); // estraggo il session ID
-                    System.out.println("Login:\nJSessionID: " + jsessionID);
+                    String jsessionID4 = session.getId(); // estraggo il session ID
+                    System.out.println("Login:\nJSessionID: " + jsessionID4);
                     request.setAttribute("risultato", "sono cliente");
                 }
+                session.setAttribute("app", "web");
                 break;
             case "crea":
                 request.setAttribute("risultato", "crea");
                 break;
             case "ospite":
                 DAO.registerDriver();
-                String jsessionID = session.getId(); // estraggo il session ID
-                System.out.println("Login:\nJSessionID: " + jsessionID);
+                String jsessionID5 = session.getId(); // estraggo il session ID
+                System.out.println("Login:\nJSessionID: " + jsessionID5);
                 session.setAttribute("userRole", "Ospite");
+                session.setAttribute("app", "web");
                 request.setAttribute("risultato", "ospite");
                 break;
         }
