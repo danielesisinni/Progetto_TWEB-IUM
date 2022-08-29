@@ -1,4 +1,4 @@
-package com.ium.example.booking.controller;
+package com.ium.example.booking;
 
 public class MyURL {
     public static String URLPOST = "http://10.0.2.2:8080/demo_war_exploded/ServletController";

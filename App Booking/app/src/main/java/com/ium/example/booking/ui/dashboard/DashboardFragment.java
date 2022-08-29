@@ -27,7 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.ium.example.booking.R;
-import com.ium.example.booking.controller.MyURL;
+import com.ium.example.booking.MyURL;
 import com.ium.example.booking.databinding.FragmentDashboardBinding;
 
 import org.json.JSONArray;
