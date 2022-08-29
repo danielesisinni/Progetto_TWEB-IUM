@@ -2,7 +2,6 @@ package com.ium.example.booking.ui.dashboard;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,14 +11,12 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.AuthFailureError;
@@ -54,9 +51,13 @@ public class DashboardFragment extends Fragment {
         dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        start();
         return root;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        start();
     }
 
     @Override
@@ -67,24 +68,33 @@ public class DashboardFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     public void start(){
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, MyURL.URLGETP, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d("Response", response);
-                try {
-                    stampa(response);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        String email = getActivity().getIntent().getExtras().getString("account");
+        if(email.equals("Ospite")) {
+            TextView text = getView().findViewById(R.id.textOspite);
+            text.setVisibility(View.VISIBLE);
+        }else{
+            TextView text = getView().findViewById(R.id.text);
+            text.setVisibility(View.VISIBLE);
+
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, MyURL.URLGETP, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.d("Response", response);
+                    try {
+                        stampa(response);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
-            }
-        });
-        requestQueue = Volley.newRequestQueue(getActivity());
-        requestQueue.add(stringRequest);
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                }
+            });
+            requestQueue = Volley.newRequestQueue(getActivity());
+            requestQueue.add(stringRequest);
+        }
     }
 
     public void stampa(String response) throws JSONException {
@@ -101,7 +111,6 @@ public class DashboardFragment extends Fragment {
             String ore = row.getString("ora");
             String status = row.getString("status");
             output.add("●" + corso + "\n  " + docente + "\n  " + giorno + "\n  " + ore + "\n  " + status);
-            System.out.println(output);
         }
         ArrayAdapter<String> adapterlist = new ArrayAdapter<String>(getActivity(), R.layout.row, output);
         ListView listview = getView().findViewById(R.id.listview);

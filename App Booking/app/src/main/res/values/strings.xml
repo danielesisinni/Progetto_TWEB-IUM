@@ -7,12 +7,16 @@
     <string name="activity_login_input_email_hint">Email</string>
     <string name="activity_login_input_password_hint">Password</string>
     <string name="activity_login_login_button_hint">Accedi</string>
+    <string name="activity_login_guest_button_hint">Accedi come ospite</string>
     <string name="activity_login_text_intro_hint">Booking UniTo</string>
     <string name="activity_login_input_email_error_empty">Questo campo non può essere vuoto</string>
     <string name="activity_login_input_email_error_invalid">Inserisci una email valida</string>
     <string name="activity_login_input_password_error_invalid">Inserisci una password valida</string>
     <string name="activity_login_input_password_error">Questo campo non può essere vuoto</string>
     <string name="come_prenotare">Per prenotare clicca sulla ripetizione desiderata!</string>
+    <string name="ospite">Scorrendo puoi visualizzare il catalogo delle ripetizioni disponibili nell\' App!</string>
     <string name="mie_prenotazioni">Le mie prenotazioni.
         Clicca su quella desiderata per confermarla o rifiutarla!</string>
+    <string name="ospite2">Sei ospite. Non hai prenotazioni.
+        Effettua il Login!</string>
 </resources>

@@ -111,4 +111,34 @@ public class LoginActivity extends AppCompatActivity {
         intent.putExtra("account", email);
         startActivity(intent);
     }
+
+    public void onGuestClick(View view) {
+        if(view.getId() == R.id.activity_login_guest_button) {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, MyURL.URLPOST, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.i("Response", response);
+                    if (response.equals("Login effettuato")) {
+                        azione("Ospite");
+                    } else {
+                        return;
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_LONG).show();
+                }
+            }) {
+                //Aggiungo i parametri alla richiesta
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("action", "ospiteL");
+                    return params;
+                }
+            };
+            requestQueue = Volley.newRequestQueue(LoginActivity.this);
+            requestQueue.add(stringRequest);
+        }
+    }
 }

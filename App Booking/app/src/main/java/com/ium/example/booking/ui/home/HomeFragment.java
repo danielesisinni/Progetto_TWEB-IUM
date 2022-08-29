@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,7 +66,15 @@ public class HomeFragment extends Fragment {
     public void start(){
         String email = getActivity().getIntent().getExtras().getString("account");
         TextView account = getView().findViewById(R.id.accountValue);
-        account.setText("Bentornato " + email);
+        if(email.equals("Ospite")) {
+            account.setText("Benvenuto " + email);
+            TextView text = getView().findViewById(R.id.textOspite);
+            text.setVisibility(View.VISIBLE);
+        }else{
+            TextView text = getView().findViewById(R.id.text);
+            text.setVisibility(View.VISIBLE);
+            account.setText("Bentornato " + email);
+        }
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, MyURL.URLGETR, new Response.Listener<String>() {
             @Override
@@ -99,28 +108,31 @@ public class HomeFragment extends Fragment {
             String corso = row.getString("corso");
             String giorno = row.getString("giorno");
             String ore = row.getString("ora");
-            System.out.println(position);
-            output.add(" - " + corso + "\n - " + docente + "\n - " + giorno + "\n - " + ore);
+            String status = row.getString("status");
+            if(status.equals("DISPONIBILE"))
+                output.add("●" + corso + "\n  " + docente + "\n  " + giorno + "\n  " + ore);
         }
         ArrayAdapter<String> adapterlist = new ArrayAdapter<String>(getActivity(), R.layout.row, output);
         ListView listview = getView().findViewById(R.id.listview);
 
         listview.setAdapter(adapterlist);
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String itemValue = (String) listview.getItemAtPosition(position);
-                try {
-                    JSONObject row = jsonArray.getJSONObject(position);
-                    String codice = row.getString("codice");
-                    prenota(codice);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        if(!getActivity().getIntent().getExtras().getString("account").equals("Ospite")) {
+            listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String itemValue = (String) listview.getItemAtPosition(position);
+                    try {
+                        JSONObject row = jsonArray.getJSONObject(position);
+                        String codice = row.getString("codice");
+                        prenota(codice);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(getActivity(), "Hai effettuato la prenotazione di :\n" + itemValue, Toast.LENGTH_LONG).show();
+                    refresh();
                 }
-                Toast.makeText(getActivity(), "Hai effettuato la prenotazione di :\n" +itemValue, Toast.LENGTH_LONG).show();
-                refresh();
-            }
-        });
+            });
+        }
     }
 
     public void prenota(String codice){
