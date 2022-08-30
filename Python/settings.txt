@@ -1,4 +1,4 @@
 [Settings]
-rows_num: 5
-columns_num: 5
+num_righe: 5
+num_colonne: 5
 pattern_path: pattern.txt
